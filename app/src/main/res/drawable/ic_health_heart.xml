@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Heart with pulse line icon for health app -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,21.593c-5.63,-5.539 -11,-10.297 -11,-14.402 0,-3.791 3.068,-5.191 5.281,-5.191 1.312,0 4.151,1.022 5.719,4.943 1.532,-3.911 4.479,-4.943 5.719,-4.943 2.legit213,0 5.281,1.4 5.281,5.191C23,11.296 17.629,16.054 12,21.593z" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M12,21.593c-5.63,-5.539 -11,-10.297 -11,-14.402 0,-3.791 3.068,-5.191 5.281,-5.191 1.312,0 4.151,1.022 5.719,4.943 1.532,-3.911 4.479,-4.943 5.719,-4.943 2.213,0 5.281,1.4 5.281,5.191C23,11.296 17.629,16.054 12,21.593z" />
+    <!-- Pulse line -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M2,12 L5,12 L7,9 L9,15 L11,11 L13,13 L15,12 L22,12" />
+</vector>
+

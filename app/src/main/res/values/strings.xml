@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Wao</string>
+    <string name="app_logo_letter">W</string>
+    <string name="app_name_display">WAO</string>
+    <string name="app_tagline">Theo dõi sức khỏe của bạn</string>
+    <string name="splash_subtitle">Sống khỏe mỗi ngày</string>
+
+    <!-- Login -->
+    <string name="login_title">Đăng nhập</string>
+    <string name="login_subtitle">Chào mừng trở lại!</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Mật khẩu</string>
+    <string name="btn_login">Đăng nhập</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="no_account">Chưa có tài khoản? </string>
+    <string name="register_link">Đăng ký ngay</string>
+
+    <!-- Register -->
+    <string name="register_title">Tạo tài khoản</string>
+    <string name="register_subtitle">Bắt đầu hành trình sức khỏe</string>
+    <string name="fullname_hint">Họ và tên</string>
+    <string name="confirm_password_hint">Xác nhận mật khẩu</string>
+    <string name="btn_register">Đăng ký</string>
+    <string name="have_account">Đã có tài khoản? </string>
+    <string name="login_link">Đăng nhập</string>
+    <string name="terms_text">Bằng cách đăng ký, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của chúng tôi.</string>
+
+    <string name="or_divider">hoặc</string>
+    <string name="loading_login">Đang đăng nhập…</string>
+    <string name="loading_register">Đang đăng ký…</string>
+    <string name="login_success">Đăng nhập thành công!</string>
+    <string name="register_success">Đăng ký thành công! Vui lòng đăng nhập.</string>
+</resources>
