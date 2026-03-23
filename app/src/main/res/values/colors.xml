@@ -16,4 +16,15 @@
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="error_red">#F44336</color>
+
+    <!-- Wao theme -->
+    <color name="wao_primary">#13ec5b</color>
+    <color name="wao_background_light">#f6f8f6</color>
+    <color name="wao_background_dark">#102216</color>
+    <color name="wao_slate_900">#0f172a</color>
+    <color name="wao_slate_100">#f1f5f9</color>
+    <color name="wao_slate_600">#475569</color>
+    <color name="wao_slate_400">#94a3b8</color>
+    <color name="wao_slate_500">#64748b</color>
+    <color name="wao_slate_200">#e2e8f0</color>
 </resources>

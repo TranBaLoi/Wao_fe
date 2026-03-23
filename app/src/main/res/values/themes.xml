@@ -1,27 +1,30 @@
 <resources>
     <!-- Base application theme -->
-    <style name="Theme.Wao_fe" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/green_primary</item>
-        <item name="colorPrimaryVariant">@color/green_primary_dark</item>
+    <style name="Theme.Wao_fe" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/wao_primary</item>
+        <item name="colorPrimaryVariant">@color/wao_background_light</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/green_accent</item>
-        <item name="colorSecondaryVariant">@color/green_medium</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="android:statusBarColor">@color/green_primary_dark</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="colorSecondary">@color/wao_primary</item>
+        <item name="colorSecondaryVariant">@color/wao_primary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:statusBarColor">@color/wao_background_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/wao_background_light</item>
+        <item name="textInputStyle">@style/Widget.Wao.TextInputLayout</item>
     </style>
 
     <!-- Splash Screen Theme -->
     <style name="Theme.Wao_fe.Splash" parent="Theme.Wao_fe">
-        <item name="android:windowBackground">@color/green_primary</item>
-        <item name="android:statusBarColor">@color/green_primary_dark</item>
-        <item name="android:navigationBarColor">@color/green_primary_dark</item>
+        <item name="android:windowBackground">@color/wao_background_light</item>
+        <item name="android:statusBarColor">@color/wao_background_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/wao_background_light</item>
     </style>
 
     <!-- Button Style -->
     <style name="Widget.Wao.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textColor">@color/white</item>
-        <item name="backgroundTint">@color/green_primary</item>
+        <item name="android:textColor">@color/wao_background_dark</item>
+        <item name="backgroundTint">@color/wao_primary</item>
         <item name="cornerRadius">12dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -29,19 +32,22 @@
 
     <!-- OutlinedButton Style -->
     <style name="Widget.Wao.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/green_primary</item>
-        <item name="strokeColor">@color/green_primary</item>
+        <item name="android:textColor">@color/wao_primary</item>
+        <item name="strokeColor">@color/wao_primary</item>
         <item name="cornerRadius">12dp</item>
         <item name="android:textSize">16sp</item>
     </style>
 
     <!-- TextInputLayout Style -->
     <style name="Widget.Wao.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/green_primary</item>
-        <item name="hintTextColor">@color/green_primary</item>
+        <item name="boxStrokeColor">@color/wao_primary</item>
+        <item name="hintTextColor">@color/wao_primary</item>
         <item name="boxCornerRadiusTopStart">12dp</item>
         <item name="boxCornerRadiusTopEnd">12dp</item>
         <item name="boxCornerRadiusBottomStart">12dp</item>
         <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="android:textColorHint">@color/wao_slate_400</item>
+        <item name="startIconTint">@color/wao_primary</item>
+        <item name="endIconTint">@color/wao_primary</item>
     </style>
 </resources>

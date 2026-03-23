@@ -1,5 +1,6 @@
 package com.example.wao_fe
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
@@ -7,8 +8,13 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.wao_fe.network.ApiResult
+import com.example.wao_fe.network.UserRepository
+import com.example.wao_fe.network.models.RegisterUserRequest
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -22,6 +28,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var etConfirmPassword: TextInputEditText
     private lateinit var btnRegister: Button
     private lateinit var tvLogin: TextView
+
+    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,15 +116,41 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun performRegister() {
+        val email = etEmail.text.toString().trim()
+        val request = RegisterUserRequest(
+            email = email,
+            password = etPassword.text.toString().trim(),
+            fullName = etFullname.text.toString().trim()
+        )
+
         btnRegister.text = getString(R.string.loading_register)
         btnRegister.isEnabled = false
 
-        // TODO: Gọi API đăng ký
-        btnRegister.postDelayed({
-            btnRegister.text = getString(R.string.btn_register)
-            btnRegister.isEnabled = true
-            Toast.makeText(this, getString(R.string.register_success), Toast.LENGTH_LONG).show()
-            finish()
-        }, 1500)
+        lifecycleScope.launch {
+            when (val result = userRepository.register(request)) {
+                is ApiResult.Success -> {
+                    btnRegister.text = getString(R.string.btn_register)
+                    btnRegister.isEnabled = true
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        getString(R.string.register_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    // Navigate to Verification
+                    val intent = Intent(this@RegisterActivity, VerifyEmailActivity::class.java)
+                    intent.putExtra("email", request.email)
+                    startActivity(intent)
+                    finish()
+                }
+
+                is ApiResult.Error -> {
+                    btnRegister.text = getString(R.string.btn_register)
+                    btnRegister.isEnabled = true
+                    tilEmail.error = result.fieldErrors["email"]
+                    Toast.makeText(this@RegisterActivity, result.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 }

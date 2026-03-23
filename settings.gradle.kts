@@ -9,6 +9,10 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // Add Adoptium packages repository to allow Gradle to auto-download JDK toolchains
+        maven {
+            url = uri("https://packages.adoptium.net/artifactory/jdk")
+        }
     }
 }
 dependencyResolutionManagement {
@@ -21,4 +25,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Wao_fe"
 include(":app")
- 

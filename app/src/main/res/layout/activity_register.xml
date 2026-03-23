@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_auth"
+    android:background="@color/wao_background_light"
     android:fillViewport="true">
 
     <RelativeLayout
@@ -11,53 +11,56 @@
         android:layout_height="wrap_content"
         android:minHeight="800dp">
 
-        <!-- Green Header -->
+        <!-- Header -->
         <LinearLayout
             android:id="@+id/header_section"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/splash_background"
             android:gravity="center"
             android:orientation="vertical">
 
+            <!-- Logo -->
             <FrameLayout
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:background="@drawable/bg_logo_circle">
+                android:layout_width="60dp"
+                android:layout_height="60dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/app_logo_letter"
-                    android:textColor="@color/white"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-black" />
+                 <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:src="@drawable/bg_logo_pulse" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_health_heart"
+                    app:tint="@color/white" />
             </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/register_title"
-                android:textColor="@color/white"
-                android:textSize="22sp"
+                android:text="@string/app_name_display"
+                android:textColor="@color/wao_slate_900"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-medium" />
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.05"/>
         </LinearLayout>
 
         <!-- Register Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/header_section"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="-30dp"
+            android:layout_marginTop="-20dp"
             android:layout_marginEnd="20dp"
             app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
+            app:cardElevation="4dp"
             app:cardBackgroundColor="@color/white">
 
             <LinearLayout
@@ -71,8 +74,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/register_title"
-                    android:textColor="@color/green_primary_dark"
-                    android:textSize="24sp"
+                    android:textColor="@color/wao_primary"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium" />
 
@@ -80,148 +83,129 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:layout_marginBottom="24dp"
                     android:text="@string/register_subtitle"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/wao_slate_500"
                     android:textSize="14sp" />
 
-                <!-- Full Name Field -->
+                <!-- Fullname Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_fullname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    style="@style/Widget.Wao.TextInputLayout"
-                    android:hint="@string/fullname_hint"
-                    app:startIconDrawable="@drawable/ic_person"
-                    app:startIconTint="@color/green_primary">
+                    android:layout_marginBottom="16dp"
+                    android:hint="@string/fullname_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_fullname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName|textCapWords"
-                        android:textColor="@color/text_primary" />
+                        android:inputType="textPersonName"
+                        android:textColor="@color/wao_slate_900" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Email Field -->
+                <!-- Email Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    style="@style/Widget.Wao.TextInputLayout"
-                    android:hint="@string/email_hint"
-                    app:startIconDrawable="@drawable/ic_email"
-                    app:startIconTint="@color/green_primary">
+                    android:layout_marginBottom="16dp"
+                    android:hint="@string/prompt_email">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/wao_slate_900" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Password Field -->
+                <!-- Password Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    style="@style/Widget.Wao.TextInputLayout"
-                    android:hint="@string/password_hint"
-                    app:startIconDrawable="@drawable/ic_lock"
-                    app:startIconTint="@color/green_primary"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/green_primary">
+                    android:layout_marginBottom="16dp"
+                    android:hint="@string/prompt_password"
+                    app:endIconMode="password_toggle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/wao_slate_900" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Confirm Password Field -->
+                <!-- Confirm Password Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_confirm_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    style="@style/Widget.Wao.TextInputLayout"
+                    android:layout_marginBottom="24dp"
                     android:hint="@string/confirm_password_hint"
-                    app:startIconDrawable="@drawable/ic_lock"
-                    app:startIconTint="@color/green_primary"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/green_primary">
+                    app:endIconMode="password_toggle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_confirm_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/wao_slate_900" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Terms Text -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center"
                     android:text="@string/terms_text"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:lineSpacingMultiplier="1.4" />
+                    android:textColor="@color/wao_slate_400"
+                    android:textSize="12sp" />
 
                 <!-- Register Button -->
                 <Button
                     android:id="@+id/btn_register"
+                    style="@style/Widget.Wao.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/bg_button_green"
+                    android:layout_height="56dp"
                     android:text="@string/btn_register"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:elevation="4dp" />
-
-                <!-- Login Link -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/have_account"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tv_login"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/login_link"
-                        android:textColor="@color/green_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:clickable="true"
-                        android:focusable="true" />
-                </LinearLayout>
+                    app:backgroundTint="@color/wao_primary" />
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <!-- Bottom padding -->
-        <View
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Footer -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/card_register" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/card_register"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/have_account"
+                android:textColor="@color/wao_slate_600" />
+
+            <TextView
+                android:id="@+id/tv_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:padding="8dp"
+                android:text="@string/login_link"
+                android:textColor="@color/wao_primary"
+                android:textStyle="bold" />
+        </LinearLayout>
+
 
     </RelativeLayout>
 </ScrollView>

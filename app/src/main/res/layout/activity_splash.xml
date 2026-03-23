@@ -1,122 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_background">
+    android:background="@drawable/wao_splash_bg"
+    android:padding="24dp">
 
-    <!-- Top decorative circle -->
-    <View
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="-60dp"
-        android:layout_marginEnd="-60dp"
-        android:alpha="0.15"
-        android:background="@drawable/bg_logo_circle" />
-
-    <!-- Bottom decorative circle -->
-    <View
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="-40dp"
-        android:layout_marginStart="-40dp"
-        android:alpha="0.15"
-        android:background="@drawable/bg_logo_circle" />
-
-    <!-- Center Content -->
+    <!-- Center Content Wrapper -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <!-- Logo Circle -->
+        <!-- Logo Area -->
         <FrameLayout
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:background="@drawable/bg_logo_circle">
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginBottom="24dp">
 
+            <!-- Pulse Effect (Optional) -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_wao_logo"
+                android:alpha="0.2"
+                android:scaleX="1.2"
+                android:scaleY="1.2"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_wao_logo"
+                android:padding="20dp"
+                android:src="@drawable/ic_wao_leaf"
+                app:tint="@color/wao_background_dark" />
+        </FrameLayout>
+
+        <!-- Brand Name -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="bottom">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:text="Wao"
+                android:textColor="@android:color/white"
+                android:textSize="48sp"
+                android:textStyle="bold"
                 android:fontFamily="sans-serif-black"
-                android:text="@string/app_logo_letter"
-                android:textColor="@color/white"
-                android:textSize="60sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-
-        <!-- App Name -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-black"
-            android:letterSpacing="0.1"
-            android:text="@string/app_name_display"
-            android:textColor="@color/white"
-            android:textSize="42sp"
-            android:textStyle="bold" />
+                android:letterSpacing="-0.02"/>
+             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="."
+                android:textColor="@color/wao_primary"
+                android:textSize="48sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"/>
+        </LinearLayout>
 
         <!-- Tagline -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Khỏe mạnh hơn mỗi ngày"
+            android:textColor="@color/wao_slate_400"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/app_tagline"
-            android:textColor="#CCFFFFFF"
-            android:textSize="16sp" />
+            android:letterSpacing="0.02"/>
 
-        <!-- Pulse animation dots -->
+        <!-- Loading Component -->
+        <LinearLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="48dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ĐANG KHỞI TẠO"
+                    android:textColor="@color/wao_slate_500"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"/>
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textColor="@color/wao_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:layout_marginTop="8dp"
+                android:progressDrawable="@drawable/wao_progress_drawable"
+                android:progress="0"
+                android:max="100"/>
+        </LinearLayout>
+
+        <!-- Visual Component (Card) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@color/wao_slate_900">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- Placeholder Image Background -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="#2d3748"/>
+
+                <!-- Gradient Overlay -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/wao_card_gradient"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                             android:layout_width="16dp"
+                             android:layout_height="16dp"
+                             android:src="@drawable/ic_wao_leaf"
+                             app:tint="@color/wao_primary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HEALTH ADVISOR"
+                            android:textColor="@android:color/white"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="8dp"
+                            android:letterSpacing="0.1"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Bắt đầu hành trình dinh dưỡng của bạn ngay hôm nay cùng cộng đồng Wao."
+                        android:textColor="@color/wao_slate_100"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DEVELOPED BY WAO HEALTH TEAM"
+            android:textColor="@color/wao_slate_500"
+            android:textSize="10sp"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="12dp"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:gravity="center"
             android:orientation="horizontal">
 
-            <View
-                android:id="@+id/dot1"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginEnd="6dp"
-                android:background="@color/white"
-                android:alpha="1.0" />
-
-            <View
-                android:id="@+id/dot2"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginEnd="6dp"
-                android:background="@color/white"
-                android:alpha="0.5" />
-
-            <View
-                android:id="@+id/dot3"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:background="@color/white"
-                android:alpha="0.3" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_spa"
+                app:tint="@color/wao_slate_400"
+                android:layout_marginEnd="16dp"/>
+             <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_health_heart"
+                app:tint="@color/wao_slate_400"
+                android:layout_marginEnd="16dp"/>
+             <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_fitness_center"
+                app:tint="@color/wao_slate_400"/>
         </LinearLayout>
     </LinearLayout>
-
-    <!-- Bottom tagline -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:text="@string/splash_subtitle"
-        android:textColor="#AAFFFFFF"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif-light" />
 
 </RelativeLayout>
 

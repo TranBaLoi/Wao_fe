@@ -7,9 +7,18 @@ import android.util.Patterns
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.wao_fe.network.ApiResult
+import com.example.wao_fe.network.UserRepository
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -18,15 +27,41 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var etEmail: TextInputEditText
     private lateinit var etPassword: TextInputEditText
     private lateinit var btnLogin: Button
+    private lateinit var btnGoogleLogin: Button
     private lateinit var tvForgotPassword: TextView
     private lateinit var tvRegister: TextView
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val userRepository = UserRepository()
+
+    private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val idToken = account.idToken
+            if (idToken != null) {
+                performGoogleLogin(idToken)
+            }
+        } catch (e: ApiException) {
+            Toast.makeText(this, "Google login failed: ${e.statusCode}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        setupGoogleSignIn()
         initViews()
         setupClickListeners()
+    }
+
+    private fun setupGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
     private fun initViews() {
@@ -35,6 +70,7 @@ class LoginActivity : AppCompatActivity() {
         etEmail = findViewById(R.id.et_email)
         etPassword = findViewById(R.id.et_password)
         btnLogin = findViewById(R.id.btn_login)
+        btnGoogleLogin = findViewById(R.id.btn_google_login)
         tvForgotPassword = findViewById(R.id.tv_forgot_password)
         tvRegister = findViewById(R.id.tv_register)
     }
@@ -44,6 +80,11 @@ class LoginActivity : AppCompatActivity() {
             if (validateInputs()) {
                 performLogin()
             }
+        }
+
+        btnGoogleLogin.setOnClickListener {
+            val signInIntent = googleSignInClient.signInIntent
+            googleSignInLauncher.launch(signInIntent)
         }
 
         tvForgotPassword.setOnClickListener {
@@ -85,15 +126,50 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
+        val email = etEmail.text.toString().trim()
+
         btnLogin.text = getString(R.string.loading_login)
         btnLogin.isEnabled = false
 
-        // TODO: Gọi API đăng nhập
-        btnLogin.postDelayed({
-            btnLogin.text = getString(R.string.btn_login)
-            btnLogin.isEnabled = true
-            Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to MainActivity
-        }, 1500)
+        lifecycleScope.launch {
+            when (val result = userRepository.loginByEmail(email)) {
+                is ApiResult.Success -> {
+                    onLoginSuccess(result.data.fullName)
+                }
+
+                is ApiResult.Error -> {
+                    btnLogin.text = getString(R.string.btn_login)
+                    btnLogin.isEnabled = true
+                    tilEmail.error = result.fieldErrors["email"]
+                    Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun performGoogleLogin(idToken: String) {
+        lifecycleScope.launch {
+            when (val result = userRepository.googleLogin(idToken)) {
+                is ApiResult.Success -> {
+                   onLoginSuccess(result.data.fullName)
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun onLoginSuccess(fullName: String) {
+        btnLogin.text = getString(R.string.btn_login)
+        btnLogin.isEnabled = true
+        Toast.makeText(
+            this@LoginActivity,
+            "Chào mừng $fullName",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+        finish()
     }
 }
