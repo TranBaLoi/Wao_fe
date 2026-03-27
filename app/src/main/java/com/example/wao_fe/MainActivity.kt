@@ -1,4 +1,4 @@
-package com.example.wao_fe
+﻿package com.example.wao_fe
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -68,6 +68,24 @@ class MainActivity : AppCompatActivity() {
         tvSteps = findViewById(R.id.tvSteps)
         fabAddFood = findViewById(R.id.fabAddFood)
 
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_home
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_diary -> {
+                    startActivity(Intent(this, FoodDiaryActivity::class.java))
+                    true
+                }
+
+                R.id.nav_home -> true
+
+                else -> {
+                    Toast.makeText(this, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show()
+                    false
+                }
+            }
+        }
+
         findViewById<TextView>(R.id.btnLogFood).setOnClickListener {
             Toast.makeText(this, "Tính năng Thêm bữa ăn đang phát triển", Toast.LENGTH_SHORT).show()
         }
@@ -95,10 +113,12 @@ class MainActivity : AppCompatActivity() {
                         startBarcodeScanner()
                         true
                     }
+
                     "Thêm món ăn tự nhập" -> {
                         Toast.makeText(this, "Đang phát triển", Toast.LENGTH_SHORT).show()
                         true
                     }
+
                     else -> false
                 }
             }

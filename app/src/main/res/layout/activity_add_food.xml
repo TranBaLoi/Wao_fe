@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E4E9DF"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="14dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/af_bg_icon_circle"
+            android:contentDescription="Quay lại"
+            android:padding="14dp"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="#4D5950" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:text="Thêm Món Mới"
+            android:textColor="@color/green_dark"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/af_ic_bell"
+            app:tint="#767C76" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_logo_circle"
+            android:padding="10dp"
+            android:src="@drawable/ic_person"
+            app:tint="#455248" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="10dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp">
+
+            <LinearLayout
+                android:id="@+id/cardUpload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/af_bg_upload_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minHeight="260dp"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <ImageView
+                    android:id="@+id/ivUploaded"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginBottom="12dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layoutUploadPlaceholder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="112dp"
+                        android:layout_height="112dp"
+                        android:background="@drawable/af_bg_icon_circle"
+                        android:padding="30dp"
+                        android:src="@drawable/af_ic_upload_photo"
+                        app:tint="#0A8425" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Tải ảnh món ăn"
+                        android:textColor="#1F2721"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="Chụp hoặc chọn ảnh từ thư viện để AI tự động phân tích dinh dưỡng"
+                        android:textColor="#5B665E"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="36dp"
+                    android:background="#007B21" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Thông tin cơ bản"
+                    android:textColor="#007B21"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tên món ăn"
+                android:textColor="#1E2520"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/etFoodName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/af_bg_input"
+                android:hint="Ví dụ: Phở bò tái lăn"
+                android:inputType="textCapSentences"
+                android:minHeight="66dp"
+                android:paddingHorizontal="16dp"
+                android:textColor="#1C241F"
+                android:textColorHint="#919A91"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Khẩu phần (serving_size)"
+                android:textColor="#1E2520"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/etServingSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/af_bg_input"
+                android:hint="1 bát, 200g, 1 đĩa..."
+                android:inputType="text"
+                android:minHeight="66dp"
+                android:paddingHorizontal="16dp"
+                android:textColor="#1C241F"
+                android:textColorHint="#919A91"
+                android:textSize="17sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="36dp"
+                    android:background="#8D5601" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Giá trị dinh dưỡng"
+                    android:textColor="#8D5601"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calories"
+                    android:textColor="#3F4740"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/etCalories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/af_bg_input"
+                    android:hint="Ví dụ: 280"
+                    android:inputType="numberDecimal"
+                    android:minHeight="56dp"
+                    android:paddingHorizontal="14dp"
+                    android:textColor="#1C241F"
+                    android:textColorHint="#919A91"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <EditText
+                        android:id="@+id/etCarbs"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/af_bg_input"
+                        android:hint="Carbs (g)"
+                        android:inputType="numberDecimal"
+                        android:minHeight="56dp"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#1C241F"
+                        android:textColorHint="#919A91"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/etProtein"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/af_bg_input"
+                        android:hint="Protein (g)"
+                        android:inputType="numberDecimal"
+                        android:minHeight="56dp"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#1C241F"
+                        android:textColorHint="#919A91"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/etFat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/af_bg_input"
+                        android:hint="Fat (g)"
+                        android:inputType="numberDecimal"
+                        android:minHeight="56dp"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#1C241F"
+                        android:textColorHint="#919A91"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnSaveFood"
+                android:layout_width="match_parent"
+                android:layout_height="66dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/af_bg_save_button"
+                android:gravity="center"
+                android:text="LƯU"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@android:color/white"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="20dp"
+            app:fabCradleVerticalOffset="10dp">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                app:elevation="0dp"
+                app:itemIconTint="@color/green_dark"
+                app:itemTextColor="@color/green_dark"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/bottom_nav_menu" />
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddFood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:contentDescription="Thêm món ăn mới"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="@color/green_primary"
+            app:tint="@android:color/white" />
+    </FrameLayout>
+
+</LinearLayout>

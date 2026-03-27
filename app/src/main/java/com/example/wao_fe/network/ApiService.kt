@@ -32,10 +32,14 @@ import com.example.wao_fe.network.models.VerifyEmailResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 interface ApiService {
 
@@ -78,22 +82,32 @@ interface ApiService {
     suspend fun getHealthProfileHistory(@Path("userId") userId: Long): List<HealthProfileResponse>
 
     // Foods
+    @Multipart
     @POST("api/foods")
-    suspend fun createFood(@Body request: FoodRequest): FoodResponse
+    suspend fun createFood(
+        @Part("food") food: RequestBody,
+        @Part images: List<MultipartBody.Part>? = null
+    ): FoodResponse
 
+    @Multipart
     @POST("api/foods/admin")
-    suspend fun createAdminFood(@Body request: FoodRequest): FoodResponse
+    suspend fun createAdminFood(
+        @Part("food") food: RequestBody,
+        @Part images: List<MultipartBody.Part>? = null
+    ): FoodResponse
 
-    @GET("api/foods")
+    @GET("api/foods/search")
     suspend fun getFoods(@Query("name") name: String? = null): List<FoodResponse>
 
     @GET("api/foods/{id}")
     suspend fun getFoodById(@Path("id") id: Long): FoodResponse
 
+    @Multipart
     @PUT("api/foods/{id}")
     suspend fun updateFood(
         @Path("id") id: Long,
-        @Body request: FoodRequest
+        @Part("food") food: RequestBody,
+        @Part images: List<MultipartBody.Part>? = null
     ): FoodResponse
 
     @DELETE("api/foods/{id}")
@@ -106,7 +120,7 @@ interface ApiService {
         @Body request: CreateFoodLogRequest
     ): FoodLogResponse
 
-    @GET("api/users/{userId}/food-logs")
+    @GET("api/users/{userId}/food-logs/by-date")
     suspend fun getFoodLogs(
         @Path("userId") userId: Long,
         @Query("date") date: String
