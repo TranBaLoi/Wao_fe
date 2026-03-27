@@ -67,7 +67,6 @@ File này thường được tự tạo bởi Android Studio. Nếu chưa có, t
 sdk.dir=C\:\\Users\\<TênUser>\\AppData\\Local\\Android\\Sdk
 
 # macOS / Linux
-sdk.dir=/Users/<TênUser>/Library/Android/sdk
 ```
 
 > Thay `<TênUser>` bằng tên user máy tính của bạn.

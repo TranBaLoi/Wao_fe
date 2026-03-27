@@ -1,25 +1,27 @@
-package com.example.wao_fe
+﻿package com.example.wao_fe
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.wao_fe.network.ApiResult
+import com.example.wao_fe.network.OpenFoodFactsApi
 import com.example.wao_fe.network.UserRepository
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import android.widget.PopupMenu
-import androidx.activity.result.contract.ActivityResultContracts
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
-import com.example.wao_fe.network.OpenFoodFactsApi
-import android.app.AlertDialog
-import android.util.Log
 
 class MainActivity : AppCompatActivity() {
 
@@ -65,6 +67,24 @@ class MainActivity : AppCompatActivity() {
         tvSteps = findViewById(R.id.tvSteps)
         fabAddFood = findViewById(R.id.fabAddFood)
 
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_home
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_diary -> {
+                    startActivity(Intent(this, FoodDiaryActivity::class.java))
+                    true
+                }
+
+                R.id.nav_home -> true
+
+                else -> {
+                    Toast.makeText(this, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show()
+                    false
+                }
+            }
+        }
+
         findViewById<TextView>(R.id.btnLogFood).setOnClickListener {
             Toast.makeText(this, "Tính năng Thêm bữa ăn đang phát triển", Toast.LENGTH_SHORT).show()
         }
@@ -82,10 +102,12 @@ class MainActivity : AppCompatActivity() {
                         startBarcodeScanner()
                         true
                     }
+
                     "Thêm món ăn tự nhập" -> {
                         Toast.makeText(this, "Đang phát triển", Toast.LENGTH_SHORT).show()
                         true
                     }
+
                     else -> false
                 }
             }
@@ -152,14 +174,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchDashboardData() {
         lifecycleScope.launch {
-            // First fetch latest profile to get targetCalories
             var targetCalories = 2000.0
             val profileResult = userRepository.getLatestHealthProfile(userId)
             if (profileResult is ApiResult.Success) {
                 targetCalories = profileResult.data.targetCalories
             }
 
-            // Then fetch daily summary
             val summaryResult = userRepository.getTodaySummary(userId)
             if (summaryResult is ApiResult.Success) {
                 val summary = summaryResult.data
@@ -177,10 +197,8 @@ class MainActivity : AppCompatActivity() {
                 tvWater.text = "${summary.totalWater} ml"
                 tvSteps.text = "${summary.totalSteps}/10000"
             } else {
-                // If no summary exist for today yet, just show 0
                 tvCalRemaining.text = targetCalories.toInt().toString()
                 if (summaryResult is ApiResult.Error && summaryResult.status != 404) {
-                    // Ignore 404 since it just means no logs today yet
                     Toast.makeText(this@MainActivity, "Không thể tải dữ liệu hôm nay", Toast.LENGTH_SHORT).show()
                 }
             }

@@ -56,6 +56,24 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <!-- Food Diary Screen -->
+        <activity
+            android:name=".FoodDiaryActivity"
+            android:screenOrientation="portrait"
+            android:exported="true" />
+
+        <!-- Add Food Screen -->
+        <activity
+            android:name=".AddFoodActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <!-- Food Search Screen -->
+        <activity
+            android:name=".FoodSearchActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
         <!-- User Info Screen -->
         <activity
             android:name=".UserInfoActivity"
