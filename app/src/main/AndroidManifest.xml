@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -54,6 +56,40 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <!-- User Info Screen -->
+        <activity
+            android:name=".UserInfoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
+
+        <!-- Body Indices Screen (Step 2) -->
+        <activity
+            android:name=".BodyIndicesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
+
+        <!-- Goal Selection Screen (Step 3) -->
+        <activity
+            android:name=".GoalSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
+
+        <!-- Final Setup Screen (Step 4) -->
+        <activity
+            android:name=".FinalSetupActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
+
+        <!-- Custom Scanner Screen -->
+        <activity
+            android:name=".CustomScannerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
     </application>
 
 </manifest>

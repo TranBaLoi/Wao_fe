@@ -134,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             when (val result = userRepository.loginByEmail(email)) {
                 is ApiResult.Success -> {
-                    onLoginSuccess(result.data.fullName)
+                    checkHealthProfileAndNavigate(result.data.id, result.data.fullName)
                 }
 
                 is ApiResult.Error -> {
@@ -151,7 +151,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             when (val result = userRepository.googleLogin(idToken)) {
                 is ApiResult.Success -> {
-                   onLoginSuccess(result.data.fullName)
+                   checkHealthProfileAndNavigate(result.data.id, result.data.fullName)
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG).show()
@@ -160,16 +160,41 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun onLoginSuccess(fullName: String) {
-        btnLogin.text = getString(R.string.btn_login)
-        btnLogin.isEnabled = true
-        Toast.makeText(
-            this@LoginActivity,
-            "Chào mừng $fullName",
-            Toast.LENGTH_SHORT
-        ).show()
+    private fun checkHealthProfileAndNavigate(userId: Long, fullName: String) {
+        // Save user info
+        val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putLong("USER_ID", userId)
+            putString("USER_NAME", fullName)
+            putBoolean("IS_LOGGED_IN", true)
+            apply()
+        }
 
-        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-        finish()
+        lifecycleScope.launch {
+            when (userRepository.getLatestHealthProfile(userId)) {
+                is ApiResult.Success -> {
+                    // Profile exists, go to Main
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Chào mừng trở lại, $fullName",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                }
+                is ApiResult.Error -> {
+                    // Profile likely not found (or error), go to User Info collection
+                     Toast.makeText(
+                        this@LoginActivity,
+                        "Chào mừng $fullName, hãy cập nhật thông tin sức khỏe",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    val intent = Intent(this@LoginActivity, UserInfoActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+        }
     }
 }

@@ -58,4 +58,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
 
+    // Barcode Scanning
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    // Image loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
 }

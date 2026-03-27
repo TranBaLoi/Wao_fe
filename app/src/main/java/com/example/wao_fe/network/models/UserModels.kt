@@ -56,7 +56,15 @@ data class CreateHealthProfileRequest(
     val heightCm: Double,
     val weightKg: Double,
     val activityLevel: ActivityLevel,
-    val goalType: GoalType
+    val goalType: GoalType,
+    val desiredWeightKg: Double,
+    val targetDays: Int
+)
+
+data class DailyCalorieBreakdownResponse(
+    val dailyCalories: Double,
+    val difficultyLevel: String,
+    val note: String
 )
 
 data class HealthProfileResponse(
@@ -68,7 +76,11 @@ data class HealthProfileResponse(
     val weightKg: Double,
     val activityLevel: ActivityLevel,
     val goalType: GoalType,
-    val targetCalories: Double
+    val desiredWeightKg: Double,
+    val targetDays: Int,
+    val targetCalories: Double,
+    val dailyCalories: Double,
+    val dailyCalorieBreakdown: DailyCalorieBreakdownResponse
 )
 
 // Food

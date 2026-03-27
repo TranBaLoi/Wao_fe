@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green_light_bg"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <ImageView
+        android:id="@+id/btnBackHeader"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/green_dark"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wao"
+        android:textColor="@color/green_dark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBackHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnBackHeader" />
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="24dp"
+        android:max="4"
+        android:progress="1"
+        android:progressDrawable="@drawable/custom_progress_drawable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBackHeader" />
+    <!-- Note: custom_progress_drawable needs to be created or use default tint -->
+
+    <TextView
+        android:id="@+id/tvStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Bước 1 / 4"
+        android:textColor="@color/text_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <!-- Title and Description -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Chào bạn!"
+        android:textColor="@color/green_dark"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStep" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Để Wao hiểu bạn hơn và đề xuất chế độ phù hợp nhất."
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <!-- Gender Section -->
+    <TextView
+        android:id="@+id/tvGenderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="GIỚI TÍNH"
+        android:textAllCaps="true"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle" />
+
+    <LinearLayout
+        android:id="@+id/layoutGender"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGenderLabel">
+
+        <!-- Male Option -->
+        <LinearLayout
+            android:id="@+id/cardMale"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_gender_unselected"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/ivMale"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_primary_alpha"
+                android:padding="12dp"
+                android:src="@drawable/ic_gender_male"
+                app:tint="@color/green_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Nam"
+                android:textColor="@color/green_dark"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Female Option -->
+        <LinearLayout
+            android:id="@+id/cardFemale"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_gender_selected"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/ivFemale"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_logo_circle"
+                android:backgroundTint="@color/green_dark"
+                android:padding="12dp"
+                android:src="@drawable/ic_gender_female"
+                app:tint="@android:color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Nữ"
+                android:textColor="@color/green_dark"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Other Option -->
+        <LinearLayout
+            android:id="@+id/cardOther"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_gender_unselected"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/ivOther"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_primary_alpha"
+                android:padding="12dp"
+                android:src="@drawable/ic_gender_other"
+                app:tint="@color/green_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Khác"
+                android:textColor="@color/green_dark"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Age Section -->
+    <TextView
+        android:id="@+id/tvAgeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="TUỔI"
+        android:textAllCaps="true"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutGender" />
+
+    <TextView
+        android:id="@+id/tvAgeDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="24 tuổi"
+        android:textColor="@color/green_dark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAgeLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvAgeLabel" />
+
+    <FrameLayout
+        android:id="@+id/layoutAgePicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_card_white"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAgeLabel">
+
+        <LinearLayout
+            android:id="@+id/layoutAgeRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvAgePrev2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="22"
+                android:textColor="#D3D3D3"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tvAgePrev1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="23"
+                android:textColor="#BDBDBD"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tvSelectedAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="24"
+                android:textColor="@color/green_dark"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAgeNext1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="25"
+                android:textColor="#BDBDBD"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/tvAgeNext2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="26"
+                android:textColor="#D3D3D3"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vuốt để chọn số tuổi của bạn"
+        android:textSize="12sp"
+        android:textColor="@color/text_secondary"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutAgePicker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Bottom Features -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnContinue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_gender_selected"
+            android:backgroundTint="@color/green_primary_light"
+            android:backgroundTintMode="src_over"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:orientation="horizontal">
+            <!-- Using simple background tint for now -->
+             <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_wao_chart"
+                 android:background="@android:color/white"
+                 android:padding="4dp"
+                app:tint="@color/green_dark" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cá nhân hóa\ntheo sinh lý học"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/green_dark"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+         <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_gender_selected"
+            android:backgroundTint="@color/green_primary_light"
+            android:backgroundTintMode="src_over"
+             android:gravity="center_vertical"
+            android:padding="12dp"
+            android:orientation="horizontal">
+             <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_wao_shield"
+                 android:background="@android:color/white"
+                 android:padding="4dp"
+                app:tint="@color/green_dark" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dữ liệu chuẩn y\nkhoa"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/green_dark"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Bottom Buttons -->
+    <TextView
+        android:id="@+id/tvBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quay lại"
+        android:visibility="gone"
+        android:textColor="@color/green_dark"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:drawableStart="@drawable/ic_arrow_back"
+        android:drawablePadding="8dp"
+        app:drawableTint="@color/green_dark"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tiếp tục"
+        android:backgroundTint="@color/green_dark"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:paddingVertical="12dp"
+        app:cornerRadius="24dp"
+        app:icon="@drawable/ic_arrow_forward"
+        app:iconGravity="end"
+        android:layout_marginHorizontal="32dp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

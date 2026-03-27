@@ -5,6 +5,9 @@ import com.example.wao_fe.network.models.UserResponse
 import com.example.wao_fe.network.models.GoogleLoginRequest
 import com.example.wao_fe.network.models.VerifyEmailRequest
 import com.example.wao_fe.network.models.VerifyEmailResponse
+import com.example.wao_fe.network.models.HealthProfileResponse
+import com.example.wao_fe.network.models.CreateHealthProfileRequest
+import com.example.wao_fe.network.models.DailySummaryResponse
 
 sealed class ApiResult<out T> {
     data class Success<T>(val data: T) : ApiResult<T>()
@@ -40,6 +43,24 @@ class UserRepository(
             val users = apiService.getUsers()
             users.firstOrNull { it.email.equals(email, ignoreCase = true) }
                 ?: throw IllegalArgumentException("Không tìm thấy tài khoản với email này")
+        }
+    }
+
+    suspend fun getLatestHealthProfile(userId: Long): ApiResult<HealthProfileResponse> {
+        return safeApiCall {
+            apiService.getLatestHealthProfile(userId)
+        }
+    }
+
+    suspend fun createHealthProfile(userId: Long, request: CreateHealthProfileRequest): ApiResult<HealthProfileResponse> {
+        return safeApiCall {
+            apiService.createHealthProfile(userId, request)
+        }
+    }
+
+    suspend fun getTodaySummary(userId: Long): ApiResult<DailySummaryResponse> {
+        return safeApiCall {
+            apiService.getTodaySummary(userId)
         }
     }
 

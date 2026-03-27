@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_wao_leaf"
+        android:title="Trang chủ" />
+    <item
+        android:id="@+id/nav_diary"
+        android:icon="@drawable/ic_calendar"
+        android:title="Nhật ký" />
+    <item
+        android:id="@+id/nav_placeholder"
+        android:title=""
+        android:enabled="false" />
+    <item
+        android:id="@+id/nav_menu"
+        android:icon="@drawable/ic_fitness_center"
+        android:title="Thực đơn" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person"
+        android:title="Tài khoản" />
+</menu>

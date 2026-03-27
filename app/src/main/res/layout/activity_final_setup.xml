@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green_light_bg"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <ImageView
+        android:id="@+id/btnBackHeader"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/wao_slate_900"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thói quen &amp; Lộ trình"
+        android:textColor="@color/wao_slate_900"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnBackHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnBackHeader" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/btnContinue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBackHeader">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bước cuối cùng để hoàn\nthiện kế hoạch"
+                android:textColor="@color/wao_background_dark"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Chúng tôi sẽ cá nhân hóa lộ trình dựa trên mức độ sẵn sàng và mục tiêu thời gian của bạn."
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"/>
+
+            <!-- Activity Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_activity"
+                    app:tint="@color/green_dark"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cường độ vận động"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/wao_background_dark"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <!-- Card 1: Sedentary -->
+            <LinearLayout
+                android:id="@+id/cardSedentary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_goal_unselected"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ít vận động (Sedentary)"
+                        android:textStyle="bold"
+                        android:textColor="@color/wao_background_dark"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Làm việc văn phòng, ít đi lại."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/radioSedentary"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_circle_outline"
+                    android:padding="2dp"/>
+            </LinearLayout>
+
+            <!-- Card 2: Active (Recommended) -->
+            <LinearLayout
+                android:id="@+id/cardActive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_goal_selected"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                         android:layout_marginBottom="4dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Năng động (Active)"
+                            android:textStyle="bold"
+                            android:textColor="@color/wao_background_dark"
+                            android:textSize="16sp"/>
+                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="KHUYÊN DÙNG"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/green_dark"
+                            android:background="@drawable/bg_tag_recommended"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tập luyện 3-5 buổi mỗi tuần."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/radioActive"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_check_circle_filled"
+                    android:padding="2dp"
+                    app:tint="@color/wao_background_dark"/>
+            </LinearLayout>
+
+            <!-- Card 3: Very Active -->
+            <LinearLayout
+                android:id="@+id/cardVeryActive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_goal_unselected"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rất năng động (Very Active)"
+                        android:textStyle="bold"
+                        android:textColor="@color/wao_background_dark"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vận động viên hoặc làm việc chân tay nặng."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/radioVeryActive"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_circle_outline"
+                    android:padding="2dp"/>
+            </LinearLayout>
+
+            <!-- Duration Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/green_dark"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thời gian đạt mục tiêu"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/wao_background_dark"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_white"
+                android:backgroundTint="#D1FADF"
+                android:padding="20dp">
+                <!-- Using a tint to match the green box appearance -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bạn muốn hoàn thành mục tiêu trong bao lâu?"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textColor="@color/wao_background_dark"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_card_white"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:id="@+id/tvDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/wao_background_dark"/>
+                         <ImageView
+                             android:layout_width="24dp"
+                             android:layout_height="24dp"
+                             android:src="@drawable/ic_wao_leaf"
+                             android:rotation="270"
+                             app:tint="@color/text_secondary"
+                             android:layout_marginStart="8dp"/>
+                             <!-- Using a chevron down would be better but reusing leaf as chevron placeholder -->
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tuần"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/wao_background_dark"
+                        android:layout_marginStart="16dp"/>
+                </LinearLayout>
+             </LinearLayout>
+
+             <LinearLayout
+                 android:id="@+id/cardCalorieResult"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="18dp"
+                 android:background="@drawable/bg_card_white"
+                 android:orientation="vertical"
+                 android:padding="16dp">
+
+                 <TextView
+                     android:id="@+id/tvCaloriesStatus"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:text="Nhấn Tiếp tục để tính target calories theo mục tiêu của bạn."
+                     android:textColor="@color/text_secondary"
+                     android:textSize="12sp" />
+
+                 <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="12dp"
+                     android:text="Target calories"
+                     android:textColor="@color/text_secondary"
+                     android:textSize="12sp" />
+
+                 <TextView
+                     android:id="@+id/tvTargetCalories"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:text="-- kcal"
+                     android:textColor="@color/wao_background_dark"
+                     android:textSize="24sp"
+                     android:textStyle="bold" />
+
+                 <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="10dp"
+                     android:text="Daily calories (theo số ngày mục tiêu)"
+                     android:textColor="@color/text_secondary"
+                     android:textSize="12sp" />
+
+                 <TextView
+                     android:id="@+id/tvDailyCalories"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:text="-- kcal/ngày"
+                     android:textColor="@color/wao_background_dark"
+                     android:textSize="20sp"
+                     android:textStyle="bold" />
+
+                 <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="10dp"
+                     android:text="Đánh giá mức độ"
+                     android:textColor="@color/text_secondary"
+                     android:textSize="12sp" />
+
+                 <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal"
+                     android:gravity="center_vertical">
+
+                     <TextView
+                         android:id="@+id/tvDifficultyLevel"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="--"
+                         android:textColor="@color/green_dark"
+                         android:background="#E8F5E9"
+                         android:paddingHorizontal="8dp"
+                         android:paddingVertical="4dp"
+                         android:textSize="14sp"
+                         android:textStyle="bold" />
+
+                     <TextView
+                         android:id="@+id/tvDifficultyNote"
+                         android:layout_width="0dp"
+                         android:layout_weight="1"
+                         android:layout_height="wrap_content"
+                         android:layout_marginStart="8dp"
+                         android:text="--"
+                         android:textColor="@color/text_secondary"
+                         android:textSize="12sp" />
+                 </LinearLayout>
+             </LinearLayout>
+
+         </LinearLayout>
+     </ScrollView>
+
+    <!-- Bottom Buttons -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_arrow_back"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:text="Quay lại"
+            android:textColor="@color/wao_background_dark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:drawableTint="@color/wao_background_dark" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green_dark"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
+            android:text="Tiếp tục"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:cornerRadius="24dp"
+            app:icon="@drawable/ic_arrow_forward"
+            app:iconGravity="end"
+            app:iconTint="@android:color/white" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

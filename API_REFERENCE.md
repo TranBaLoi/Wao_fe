@@ -37,7 +37,15 @@ Tat ca loi duoc tra theo format tu `GlobalExceptionHandler`:
 - `UserStatus`: `ACTIVE`, `INACTIVE`, `BANNED`
 - `Gender`: `MALE`, `FEMALE`, `OTHER`
 - `ActivityLevel`: `SEDENTARY`, `LIGHTLY_ACTIVE`, `MODERATELY_ACTIVE`, `VERY_ACTIVE`, `EXTRA_ACTIVE`
+  - `SEDENTARY` (1.2x): Ít vận động (chỉ ngồi làm việc)
+  - `LIGHTLY_ACTIVE` (1.375x): 1-3 ngày/tuần tập luyện
+  - `MODERATELY_ACTIVE` (1.55x): 3-5 ngày/tuần tập luyện
+  - `VERY_ACTIVE` (1.725x): 6-7 ngày/tuần tập luyện
+  - `EXTRA_ACTIVE` (1.9x): Cực kỳ vận động (tập luyện 2 lần/ngày)
 - `GoalType`: `LOSE_WEIGHT`, `GAIN_WEIGHT`, `MAINTAIN`
+  - `LOSE_WEIGHT`: Giảm cân (desiredWeight < currentWeight)
+  - `GAIN_WEIGHT`: Tăng cân (desiredWeight > currentWeight)
+  - `MAINTAIN`: Duy trì cân nặng (desiredWeight ≈ currentWeight ±2%)
 - `MealType`: `BREAKFAST`, `LUNCH`, `DINNER`, `SNACK`
 - `MealPlanType`: `SYSTEM_SUGGESTION`, `USER_CUSTOM`
 - `ProgramLevel`: `BEGINNER`, `INTERMEDIATE`, `PRO`
@@ -89,6 +97,7 @@ Response `204` (khong body)
 
 ### POST `/api/users/{userId}/health-profiles`
 Path param: `userId` (Long)
+
 Request body:
 ```json
 {
@@ -97,9 +106,25 @@ Request body:
   "heightCm": 172,
   "weightKg": 70,
   "activityLevel": "MODERATELY_ACTIVE",
-  "goalType": "MAINTAIN"
+  "goalType": "LOSE_WEIGHT",
+  "desiredWeightKg": 65,
+  "targetDays": 90
 }
 ```
+
+**Fields explanation:**
+- `gender`: `MALE`, `FEMALE`, `OTHER`
+- `dob`: Ngày sinh (ISO format: YYYY-MM-DD)
+- `heightCm`: Chiều cao (cm)
+- `weightKg`: Cân nặng hiện tại (kg)
+- `activityLevel`: Mức hoạt động (`SEDENTARY`, `LIGHTLY_ACTIVE`, `MODERATELY_ACTIVE`, `VERY_ACTIVE`, `EXTRA_ACTIVE`)
+- `goalType`: Mục tiêu (`LOSE_WEIGHT`, `GAIN_WEIGHT`, `MAINTAIN`)
+- `desiredWeightKg` **[NEW]**: Cân nặng mong muốn (kg)
+  - **LOSE_WEIGHT**: phải < `weightKg` (ví dụ: 70 → 65)
+  - **GAIN_WEIGHT**: phải > `weightKg` (ví dụ: 70 → 75)
+  - **MAINTAIN**: phải ≈ `weightKg` (trong ±2%, ví dụ: 70 → 70.5)
+- `targetDays` **[NEW]**: Số ngày để đạt mục tiêu (ngày, phải > 0)
+
 Response `201`:
 ```json
 {
@@ -110,18 +135,50 @@ Response `201`:
   "heightCm": 172.0,
   "weightKg": 70.0,
   "activityLevel": "MODERATELY_ACTIVE",
-  "goalType": "MAINTAIN",
-  "targetCalories": 2400.0
+  "goalType": "LOSE_WEIGHT",
+  "desiredWeightKg": 65.0,
+  "targetDays": 90,
+  "targetCalories": 1986.22,
+  "dailyCalories": 427.78,
+  "dailyCalorieBreakdown": {
+    "dailyCalories": 427.78,
+    "difficultyLevel": "MEDIUM",
+    "note": "Muc tieu trung binh, can theo doi va ky luat"
+  }
+}
+```
+
+**Response fields:**
+- `targetCalories` **[UPDATED]**: Tong luong calo/ngay ma user CAN AN VAO de dat muc tieu
+  - Cong thuc: `TDEE` hien tai `+/- dailyCalories`
+- `dailyCalories` **[NEW]**: Luong calo can bu/tru them moi ngay de dat muc tieu
+  - Cong thuc: `(|desiredWeightKg - weightKg| * 7700) / targetDays`
+- `dailyCalorieBreakdown` **[NEW]**: Nhan xet muc do kho cua lo trinh
+  - `difficultyLevel`: `EASY` | `MEDIUM` | `HARD`
+  - `note`: Ghi chu de user hieu muc do de/kho
+
+**Validation errors:**
+```json
+{
+  "status": 400,
+  "message": "Desired weight must be less than current weight for LOSE_WEIGHT goal",
+  "timestamp": "2026-03-26T10:00:00"
 }
 ```
 
 ### GET `/api/users/{userId}/health-profiles/latest`
 Path param: `userId` (Long)
+
 Response `200`: `HealthProfileDto.Response`
+
+Trả về health profile mới nhất (đầy đủ tất cả thông tin bao gồm breakdown calories)
 
 ### GET `/api/users/{userId}/health-profiles/history`
 Path param: `userId` (Long)
+
 Response `200`: `HealthProfileDto.Response[]`
+
+Trả về danh sách tất cả health profiles của user (sắp xếp từ mới nhất đến cũ nhất)
 
 ## 5) Foods API
 
@@ -466,3 +523,112 @@ Response `200`: `DailySummaryDto`
 - Nhieu API ghi log se auto cap nhat `daily_summaries` ngay sau khi tao/xoa log.
 - De test nhanh, thu tu nen la: tao user -> tao health profile -> tao food/exercise/program -> tao logs -> lay daily summary.
 
+---
+
+## 15) Chi tiet tinh toan Health Profile (NEW)
+
+### 15.1) Cong thuc chinh
+
+**BMR (Mifflin-St Jeor):**
+(Su dung can nang HIEN TAI `weightKg`, khong phai desired)
+```
+Nam: BMR = 10 * W + 6.25 * H - 5 * A + 5
+Nu:  BMR = 10 * W + 6.25 * H - 5 * A - 161
+```
+Trong do:
+- `W`: `weightKg` hien tai
+- `H`: `heightCm`
+- `A`: tuoi
+
+**TDEE (Luong calo duy tri can nang hien tai):**
+```
+TDEE = BMR * ActivityLevelMultiplier
+```
+
+**Daily calories (luong calo tham hut/du thua can thiet 1 ngay):**
+```
+dailyCalories = (abs(desiredWeightKg - weightKg) * 7700) / targetDays
+```
+
+**Target calories (tong luong calo nap vao moi ngay):**
+```
+LOSE_WEIGHT: targetCalories = TDEE - dailyCalories
+GAIN_WEIGHT: targetCalories = TDEE + dailyCalories
+MAINTAIN:    targetCalories = TDEE
+```
+
+Vi du giong theo yeu cau:
+Nam, 22 tuoi, 60kg, 170cm, hoat dong Vua phai, muc tieu Tang can (len 62kg trong 38 ngay):
+```
+BMR  = 10*60 + 6.25*170 - 5*22 + 5 = 1557.5 kcal
+TDEE = 1557.5 * 1.55 = 2414.12 kcal
+dailyCalories = (|62 - 60| * 7700) / 38.5 ~ 400 kcal (luong calo nap VUO TDEE)
+targetCalories = 2414.12 + 400 = 2814.12 kcal/ngay (luong an vao toi thieu)
+```
+
+### 15.2) Danh gia muc do kho tu theo luong calo thieu/du (dailyCalories)
+
+- `EASY`: `dailyCalories <= 300` kcal
+- `MEDIUM`: `300 < dailyCalories <= 700` kcal
+- `HARD`: `dailyCalories > 700` kcal
+
+Response object:
+```json
+"dailyCalorieBreakdown": {
+  "dailyCalories": 400.0,
+  "difficultyLevel": "MEDIUM",
+  "note": "Muc tieu trung binh, can theo doi va ky luat"
+}
+```
+
+### 15.3) Validation theo goal
+
+- `LOSE_WEIGHT`: `desiredWeightKg < weightKg`
+- `GAIN_WEIGHT`: `desiredWeightKg > weightKg`
+- `MAINTAIN`: `abs(desiredWeightKg - weightKg) <= weightKg * 0.02`
+
+### 15.4) Vi du nhanh (TANG CAN)
+
+Input:
+```json
+{
+  "goalType": "GAIN_WEIGHT",
+  "gender": "MALE",
+  "dob": "2004-01-01",
+  "heightCm": 170,
+  "weightKg": 60,
+  "activityLevel": "MODERATELY_ACTIVE",
+  "desiredWeightKg": 62,
+  "targetDays": 38
+}
+```
+
+Vi du ket qua:
+```json
+{
+  "targetCalories": 2819.38,
+  "dailyCalories": 405.26,
+  "dailyCalorieBreakdown": {
+    "dailyCalories": 405.26,
+    "difficultyLevel": "MEDIUM",
+    "note": "Muc tieu trung binh, can theo doi va ky luat"
+  }
+}
+```
+
+### 15.5) Loi thuong gap
+
+```json
+{
+  "status": 400,
+  "message": "Desired weight must be less than current weight for LOSE_WEIGHT goal",
+  "timestamp": "2026-03-26T10:00:00"
+}
+```
+
+```json
+{
+  "status": 400,
+  "message": "targetDays is required and must be greater than 0"
+}
+```

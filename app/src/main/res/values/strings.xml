@@ -30,4 +30,27 @@
     <string name="loading_register">Đang đăng ký…</string>
     <string name="login_success">Đăng nhập thành công!</string>
     <string name="register_success">Đăng ký thành công! Vui lòng đăng nhập.</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mật khẩu</string>
+    <string name="action_forgot_password">Quên mật khẩu?</string>
+    <string name="action_sign_in_short">Đăng nhập</string>
+    <string name="prompt_signup">Chưa có tài khoản?</string>
+    <string name="action_register">Đăng ký ngay</string>
+
+    <!-- Verification -->
+    <string name="verification_title">Xác thực Email</string>
+    <string name="verification_subtitle">Nhập mã 6 số được gửi đến email của bạn</string>
+    <string name="btn_verify">Xác thực</string>
+    <string name="resend_code">Gửi lại mã</string>
+    <string name="verification_sent">Đã gửi lại mã xác thực</string>
+    <string name="verification_success">Xác thực thành công!</string>
+    <string name="verification_error">Mã xác thực không hợp lệ</string>
+    <string name="verifying">Đang xác thực...</string>
+
+    <!-- Google Sign-In: replace the placeholder with your OAuth web client ID or resource -->
+    <string name="google_client_id">569873246215-uuh86dvhjtao1cv7nt35b7a5rnm4td7h.apps.googleusercontent.com</string>
+
+    <string name="btn_log_food_text">Thêm bữa ăn</string>
+    <string name="btn_log_workout_text">Ghi nhận tập luyện</string>
 </resources>
