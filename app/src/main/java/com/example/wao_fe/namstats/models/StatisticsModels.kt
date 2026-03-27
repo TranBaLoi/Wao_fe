@@ -1,6 +1,8 @@
 //nam them
 package com.example.wao_fe.namstats.models
 
+import com.google.gson.annotations.SerializedName
+
 data class DailyNutritionResponse(
     val userId: Long,
     val date: String,
@@ -37,11 +39,19 @@ data class NutritionSeriesResponse(
 )
 
 data class WeightPoint(
+    @SerializedName(
+        value = "bucketDate",
+        alternate = ["bucket_date", "loggedAt", "logged_at", "logDate", "log_date"]
+    )
     val bucketDate: String,
+    @SerializedName(value = "startWeight", alternate = ["start_weight", "oldWeight", "old_weight"])
     val startWeight: Double? = null,
+    @SerializedName(value = "endWeight", alternate = ["end_weight", "newWeight", "new_weight", "weightKg", "weight_kg"])
     val endWeight: Double? = null,
+    @SerializedName(value = "changeAmount", alternate = ["change_amount"])
     val changeAmount: Double? = null,
-    val logCount: Int
+    @SerializedName(value = "logCount", alternate = ["log_count"])
+    val logCount: Int = 0
 )
 
 data class WeightSeriesResponse(

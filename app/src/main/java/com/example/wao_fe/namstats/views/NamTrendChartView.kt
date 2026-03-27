@@ -27,7 +27,8 @@ class NamTrendChartView @JvmOverloads constructor(
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#4F46E5")
-        strokeWidth = 6f
+        //nam them
+        strokeWidth = 3f
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
         strokeJoin = Paint.Join.ROUND
@@ -146,7 +147,8 @@ class NamTrendChartView @JvmOverloads constructor(
 
         positions.forEachIndexed { index, (x, y) ->
             val paint = if (index == selectedIndex) selectedPointPaint else pointPaint
-            val radius = if (index == selectedIndex) 12f else 8f
+            //nam them
+            val radius = if (index == selectedIndex) 7f else 4.5f
             canvas.drawCircle(x, y, radius, paint)
         }
 
@@ -202,12 +204,14 @@ class NamTrendChartView @JvmOverloads constructor(
 
     private fun calculateAxisBounds(minValue: Float, maxValue: Float): Pair<Float, Float> {
         if (minValue == maxValue) {
-            val padding = if (minValue == 0f) 1f else max(abs(minValue) * 0.1f, 1f)
+            //nam them
+            val padding = if (minValue == 0f) 0.5f else max(abs(minValue) * 0.03f, 0.1f)
             return minValue - padding to maxValue + padding
         }
 
         val range = maxValue - minValue
-        val padding = max(range * 0.1f, 0.1f)
+        //nam them
+        val padding = max(range * 0.05f, 0.02f)
         return minValue - padding to maxValue + padding
     }
 

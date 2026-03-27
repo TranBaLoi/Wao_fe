@@ -13,12 +13,40 @@
         android:orientation="vertical"
         android:padding="20dp">
 
+        <!-- nam them -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_back_statistics"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_primary_alpha"
+                android:contentDescription="Quay lại"
+                android:padding="10dp"
+                android:src="@drawable/ic_arrow_back"
+                android:tint="@color/green_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Nhật ký thống kê"
+                android:textColor="@color/wao_slate_900"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_dashboard_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Dang tai du lieu..."
+            android:text="đang tải dữ liệu..."
             android:textColor="@color/wao_slate_500"
             android:textSize="13sp" />
 
@@ -48,7 +76,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chon cach xem"
+                    android:text="chọn cách xem"
                     android:textColor="@color/wao_slate_900"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -65,7 +93,7 @@
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:text="Theo ngay"
+                        android:text="ngày"
                         android:textSize="13sp"
                         android:textAllCaps="false" />
 
@@ -76,7 +104,7 @@
                         android:layout_height="40dp"
                         android:layout_weight="1"
                         android:layout_marginStart="6dp"
-                        android:text="Theo tuan"
+                        android:text="tuần"
                         android:textSize="13sp"
                         android:textAllCaps="false" />
 
@@ -87,7 +115,7 @@
                         android:layout_height="40dp"
                         android:layout_weight="1"
                         android:layout_marginStart="6dp"
-                        android:text="Theo thang"
+                        android:text="tháng"
                         android:textSize="13sp"
                         android:textAllCaps="false" />
                 </LinearLayout>
@@ -98,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     android:layout_marginTop="10dp"
-                    android:text="Chon ngay"
+                    android:text="chọn ngày"
                     android:textSize="13sp"
                     android:textAllCaps="false" />
             </LinearLayout>
@@ -124,7 +152,7 @@
                     android:id="@+id/tv_selected_range_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thong ke theo tuan"
+                    android:text="thống kê theo tuần"
                     android:textColor="@color/wao_slate_900"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -152,7 +180,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:text="Bieu do xu huong"
+                    android:text="Biểu đồ xu hướng"
                     android:textColor="@color/wao_slate_900"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -162,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Cham vao diem de xem chi tiet ngay"
+                    android:text="chạm vào điểm để xem chi tiết"
                     android:textColor="@color/wao_slate_500"
                     android:textSize="13sp" />
 

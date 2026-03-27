@@ -14,6 +14,7 @@ import com.example.wao_fe.network.models.HealthProfileResponse
 import com.example.wao_fe.network.models.UserResponse
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
@@ -44,7 +45,8 @@ class NamStatisticsRepository(
         val weightDeferred = async {
             apiService.getWeightSeries(
                 userId = userId,
-                from = date.minusDays(60).toString(),
+                //nam them
+                from = date.toString(),
                 to = date.toString(),
                 groupBy = StatisticsGroupBy.DAY.name
             )
@@ -54,19 +56,20 @@ class NamStatisticsRepository(
         val latestProfile = profileDeferred.await()
         val weights = weightDeferred.await().points
             .filter { it.endWeight != null }
-            .sortedBy { it.bucketDate }
+            .sortedBy { it.normalizedBucketDate() }
 
         val current = weights.lastOrNull()
-        val previous = if (weights.size >= 2) weights[weights.size - 2] else null
         val fallbackWeight = latestProfile.weightKg
 
         DailySnapshot(
             date = date,
             nutrition = nutrition,
             currentWeight = current?.endWeight ?: fallbackWeight,
-            previousWeight = previous?.endWeight,
-            weightChange = if (current?.endWeight != null && previous?.endWeight != null) {
-                current.endWeight - previous.endWeight
+            //nam them
+            previousWeight = current?.startWeight,
+            //nam them
+            weightChange = current?.changeAmount ?: if (current?.endWeight != null && current.startWeight != null) {
+                current.endWeight - current.startWeight
             } else {
                 null
             },
@@ -74,43 +77,115 @@ class NamStatisticsRepository(
         )
     }
 
-    suspend fun loadRangeSnapshot(userId: Long, range: DateRange): RangeSnapshot = coroutineScope {
+    suspend fun loadRangeSnapshot(userId: Long, range: DateRange): RangeSnapshot = supervisorScope {
+        val safeRange = range.clampToToday()
+
         val profileDeferred = async { apiService.getLatestHealthProfile(userId) }
         val nutritionDeferred = async {
-            apiService.getNutritionSeries(
-                userId = userId,
-                from = range.start.toString(),
-                to = range.end.toString(),
-                groupBy = StatisticsGroupBy.DAY.name
-            )
+            runCatching {
+                apiService.getNutritionSeries(
+                    userId = userId,
+                    from = safeRange.start.toString(),
+                    to = safeRange.end.toString(),
+                    groupBy = StatisticsGroupBy.DAY.name
+                )
+            }.getOrElse {
+                emptyNutritionSeries(userId, safeRange)
+            }
         }
         val weightDeferred = async {
-            apiService.getWeightSeries(
-                userId = userId,
-                from = range.start.toString(),
-                to = range.end.toString(),
-                groupBy = StatisticsGroupBy.DAY.name
-            )
+            runCatching {
+                loadWeightSeriesForRange(userId, safeRange)
+            }.getOrElse {
+                emptyWeightSeries(userId, safeRange)
+            }
         }
 
+        val fallbackWeight = runCatching { profileDeferred.await().weightKg }.getOrNull()
+
         RangeSnapshot(
-            range = range,
+            range = safeRange,
             nutrition = nutritionDeferred.await(),
             weight = weightDeferred.await(),
-            fallbackWeight = profileDeferred.await().weightKg
+            fallbackWeight = fallbackWeight
         )
     }
 
     fun buildWeekRange(anchorDate: LocalDate): DateRange {
-        val start = anchorDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        val end = anchorDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-        return DateRange(start, end)
+        //nam them
+        val safeAnchor = anchorDate.coerceAtMost(LocalDate.now())
+        val start = safeAnchor.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val end = safeAnchor.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+        return DateRange(start, end).clampToToday()
     }
 
     fun buildMonthRange(anchorDate: LocalDate): DateRange {
-        val start = anchorDate.withDayOfMonth(1)
-        val end = anchorDate.withDayOfMonth(anchorDate.lengthOfMonth())
-        return DateRange(start, end)
+        //nam them
+        val safeAnchor = anchorDate.coerceAtMost(LocalDate.now())
+        val start = safeAnchor.withDayOfMonth(1)
+        val end = safeAnchor.withDayOfMonth(safeAnchor.lengthOfMonth())
+        return DateRange(start, end).clampToToday()
+    }
+
+    //nam them
+    private fun emptyNutritionSeries(userId: Long, range: DateRange): NutritionSeriesResponse {
+        return NutritionSeriesResponse(
+            userId = userId,
+            from = range.start.toString(),
+            to = range.end.toString(),
+            groupBy = StatisticsGroupBy.DAY,
+            totalCalories = 0.0,
+            totalProtein = 0.0,
+            totalCarbs = 0.0,
+            totalFat = 0.0,
+            points = emptyList()
+        )
+    }
+
+    //nam them
+    private fun emptyWeightSeries(userId: Long, range: DateRange): WeightSeriesResponse {
+        return WeightSeriesResponse(
+            userId = userId,
+            from = range.start.toString(),
+            to = range.end.toString(),
+            groupBy = StatisticsGroupBy.DAY,
+            overallChange = null,
+            points = emptyList()
+        )
+    }
+
+    //nam them
+    private suspend fun loadWeightSeriesForRange(
+        userId: Long,
+        range: DateRange
+    ): WeightSeriesResponse {
+        val fetchRange = if (range.daysSpan() <= 7) {
+            range.expandToMonthBounds()
+        } else {
+            range
+        }
+
+        val response = apiService.getWeightSeries(
+            userId = userId,
+            from = fetchRange.start.toString(),
+            to = fetchRange.end.toString(),
+            groupBy = StatisticsGroupBy.DAY.name
+        )
+
+        val filteredPoints = response.points.filter { point ->
+            point.normalizedBucketDate().toLocalDateOrNull()
+                ?.let { !it.isBefore(range.start) && !it.isAfter(range.end) }
+                ?: false
+        }
+
+        return response.copy(
+            from = range.start.toString(),
+            to = range.end.toString(),
+            points = filteredPoints,
+            overallChange = filteredPoints.firstOrNull()?.endWeight?.let { first ->
+                filteredPoints.lastOrNull()?.endWeight?.minus(first)
+            }
+        )
     }
 }
 
@@ -124,7 +199,34 @@ data class OverviewData(
 data class DateRange(
     val start: LocalDate,
     val end: LocalDate
-)
+) {
+    //nam them
+    fun clampToToday(today: LocalDate = LocalDate.now()): DateRange {
+        val clampedStart = start.coerceAtMost(today)
+        val clampedEnd = end.coerceAtMost(today)
+        return if (clampedStart <= clampedEnd) {
+            copy(start = clampedStart, end = clampedEnd)
+        } else {
+            copy(start = clampedEnd, end = clampedEnd)
+        }
+    }
+
+    //nam them
+    fun dates(): List<LocalDate> {
+        val days = java.time.temporal.ChronoUnit.DAYS.between(start, end).toInt()
+        return (0..days).map { start.plusDays(it.toLong()) }
+    }
+
+    //nam them
+    fun daysSpan(): Long = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1
+
+    //nam them
+    fun expandToMonthBounds(): DateRange {
+        val expandedStart = start.withDayOfMonth(1)
+        val expandedEnd = end.withDayOfMonth(end.lengthOfMonth())
+        return DateRange(expandedStart, expandedEnd).clampToToday()
+    }
+}
 
 data class DailySnapshot(
     val date: LocalDate,
@@ -143,13 +245,26 @@ data class RangeSnapshot(
 ) {
     fun nutritionPointByDate(date: String): NutritionPoint? = nutrition.points.firstOrNull { it.bucketDate == date }
 
-    fun weightPointByDate(date: String): WeightPoint? = weight.points.firstOrNull { it.bucketDate == date }
+    fun weightPointByDate(date: String): WeightPoint? =
+        weight.points
+            .filter { it.normalizedBucketDate() == date }
+            .sortedBy { it.bucketDate }
+            .lastOrNull { it.endWeight != null }
 
     fun resolvedWeightByDate(date: String): Double? {
         return weight.points
-            .filter { it.bucketDate <= date }
+            .filter { it.normalizedBucketDate() <= date }
+            .sortedBy { it.bucketDate }
             .lastOrNull { it.endWeight != null }
             ?.endWeight
             ?: fallbackWeight
     }
 }
+
+//nam them
+private fun WeightPoint.normalizedBucketDate(): String {
+    return if (bucketDate.length >= 10) bucketDate.substring(0, 10) else bucketDate
+}
+
+//nam them
+private fun String.toLocalDateOrNull(): LocalDate? = runCatching { LocalDate.parse(this) }.getOrNull()
