@@ -482,6 +482,25 @@
                             android:textColor="@color/wao_slate_900"
                             android:textStyle="bold"
                             android:background="?attr/selectableItemBackground"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#1A000000"
+                            android:layout_marginHorizontal="16dp"/>
+
+                        <TextView
+                            android:id="@+id/btnOpenStatistics"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Xem thống kê"
+                            app:drawableStartCompat="@drawable/ic_wao_chart"
+                            android:drawablePadding="16dp"
+                            app:drawableTint="@color/green_dark"
+                            android:padding="16dp"
+                            android:textColor="@color/wao_slate_900"
+                            android:textStyle="bold"
+                            android:background="?attr/selectableItemBackground"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

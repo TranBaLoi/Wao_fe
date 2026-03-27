@@ -1,5 +1,8 @@
 package com.example.wao_fe.network
 
+import com.example.wao_fe.namstats.models.DailyNutritionResponse
+import com.example.wao_fe.namstats.models.NutritionSeriesResponse
+import com.example.wao_fe.namstats.models.WeightSeriesResponse
 import com.example.wao_fe.network.models.CreateFoodLogRequest
 import com.example.wao_fe.network.models.CreateHealthProfileRequest
 import com.example.wao_fe.network.models.CreateStepLogRequest
@@ -249,4 +252,27 @@ interface ApiService {
         @Path("userId") userId: Long,
         @Query("date") date: String? = null
     ): DailySummaryResponse
+
+    //nam them
+    @GET("api/users/{userId}/statistics/nutrition/daily")
+    suspend fun getDailyNutrition(
+        @Path("userId") userId: Long,
+        @Query("date") date: String
+    ): DailyNutritionResponse
+
+    @GET("api/users/{userId}/statistics/nutrition")
+    suspend fun getNutritionSeries(
+        @Path("userId") userId: Long,
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("groupBy") groupBy: String
+    ): NutritionSeriesResponse
+
+    @GET("api/users/{userId}/statistics/weight")
+    suspend fun getWeightSeries(
+        @Path("userId") userId: Long,
+        @Query("from") from: String,
+        @Query("to") to: String,
+        @Query("groupBy") groupBy: String
+    ): WeightSeriesResponse
 }

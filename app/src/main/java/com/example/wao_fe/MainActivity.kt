@@ -1,25 +1,28 @@
 package com.example.wao_fe
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.wao_fe.namstats.StatisticsDashboardActivity
 import com.example.wao_fe.network.ApiResult
+import com.example.wao_fe.network.OpenFoodFactsApi
 import com.example.wao_fe.network.UserRepository
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import android.widget.PopupMenu
-import androidx.activity.result.contract.ActivityResultContracts
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
-import com.example.wao_fe.network.OpenFoodFactsApi
-import android.app.AlertDialog
-import android.util.Log
 
 class MainActivity : AppCompatActivity() {
 
@@ -70,6 +73,16 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<TextView>(R.id.btnLogWorkout).setOnClickListener {
             Toast.makeText(this, "Tính năng Ghi nhận tập luyện đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+        //nam them
+        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_diary -> {
+                    startActivity(Intent(this, StatisticsDashboardActivity::class.java))
+                    true
+                }
+                else -> true
+            }
         }
 
         fabAddFood.setOnClickListener { view ->
@@ -152,14 +165,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchDashboardData() {
         lifecycleScope.launch {
-            // First fetch latest profile to get targetCalories
             var targetCalories = 2000.0
             val profileResult = userRepository.getLatestHealthProfile(userId)
             if (profileResult is ApiResult.Success) {
                 targetCalories = profileResult.data.targetCalories
             }
 
-            // Then fetch daily summary
             val summaryResult = userRepository.getTodaySummary(userId)
             if (summaryResult is ApiResult.Success) {
                 val summary = summaryResult.data
@@ -171,16 +182,16 @@ class MainActivity : AppCompatActivity() {
 
                 val progress = if (targetCalories > 0) {
                     ((summary.netCalories / targetCalories) * 100).toInt()
-                } else 0
+                } else {
+                    0
+                }
                 pbCalories.progress = progress.coerceIn(0, 100)
 
                 tvWater.text = "${summary.totalWater} ml"
                 tvSteps.text = "${summary.totalSteps}/10000"
             } else {
-                // If no summary exist for today yet, just show 0
                 tvCalRemaining.text = targetCalories.toInt().toString()
                 if (summaryResult is ApiResult.Error && summaryResult.status != 404) {
-                    // Ignore 404 since it just means no logs today yet
                     Toast.makeText(this@MainActivity, "Không thể tải dữ liệu hôm nay", Toast.LENGTH_SHORT).show()
                 }
             }

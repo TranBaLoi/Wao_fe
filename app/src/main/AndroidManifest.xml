@@ -90,6 +90,13 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Wao_fe" />
+
+        <!-- nam them -->
+        <activity
+            android:name=".namstats.StatisticsDashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
     </application>
 
 </manifest>
