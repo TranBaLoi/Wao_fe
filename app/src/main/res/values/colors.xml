@@ -20,11 +20,26 @@
     <!-- Wao theme -->
     <color name="wao_primary">#13ec5b</color>
     <color name="wao_background_light">#f6f8f6</color>
-    <color name="wao_background_dark">#102216</color>
+    <color name="wao_background_dark">#0F1115</color>
+
     <color name="wao_slate_900">#0f172a</color>
     <color name="wao_slate_100">#f1f5f9</color>
     <color name="wao_slate_600">#475569</color>
     <color name="wao_slate_400">#94a3b8</color>
     <color name="wao_slate_500">#64748b</color>
     <color name="wao_slate_200">#e2e8f0</color>
+    <color name="wao_slate_50">#f8fafc</color>
+    <color name="wao_slate_300">#cbd5e1</color>
+    <color name="wao_slate_800">#1e293b</color>
+    <color name="green_light">#86efac</color>
+
+    <!-- App Dark Mode Custom Colors -->
+    <color name="wao_surface_dark">#181a20</color>
+    <color name="wao_purple_primary">#6036E7</color>
+    <color name="wao_purple_secondary">#966FFF</color>
+    <color name="wao_purple_light">#D4C4FF</color>
+    <color name="icon_bg_yellow">#FFFCE1</color>
+    <color name="icon_bg_pink">#FFE2E6</color>
+    <color name="icon_bg_green">#E2F7DF</color>
+    <color name="icon_bg_blue">#E2EFFF</color>
 </resources>

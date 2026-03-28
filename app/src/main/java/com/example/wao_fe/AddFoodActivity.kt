@@ -115,21 +115,15 @@ class AddFoodActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_menu -> {
-                    val intent = Intent(this, FoodSearchActivity::class.java).apply {
-                        val userId = currentUserId()
-                        if (userId != -1L) {
-                            putExtra(FoodSearchActivity.EXTRA_USER_ID, userId)
-                        }
-                        putExtra(FoodSearchActivity.EXTRA_MEAL_TYPE, MealType.BREAKFAST.name)
-                    }
-                    startActivity(intent)
+                    startActivity(Intent(this, MealPlanActivity::class.java))
                     finish()
                     true
                 }
 
                 R.id.nav_profile -> {
-                    toast("Tab Tài khoản")
-                    false
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    finish()
+                    true
                 }
 
                 else -> false

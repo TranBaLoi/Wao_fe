@@ -35,7 +35,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toTopOf="@+id/btnContinue"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnBackHeader">
@@ -405,6 +405,7 @@
     <!-- Bottom Buttons -->
 
     <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -448,5 +449,44 @@
             app:iconGravity="end"
             app:iconTint="@android:color/white" />
     </LinearLayout>
+
+    <!-- Overlay for Lottie Animation -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CCFFFFFF"
+        android:visibility="gone"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimation"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/anim_success" />
+
+        <TextView
+            android:id="@+id/tvCreatingProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Đang thiết lập hồ sơ..."
+            android:textColor="@color/green_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lottieAnimation" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

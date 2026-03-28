@@ -99,8 +99,13 @@
         <activity
             android:name=".FinalSetupActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Wao_fe" />
+            android:screenOrientation="portrait" />
+
+        <!-- Allergies Screen -->
+        <activity
+            android:name=".AllergiesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- Custom Scanner Screen -->
         <activity
@@ -115,6 +120,24 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Wao_fe" />
+
+        <!-- Meal Plan Screen -->
+        <activity
+            android:name=".MealPlanActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Settings Screen -->
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- Edit Profile Screen -->
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

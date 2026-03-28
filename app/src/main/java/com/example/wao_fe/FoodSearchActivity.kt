@@ -90,10 +90,6 @@ class FoodSearchActivity : AppCompatActivity() {
             finish()
         }
 
-        findViewById<FloatingActionButton>(R.id.fabAddFood).setOnClickListener {
-            addFoodLauncher.launch(Intent(this, AddFoodActivity::class.java))
-        }
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.selectedItemId = R.id.nav_menu
         bottomNavigationView.setOnItemSelectedListener { item ->
@@ -110,15 +106,24 @@ class FoodSearchActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.nav_menu -> true
+                R.id.nav_menu -> {
+                    startActivity(Intent(this, MealPlanActivity::class.java))
+                    finish()
+                    true
+                }
 
                 R.id.nav_profile -> {
-                    toast("Tab Tài khoản")
-                    false
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    finish()
+                    true
                 }
 
                 else -> false
             }
+        }
+
+        findViewById<FloatingActionButton>(R.id.fabAddFood).setOnClickListener {
+            addFoodLauncher.launch(Intent(this, AddFoodActivity::class.java))
         }
 
         etSearchFood.doAfterTextChanged {

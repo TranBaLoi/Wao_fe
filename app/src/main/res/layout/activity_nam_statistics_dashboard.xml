@@ -1,211 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- nam them -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/wao_background_light"
-    android:fillViewport="true">
+    android:background="@color/wao_background_light">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
 
-        <!-- nam them -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <ImageButton
-                android:id="@+id/btn_back_statistics"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/circle_primary_alpha"
-                android:contentDescription="Quay lại"
-                android:padding="10dp"
-                android:src="@drawable/ic_arrow_back"
-                android:tint="@color/green_dark" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="Nhật ký thống kê"
-                android:textColor="@color/wao_slate_900"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_dashboard_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="đang tải dữ liệu..."
-            android:textColor="@color/wao_slate_500"
-            android:textSize="13sp" />
-
-        <ProgressBar
-            android:id="@+id/progress_dashboard"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginBottom="16dp"
-            android:indeterminate="true"
-            android:progressTint="@color/wao_primary" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="2dp">
-
+            <!-- nam them -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="14dp">
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_back_statistics"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/circle_primary_alpha"
+                    android:contentDescription="Quay lại"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="@color/green_dark" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="chọn cách xem"
+                    android:layout_marginStart="12dp"
+                    android:text="Nhật ký thống kê"
                     android:textColor="@color/wao_slate_900"
-                    android:textSize="16sp"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
                     android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_dashboard_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Đang tải dữ liệu..."
+                android:textColor="@color/wao_slate_500"
+                android:textAppearance="?attr/textAppearanceCaption" />
+
+            <ProgressBar
+                android:id="@+id/progress_dashboard"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminate="true"
+                android:progressTint="@color/wao_primary" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chọn khoảng thời gian"
+                        android:textColor="@color/wao_slate_900"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_period_day"
+                            style="@style/Widget.Wao.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="ngày"
+                            android:textSize="13sp"
+                            android:textAllCaps="false" />
+
+                        <Button
+                            android:id="@+id/btn_period_week"
+                            style="@style/Widget.Wao.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="tuần"
+                            android:textSize="13sp"
+                            android:textAllCaps="false" />
+
+                        <Button
+                            android:id="@+id/btn_period_month"
+                            style="@style/Widget.Wao.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="tháng"
+                            android:textSize="13sp"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
 
                     <Button
-                        android:id="@+id/btn_period_day"
+                        android:id="@+id/btn_choose_date"
                         style="@style/Widget.Wao.Button"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:text="ngày"
-                        android:textSize="13sp"
-                        android:textAllCaps="false" />
-
-                    <Button
-                        android:id="@+id/btn_period_week"
-                        style="@style/Widget.Wao.Button"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="6dp"
-                        android:text="tuần"
-                        android:textSize="13sp"
-                        android:textAllCaps="false" />
-
-                    <Button
-                        android:id="@+id/btn_period_month"
-                        style="@style/Widget.Wao.Button"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="6dp"
-                        android:text="tháng"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        android:text="chọn ngày"
                         android:textSize="13sp"
                         android:textAllCaps="false" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <Button
-                    android:id="@+id/btn_choose_date"
-                    style="@style/Widget.Wao.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="10dp"
-                    android:text="chọn ngày"
-                    android:textSize="13sp"
-                    android:textAllCaps="false" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_chart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_chart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="18dp">
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp">
 
-                <TextView
-                    android:id="@+id/tv_selected_range_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="thống kê theo tuần"
-                    android:textColor="@color/wao_slate_900"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_selected_range_subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Tu 01/01/2026 den 07/01/2026"
-                    android:textColor="@color/wao_slate_500"
-                    android:textSize="14sp" />
-
-                <Spinner
-                    android:id="@+id/spinner_metric"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="14dp"
-                    android:background="@android:drawable/editbox_background"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:spinnerMode="dropdown" />
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="Biểu đồ xu hướng"
-                    android:textColor="@color/wao_slate_900"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
-                <TextView
-                    android:id="@+id/tv_chart_hint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="chạm vào điểm để xem chi tiết"
-                    android:textColor="@color/wao_slate_500"
-                    android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/tv_selected_range_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thống kê theo tuần"
+                        android:textColor="@color/wao_slate_900"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textStyle="bold" />
 
-                <com.example.wao_fe.namstats.views.NamTrendChartView
-                    android:id="@+id/chart_trend"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_marginTop="14dp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/tv_selected_range_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Từ 01/01/2026 đến 07/01/2026"
+                        android:textColor="@color/wao_slate_500"
+                        android:textAppearance="?attr/textAppearanceBody2" />
 
-        <LinearLayout
-            android:id="@+id/container_detail_items"
+                    <Spinner
+                        android:id="@+id/spinner_metric"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="14dp"
+                        android:background="@android:drawable/editbox_background"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:spinnerMode="dropdown" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Biểu đồ xu hướng"
+                        android:textColor="@color/wao_slate_900"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_chart_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Chạm vào điểm để xem chi tiết"
+                        android:textColor="@color/wao_slate_500"
+                        android:textAppearance="?attr/textAppearanceCaption" />
+
+                    <com.example.wao_fe.namstats.views.NamTrendChartView
+                        android:id="@+id/chart_trend"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginTop="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/container_detail_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="@android:color/white"
+        app:fabCradleMargin="8dp"
+        app:fabCradleRoundedCornerRadius="20dp"
+        app:fabCradleVerticalOffset="8dp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </LinearLayout>
-</ScrollView>
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:itemIconTint="@color/green_dark"
+            app:itemTextColor="@color/green_dark"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_nav_menu" />
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <!-- Plus Floating Action Button in the center -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddFood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Thêm món ăn"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/green_primary"
+        app:layout_constraintBottom_toTopOf="@+id/bottomAppBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bottomAppBar"
+        app:tint="@android:color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

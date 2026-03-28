@@ -24,18 +24,13 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp">
 
-                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="16dp"
-                    android:src="@drawable/bg_logo_pulse" />
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    android:padding="24dp"
-                    android:src="@drawable/ic_health_heart"
-                    app:tint="@color/white" />
+                    android:background="@drawable/bg_wao_logo"
+                    android:padding="20dp"
+                    android:src="@drawable/ic_wao_leaf"
+                    app:tint="@color/green_dark" />
             </FrameLayout>
 
             <LinearLayout
@@ -44,16 +39,18 @@
                 android:orientation="horizontal"
                 android:gravity="bottom"
                 android:layout_marginTop="12dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wao"
-                    android:textColor="@color/wao_slate_900"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
                     android:fontFamily="sans-serif-black"
-                    android:letterSpacing="-0.02"/>
-                 <TextView
+                    android:letterSpacing="-0.02"
+                    android:text="Wao"
+                    android:textColor="@color/green_primary_dark"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="."
@@ -68,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/app_tagline"
-                android:textColor="@color/wao_slate_500"
+                android:textColor="@color/wao_slate_600"
                 android:textSize="13sp"
                 android:fontFamily="sans-serif-light" />
         </LinearLayout>
@@ -108,7 +105,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="24dp"
                     android:text="@string/login_subtitle"
-                    android:textColor="@color/wao_slate_500"
+                    android:textColor="@color/wao_slate_600"
                     android:textSize="14sp" />
 
                 <!-- Email Input -->

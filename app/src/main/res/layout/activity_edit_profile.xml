@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wao_background_light"
+    tools:context=".EditProfileActivity">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBackHeader"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/wao_slate_900" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chỉnh sửa thông tin"
+            android:textColor="@color/wao_slate_900"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        android:paddingBottom="40dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp">
+
+            <!-- Avatar Upload Section -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutAvatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp">
+
+                <ImageView
+                    android:id="@+id/ivAvatarEdit"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/bg_logo_circle"
+                    android:padding="24dp"
+                    android:src="@drawable/ic_person"
+                    android:scaleType="centerCrop"
+                    app:tint="@color/green_dark"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_spa"
+                    android:padding="6dp"
+                    android:background="@drawable/circle_primary_alpha"
+                    app:backgroundTint="@color/green_dark"
+                    app:tint="@android:color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Name Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Họ và tên"
+                android:textColor="@color/wao_slate_600"
+                android:textSize="14sp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etFullName"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="16dp"
+                android:textSize="16sp"
+                android:inputType="textPersonName"
+                android:textColor="@color/wao_slate_900"
+                android:hint="Nhập tên hiển thị của bạn" />
+
+            <!-- Gender Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Giới tính"
+                android:textColor="@color/wao_slate_600"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerGender"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="8dp"/>
+
+            <!-- Date of Birth Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ngày sinh (YYYY-MM-DD)"
+                android:textColor="@color/wao_slate_600"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDob"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="16dp"
+                android:textSize="16sp"
+                android:inputType="date"
+                android:textColor="@color/wao_slate_900"
+                android:hint="VD: 1998-01-20" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginTop="16dp"
+                android:weightSum="2">
+
+                <!-- Height -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chiều cao (cm)"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:id="@+id/etHeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingHorizontal="16dp"
+                        android:textSize="16sp"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/wao_slate_900"
+                        android:hint="172.0" />
+                </LinearLayout>
+
+                <!-- Current Weight -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cân nặng (kg)"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:id="@+id/etWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingHorizontal="16dp"
+                        android:textSize="16sp"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/wao_slate_900"
+                        android:hint="70.0" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginTop="16dp"
+                android:weightSum="2">
+
+                <!-- Desired Weight -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mục tiêu mới (kg)"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:id="@+id/etDesiredWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingHorizontal="16dp"
+                        android:textSize="16sp"
+                        android:inputType="numberDecimal"
+                        android:textColor="@color/wao_slate_900"
+                        android:hint="65.0" />
+                </LinearLayout>
+
+                <!-- Target Days -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thời gian (ngày)"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <EditText
+                        android:id="@+id/etTargetDays"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_field"
+                        android:paddingHorizontal="16dp"
+                        android:textSize="16sp"
+                        android:inputType="number"
+                        android:textColor="@color/wao_slate_900"
+                        android:hint="90" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Activity Level Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mức độ vận động"
+                android:textColor="@color/wao_slate_600"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerActivityLevel"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="8dp"/>
+
+            <!-- Goal Type Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mục tiêu cá nhân"
+                android:textColor="@color/wao_slate_600"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerGoalType"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="8dp"/>
+
+            <!-- Allergies String Field -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dị ứng (cách nhau bởi dấu phẩy)"
+                android:textColor="@color/wao_slate_600"
+                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etAllergies"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="16dp"
+                android:textSize="16sp"
+                android:inputType="text"
+                android:textColor="@color/wao_slate_900"
+                android:hint="VD: PEANUT, MILK" />
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="40dp"
+                android:backgroundTint="@color/green_dark"
+                android:text="Lưu thay đổi"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

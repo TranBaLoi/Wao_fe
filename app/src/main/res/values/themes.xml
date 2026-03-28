@@ -11,6 +11,14 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/wao_background_light</item>
         <item name="textInputStyle">@style/Widget.Wao.TextInputLayout</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="WindowAnimationTransition" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
     </style>
 
     <!-- Splash Screen Theme -->

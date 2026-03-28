@@ -1,10 +1,12 @@
-﻿package com.example.wao_fe
+package com.example.wao_fe
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.PopupMenu
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -12,6 +14,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.wao_fe.namstats.StatisticsDashboardActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.wao_fe.network.ApiResult
 import com.example.wao_fe.network.OpenFoodFactsApi
 import com.example.wao_fe.network.UserRepository
@@ -35,9 +39,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvWater: TextView
     private lateinit var tvSteps: TextView
     private lateinit var fabAddFood: FloatingActionButton
+    private lateinit var ivAvatar: ImageView
+    private lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
 
     private val userRepository = UserRepository()
     private var userId: Long = -1
+
+    private var addFoodBottomSheetDialog: com.google.android.material.bottomsheet.BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,18 +75,32 @@ class MainActivity : AppCompatActivity() {
         tvWater = findViewById(R.id.tvWater)
         tvSteps = findViewById(R.id.tvSteps)
         fabAddFood = findViewById(R.id.fabAddFood)
+        ivAvatar = findViewById(R.id.ivAvatar)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        ivAvatar.setOnClickListener {
+            startActivity(android.content.Intent(this, EditProfileActivity::class.java))
+        }
+
         bottomNavigationView.selectedItemId = R.id.nav_home
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_diary -> {
-                    startActivity(Intent(this, FoodDiaryActivity::class.java))
+                R.id.nav_menu -> {
+                    startActivity(Intent(this, MealPlanActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
                     true
                 }
-
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    true
+                }
+                R.id.nav_diary -> {
+                    startActivity(Intent(this, FoodDiaryActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    true
+                }
                 R.id.nav_home -> true
-
                 else -> {
                     Toast.makeText(this, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show()
                     false
@@ -87,43 +109,84 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.btnLogFood).setOnClickListener {
-            Toast.makeText(this, "Tính năng Thêm bữa ăn đang phát triển", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Tính năng Thêm món ăn đang phát triển", Toast.LENGTH_SHORT).show()
         }
         findViewById<TextView>(R.id.btnLogWorkout).setOnClickListener {
             Toast.makeText(this, "Tính năng Ghi nhận tập luyện đang phát triển", Toast.LENGTH_SHORT).show()
         }
-        //nam them
-        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_diary -> {
-                    startActivity(Intent(this, StatisticsDashboardActivity::class.java))
-                    true
-                }
-                else -> true
+
+        val btnOpenStatistics = findViewById<TextView>(R.id.btnOpenStatistics)
+        if (btnOpenStatistics != null) {
+            btnOpenStatistics.setOnClickListener {
+                startActivity(Intent(this, StatisticsDashboardActivity::class.java))
             }
         }
 
         fabAddFood.setOnClickListener { view ->
-            val popupText = PopupMenu(this, view)
-            popupText.menu.add("Quét mã vạch món ăn")
-            popupText.menu.add("Thêm món ăn tự nhập")
-            popupText.setOnMenuItemClickListener { item ->
-                when (item.title) {
-                    "Quét mã vạch món ăn" -> {
-                        startBarcodeScanner()
-                        true
-                    }
-
-                    "Thêm món ăn tự nhập" -> {
-                        Toast.makeText(this, "Đang phát triển", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-
-                    else -> false
-                }
+            if (addFoodBottomSheetDialog?.isShowing == true) {
+                addFoodBottomSheetDialog?.dismiss()
+                addFoodBottomSheetDialog = null
+            } else {
+                showAddFoodBottomSheet()
             }
-            popupText.show()
         }
+    }
+
+    private fun showAddFoodBottomSheet() {
+        if (addFoodBottomSheetDialog == null) {
+            addFoodBottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        }
+        val bottomSheetDialog = addFoodBottomSheetDialog!!
+        val view = layoutInflater.inflate(R.layout.layout_bottom_sheet_add, null)
+        bottomSheetDialog.setContentView(view)
+
+        // Make sure it clears the reference on dismiss
+        bottomSheetDialog.setOnDismissListener {
+            addFoodBottomSheetDialog = null
+        }
+
+        // Find buttons in bottom sheet
+        view.findViewById<android.view.View>(R.id.btnSearchFood).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Ghi lại bữa ăn", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnScanBarcode).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            startBarcodeScanner()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnVoiceNote).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Ghi bằng giọng nói đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnLogWater).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Uống nước đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnLogActivity).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Ghi lại hoạt động đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnLogWeight).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Cân nặng đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnCreateRecipe).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Tạo công thức đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+
+        view.findViewById<android.view.View>(R.id.btnCreateFood).setOnClickListener {
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Tính năng Tạo thực phẩm đang phát triển", Toast.LENGTH_SHORT).show()
+        }
+
+        bottomSheetDialog.show()
     }
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
@@ -177,6 +240,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reload user info when returning to app (e.g. from EditProfileActivity)
+        val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        val userName = sharedPref.getString("USER_NAME", "Bạn")
+        val currentAvatar = sharedPref.getString("USER_AVATAR", null)
+
+        setupHeader(userName)
+
+        if (currentAvatar != null) {
+            Glide.with(this)
+                .load(Uri.parse(currentAvatar))
+                .apply(com.bumptech.glide.request.RequestOptions.circleCropTransform())
+                .into(ivAvatar)
+            ivAvatar.setPadding(0, 0, 0, 0)
+        }
+    }
+
     private fun setupHeader(userName: String?) {
         tvUserName.text = "Chào ${userName ?: "bạn"},"
         val sdf = SimpleDateFormat("EEEE, dd MMM", Locale("vi", "VN"))
@@ -185,12 +266,54 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchDashboardData() {
         lifecycleScope.launch {
+            // First fetch latest profile to get targetCalories
             var targetCalories = 2000.0
             val profileResult = userRepository.getLatestHealthProfile(userId)
             if (profileResult is ApiResult.Success) {
                 targetCalories = profileResult.data.targetCalories
             }
 
+            // Fetch logs for macro tracking
+            var consumedProtein = 0.0
+            var consumedCarbs = 0.0
+            var consumedFat = 0.0
+            try {
+                val api = com.example.wao_fe.network.NetworkClient.apiService
+                val todayStr = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+                val logs = api.getFoodLogs(userId, todayStr)
+                val foods = api.getFoods().associateBy { it.id }
+                logs.forEach { log ->
+                    val food = foods[log.foodId]
+                    if (food != null) {
+                        consumedProtein += food.protein * log.servingQty
+                        consumedCarbs += food.carbs * log.servingQty
+                        consumedFat += food.fat * log.servingQty
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Failed to fetch logs for macros", e)
+            }
+
+            val tvProteinMain = findViewById<TextView>(R.id.tvProteinMain)
+            val pbProteinMain = findViewById<ProgressBar>(R.id.pbProteinMain)
+            val tvCarbsMain = findViewById<TextView>(R.id.tvCarbsMain)
+            val pbCarbsMain = findViewById<ProgressBar>(R.id.pbCarbsMain)
+            val tvFatMain = findViewById<TextView>(R.id.tvFatMain)
+            val pbFatMain = findViewById<ProgressBar>(R.id.pbFatMain)
+
+            tvProteinMain.text = "${consumedProtein.toInt()}g"
+            val proteinTarget = (targetCalories * 0.3 / 4.0).coerceAtLeast(1.0)
+            pbProteinMain.progress = ((consumedProtein / proteinTarget) * 100).toInt().coerceIn(0, 100)
+
+            tvCarbsMain.text = "${consumedCarbs.toInt()}g"
+            val carbsTarget = (targetCalories * 0.4 / 4.0).coerceAtLeast(1.0)
+            pbCarbsMain.progress = ((consumedCarbs / carbsTarget) * 100).toInt().coerceIn(0, 100)
+
+            tvFatMain.text = "${consumedFat.toInt()}g"
+            val fatTarget = (targetCalories * 0.3 / 9.0).coerceAtLeast(1.0)
+            pbFatMain.progress = ((consumedFat / fatTarget) * 100).toInt().coerceIn(0, 100)
+
+            // Then fetch daily summary
             val summaryResult = userRepository.getTodaySummary(userId)
             if (summaryResult is ApiResult.Success) {
                 val summary = summaryResult.data
@@ -210,8 +333,10 @@ class MainActivity : AppCompatActivity() {
                 tvWater.text = "${summary.totalWater} ml"
                 tvSteps.text = "${summary.totalSteps}/10000"
             } else {
+                // If no summary exist for today yet, just show 0
                 tvCalRemaining.text = targetCalories.toInt().toString()
                 if (summaryResult is ApiResult.Error && summaryResult.status != 404) {
+                    // Ignore 404 since it just means no logs today yet
                     Toast.makeText(this@MainActivity, "Không thể tải dữ liệu hôm nay", Toast.LENGTH_SHORT).show()
                 }
             }

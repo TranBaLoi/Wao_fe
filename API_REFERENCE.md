@@ -71,6 +71,19 @@ Response `201`:
 }
 ```
 
+### POST `/api/users/google-login`
+Request body:
+```json
+{
+  "idToken": "google_id_token_here"
+}
+```
+Response `200`: `UserDto.Response`
+
+### POST `/api/users/verify`
+Dùng để verify hoặc reset password (tuỳ logic thực tế, thông thường nhận mã OTP/Email).
+Response `200`
+
 ### GET `/api/users`
 Response `200`: `UserDto.Response[]`
 
@@ -80,14 +93,32 @@ Response `200`: `UserDto.Response`
 
 ### PUT `/api/users/{id}`
 Path param: `id` (Long)
-Request body (co the gui 1 hoac ca 2 field):
+Request body (co the gui 1 hoac nhieu field):
 ```json
 {
   "fullName": "Nguyen Van B",
-  "status": "INACTIVE"
+  "status": "INACTIVE",
+  "img": "https://avatar-url.com/image.jpg"
 }
 ```
 Response `200`: `UserDto.Response`
+
+### PUT `/api/users/{id}/password`
+Path param: `id` (Long)
+Request body:
+```json
+{
+  "oldPassword": "old_password_here",
+  "newPassword": "new_password_here"
+}
+```
+Response `200` (khong body)
+
+### POST `/api/users/{id}/avatar`
+Path param: `id` (Long)
+Request form-data:
+- `file` (MultipartFile): File ảnh đại diện cần upload.
+Response `200`: `UserDto.Response` (User có thông tin `img` mới được upload)
 
 ### DELETE `/api/users/{id}`
 Path param: `id` (Long)
@@ -108,7 +139,9 @@ Request body:
   "activityLevel": "MODERATELY_ACTIVE",
   "goalType": "LOSE_WEIGHT",
   "desiredWeightKg": 65,
-  "targetDays": 90
+  "targetDays": 90,
+  "preferenceVector": "0.8, 0.2, 0.5",
+  "allergies": "PEANUT, MILK"
 }
 ```
 
@@ -124,6 +157,8 @@ Request body:
   - **GAIN_WEIGHT**: phải > `weightKg` (ví dụ: 70 → 75)
   - **MAINTAIN**: phải ≈ `weightKg` (trong ±2%, ví dụ: 70 → 70.5)
 - `targetDays` **[NEW]**: Số ngày để đạt mục tiêu (ngày, phải > 0)
+- `preferenceVector` **[NEW]**: Mảng đặc trưng sở thích người dùng dùng cho thuật toán AI (vd: "0.8, 0.2, 0.5")
+- `allergies` **[NEW]**: Danh sách dị ứng của người dùng (vd: "PEANUT, MILK")
 
 Response `201`:
 ```json
@@ -144,7 +179,9 @@ Response `201`:
     "dailyCalories": 427.78,
     "difficultyLevel": "MEDIUM",
     "note": "Muc tieu trung binh, can theo doi va ky luat"
-  }
+  },
+  "preferenceVector": "0.8, 0.2, 0.5",
+  "allergies": "PEANUT, MILK"
 }
 ```
 
@@ -193,17 +230,41 @@ Request body:
   "calories": 500,
   "protein": 25,
   "carbs": 60,
-  "fat": 15
+  "fat": 15,
+  "featureVector": "0.8, 0.5, 0.2",
+  "suitableMealTypes": "LUNCH,DINNER",
+  "ingredients": "gạo, thịt gà, muối",
+  "containsAllergens": "SEAFOOD, PEANUT"
 }
 ```
-Response `201`: `FoodDto.Response`
+*Note: `featureVector` (đặc trưng món ăn) và `suitableMealTypes` (các bữa ăn phù hợp, vd: "BREAKFAST,LUNCH") dùng cho tính năng định tuyến AI gợi ý.*
+*Note 2: `ingredients` và `containsAllergens` dùng để lọc an toàn cho người dùng bị dị ứng.*
+
+Response `201`:
+```json
+{
+  "id": 1,
+  "name": "Com ga",
+  "servingSize": "1 dia",
+  "calories": 500,
+  "protein": 25,
+  "carbs": 60,
+  "fat": 15,
+  "isVerified": false,
+  "images": [],
+  "featureVector": "0.8, 0.5, 0.2",
+  "suitableMealTypes": "LUNCH,DINNER",
+  "ingredients": "gạo, thịt gà, muối",
+  "containsAllergens": "SEAFOOD, PEANUT"
+}
+```
 
 ### POST `/api/foods/admin`
 Tao food admin (auto `isVerified=true`)
 Request body giong `POST /api/foods`
 Response `201`: `FoodDto.Response`
 
-### GET `/api/foods?name={keyword}`
+### GET `/api/foods/search?name={keyword}`
 Query param: `name` (optional)
 Response `200`: `FoodDto.Response[]`
 
@@ -248,9 +309,19 @@ Response `201`:
 ```
 Note: sau khi log, he thong tu dong refresh `daily_summaries`.
 
-### GET `/api/users/{userId}/food-logs?date=yyyy-MM-dd`
+### GET `/api/users/{userId}/food-logs/by-date?date=yyyy-MM-dd`
 Path param: `userId` (Long)
 Query param: `date` (LocalDate)
+Response `200`: `FoodLogDto.Response[]`
+
+### GET `/api/users/{userId}/food-logs/by-meal-type?mealType={mealType}`
+Path param: `userId` (Long)
+Query param: `mealType` (Enum: BREAKFAST, LUNCH, DINNER, SNACK)
+Response `200`: `FoodLogDto.Response[]`
+
+### GET `/api/users/{userId}/food-logs/by-date-and-meal-type?date=yyyy-MM-dd&mealType={mealType}`
+Path param: `userId` (Long)
+Query param: `date` (LocalDate), `mealType` (Enum)
 Response `200`: `FoodLogDto.Response[]`
 
 ### DELETE `/api/users/{userId}/food-logs/{logId}`
@@ -325,6 +396,15 @@ Response `204`
 
 ## 9) Meal Plans API
 
+### POST `/api/meal-plans/generate?userId={userId}&date={YYYY-MM-DD}`
+Tự động tạo Meal Plan ứng dụng AI Recommendation dựa theo hồ sơ sức khoẻ (hệ thống tự lấy health profile mới nhất).
+
+Query param:
+- `userId` (Long): ID của user
+- `date` (LocalDate): Ngày áp dụng gợi ý (vd: "2026-03-21")
+
+Response `201`: `MealPlanDto.Response` (trả về danh sách foods gồm Sáng, Trưa, Tối đã được AI tính toán phù hợp).
+
 ### POST `/api/meal-plans`
 Request body (system suggestion):
 ```json
@@ -378,6 +458,11 @@ Response `200`: `MealPlanDto.Response`
 ### DELETE `/api/meal-plans/{id}`
 Path param: `id`
 Response `204`
+
+### POST `/api/meal-plans/{mealPlanId}/apply?userId={userId}&date={YYYY-MM-DD}`
+Path param: `mealPlanId`
+Query param: `userId` (Long), `date` (LocalDate)
+Response `200`: Ap dung tat ca thuc an trong meal plan vao nhat ky an uong (Food Logs) cua ngay chi dinh.
 
 ## 10) Workout Logs API
 
@@ -516,7 +601,29 @@ Response `200`: `DailySummaryDto`
 
 ---
 
-## 14) Ghi chu nhanh de test API
+## 14) Statistics API
+
+### GET `/api/users/{userId}/statistics/nutrition/daily?date=yyyy-MM-dd`
+Path param: `userId`
+Query param: `date`
+Response `200`: `StatisticsDto.DailyNutritionResponse`
+Dùng để lấy chi tiết dinh dưỡng (Protein, Carbs, Fat) của 1 ngày.
+
+### GET `/api/users/{userId}/statistics/nutrition?from=yyyy-MM-dd&to=yyyy-MM-dd&groupBy={DAY/WEEK/MONTH}`
+Path param: `userId`
+Query param: `from`, `to`, `groupBy` (mặc định DAY)
+Response `200`: `StatisticsDto.NutritionSeriesResponse`
+Dùng để vẽ đồ thị dinh dưỡng (lượng calo in) qua từng thời kỳ.
+
+### GET `/api/users/{userId}/statistics/weight?from=yyyy-MM-dd&to=yyyy-MM-dd&groupBy={DAY/WEEK/MONTH}`
+Path param: `userId`
+Query param: `from`, `to`, `groupBy` (mặc định DAY)
+Response `200`: `StatisticsDto.WeightSeriesResponse`
+Dùng để vẽ đồ thị thống kê cân nặng qua từng thời kỳ.
+
+---
+
+## 15) Ghi chu nhanh de test API
 
 - Cac API theo user deu can `userId` ton tai truoc.
 - Cac API co FK (`foodId`, `exerciseId`, `programId`) can record ton tai.
@@ -525,9 +632,9 @@ Response `200`: `DailySummaryDto`
 
 ---
 
-## 15) Chi tiet tinh toan Health Profile (NEW)
+## 16) Chi tiet tinh toan Health Profile (NEW)
 
-### 15.1) Cong thuc chinh
+### 16.1) Cong thuc chinh
 
 **BMR (Mifflin-St Jeor):**
 (Su dung can nang HIEN TAI `weightKg`, khong phai desired)
@@ -566,7 +673,7 @@ dailyCalories = (|62 - 60| * 7700) / 38.5 ~ 400 kcal (luong calo nap VUO TDEE)
 targetCalories = 2414.12 + 400 = 2814.12 kcal/ngay (luong an vao toi thieu)
 ```
 
-### 15.2) Danh gia muc do kho tu theo luong calo thieu/du (dailyCalories)
+### 16.2) Danh gia muc do kho tu theo luong calo thieu/du (dailyCalories)
 
 - `EASY`: `dailyCalories <= 300` kcal
 - `MEDIUM`: `300 < dailyCalories <= 700` kcal
@@ -581,13 +688,13 @@ Response object:
 }
 ```
 
-### 15.3) Validation theo goal
+### 16.3) Validation theo goal
 
 - `LOSE_WEIGHT`: `desiredWeightKg < weightKg`
 - `GAIN_WEIGHT`: `desiredWeightKg > weightKg`
 - `MAINTAIN`: `abs(desiredWeightKg - weightKg) <= weightKg * 0.02`
 
-### 15.4) Vi du nhanh (TANG CAN)
+### 16.4) Vi du nhanh (TANG CAN)
 
 Input:
 ```json
@@ -616,7 +723,7 @@ Vi du ket qua:
 }
 ```
 
-### 15.5) Loi thuong gap
+### 16.5) Loi thuong gap
 
 ```json
 {

@@ -38,10 +38,23 @@ class SplashActivity : AppCompatActivity() {
         }
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                 startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                 finish()
+                 routeUser()
             }
         })
         anim.start()
+    }
+
+    private fun routeUser() {
+        val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        val userId = sharedPref.getLong("USER_ID", -1)
+
+        val destinationClass = if (userId != -1L) {
+            MainActivity::class.java
+        } else {
+            LoginActivity::class.java
+        }
+
+        startActivity(Intent(this@SplashActivity, destinationClass))
+        finish()
     }
 }

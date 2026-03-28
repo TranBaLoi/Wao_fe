@@ -29,6 +29,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -62,5 +63,16 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     // Image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.guolindev.permissionx:permissionx:1.7.1")
 
+    // UI components
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("com.airbnb.android:lottie:6.3.0")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
+
+
+

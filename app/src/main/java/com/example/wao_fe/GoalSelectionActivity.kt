@@ -130,8 +130,8 @@ class GoalSelectionActivity : AppCompatActivity() {
                 Toast.makeText(this, validationError, Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            // Go to Final Step
-            val intent = Intent(this, FinalSetupActivity::class.java)
+            // Go to Allergies Step
+            val intent = Intent(this, AllergiesActivity::class.java)
             intent.putExtra("USER_ID", userId)
             intent.putExtra("GENDER_ID", genderId)
             intent.putExtra("AGE", age)

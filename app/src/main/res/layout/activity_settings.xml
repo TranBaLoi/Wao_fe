@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wao_background_light"
+    tools:context=".SettingsActivity">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Hồ sơ cá nhân"
+            android:textColor="@color/wao_slate_900"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btnSettingsIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_logo_circle"
+            android:backgroundTint="@color/wao_slate_200"
+            android:padding="8dp"
+            android:contentDescription="@string/app_name_display"
+            android:src="@drawable/ic_spa"
+            app:tint="@color/wao_slate_600" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        android:paddingBottom="20dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp">
+
+            <!-- Avatar & Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivAvatar"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/bg_logo_circle"
+                    android:backgroundTint="@color/wao_slate_200"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/app_name_display"
+                    app:tint="@color/wao_slate_600"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:id="@+id/tvUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loading"
+                        android:textColor="@color/wao_slate_900"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvUserEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/placeholder_dots"
+                        android:textColor="@color/wao_slate_500"
+                        android:textSize="14sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:contentDescription="@string/app_name_display"
+                    app:tint="@color/wao_slate_400" />
+            </LinearLayout>
+
+            <!-- Stats Icons Grid Horizontal (Xem báo cáo thống kê) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xem báo cáo thống kê"
+                android:textColor="@color/wao_slate_900"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:weightSum="4"
+                android:paddingHorizontal="4dp">
+
+                <!-- Dinh dưỡng -->
+                <LinearLayout
+                    android:id="@+id/btnStatNutrition"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardBackgroundColor="@color/icon_bg_yellow"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_wao_leaf"
+                            app:tint="#F5A623"/> <!-- Just a tint for now on default icon -->
+                    </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dinh dưỡng"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <!-- Tập luyện -->
+                <LinearLayout
+                    android:id="@+id/btnStatWorkout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardBackgroundColor="@color/icon_bg_pink"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_fitness_center"
+                            app:tint="#D061A6"/>
+                    </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tập luyện"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <!-- Số bước -->
+                <LinearLayout
+                    android:id="@+id/btnStatSteps"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardBackgroundColor="@color/icon_bg_green"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_activity"
+                            app:tint="#1B5E20"/>
+                    </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số bước"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <!-- Cân nặng -->
+                <LinearLayout
+                    android:id="@+id/btnStatWeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        app:cardCornerRadius="28dp"
+                        app:cardBackgroundColor="@color/icon_bg_blue"
+                        app:cardElevation="0dp">
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_scale"
+                            app:tint="#1976D2"/>
+                    </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cân nặng"
+                        android:textColor="@color/wao_slate_600"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Cộng đồng và hỗ trợ Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cộng đồng và hỗ trợ"
+                android:textColor="@color/wao_slate_900"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Banner Group -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/wao_purple_primary"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_goal_muscle"
+                        android:contentDescription="@string/app_name_display"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bạn đã vào group chưa?"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_wao_button"
+                        android:backgroundTint="#20000000"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="6dp"
+                        android:textSize="14sp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nơi Wao sẽ đồng hành cùng bạn"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_wao_button"
+                        android:backgroundTint="#13ec5b"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gia nhập cộng đồng Wao ngay!"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"/>
+
+                    <Button
+                        android:id="@+id/btnJoinCommunity"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Tham gia ngay"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="26dp"
+                        app:backgroundTint="@color/wao_purple_secondary" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Social Card Group -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="8dp"
+                    android:paddingHorizontal="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_info_circle"
+                            app:tint="@color/wao_slate_500" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tìm Wao trên trang mạng xã hội"
+                            android:textColor="@color/wao_slate_500"
+                            android:layout_marginStart="12dp"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:weightSum="3">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            app:cardBackgroundColor="@color/wao_slate_50"
+                            app:cardCornerRadius="16dp"
+                            app:contentPadding="16dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/logo_tiktok" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tiktok"
+                                    android:textColor="@color/wao_slate_900"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginHorizontal="6dp"
+                            app:cardBackgroundColor="@color/wao_slate_50"
+                            app:cardCornerRadius="16dp"
+                            app:contentPadding="16dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/logo_google" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Google"
+                                    android:textColor="@color/wao_slate_900"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            app:cardBackgroundColor="@color/wao_slate_50"
+                            app:cardCornerRadius="16dp"
+                            app:contentPadding="16dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+                                <ImageView
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/logo_ins" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Instagram"
+                                    android:textColor="@color/wao_slate_900"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/wao_slate_200"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Item: Trung tâm hỗ trợ -->
+                    <LinearLayout
+                        android:id="@+id/btnSupportCenter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="12dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_info_circle"
+                            app:tint="@color/wao_slate_500"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Trung tâm hỗ trợ"
+                            android:textColor="@color/wao_slate_900"
+                            android:textSize="16sp"
+                            android:layout_marginStart="16dp"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            app:tint="@color/wao_slate_400"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Logout Button -->
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="#FEE2E2"
+                android:text="Đăng xuất"
+                android:textColor="@color/error_red"
+                android:textSize="16sp"
+                app:cornerRadius="16dp"
+                app:strokeColor="@color/error_red"
+                app:strokeWidth="1dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:itemIconTint="@color/green_dark"
+        app:itemTextColor="@color/green_dark"
+        app:menu="@menu/bottom_nav_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

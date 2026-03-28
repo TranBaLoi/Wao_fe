@@ -138,7 +138,8 @@ class FoodDiaryActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
                     finish()
                     true
                 }
@@ -146,17 +147,17 @@ class FoodDiaryActivity : AppCompatActivity() {
                 R.id.nav_diary -> true
 
                 R.id.nav_menu -> {
-                    val intent = Intent(this, FoodSearchActivity::class.java).apply {
-                        putExtra(FoodSearchActivity.EXTRA_USER_ID, userId)
-                        putExtra(FoodSearchActivity.EXTRA_MEAL_TYPE, MealType.BREAKFAST.name)
-                    }
-                    searchFoodLauncher.launch(intent)
+                    startActivity(Intent(this, MealPlanActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    finish()
                     true
                 }
 
                 R.id.nav_profile -> {
-                    toast("Tab Tài khoản")
-                    false
+                    startActivity(Intent(this, SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
                 }
 
                 else -> false

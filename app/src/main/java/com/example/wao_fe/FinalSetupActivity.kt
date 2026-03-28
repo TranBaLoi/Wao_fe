@@ -10,6 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import android.animation.Animator
+import android.view.View
+import com.airbnb.lottie.LottieAnimationView
 import com.example.wao_fe.network.ApiResult
 import com.example.wao_fe.network.UserRepository
 import com.example.wao_fe.network.models.ActivityLevel
@@ -38,6 +41,9 @@ class FinalSetupActivity : AppCompatActivity() {
     private lateinit var tvDifficultyNote: TextView
     private lateinit var btnContinue: Button
 
+    private lateinit var loadingOverlay: View
+    private lateinit var lottieAnimation: LottieAnimationView
+
     private var userId: Long = -1
     private var genderId: Int = 2
     private var age: Int = 24
@@ -45,6 +51,7 @@ class FinalSetupActivity : AppCompatActivity() {
     private var weight: Double = 68.5
     private var desiredWeight: Double = 68.5
     private var goalId: Int = 1
+    private var allergies: String? = null
 
     // 0: Sedentary, 1: Active, 2: Very Active
     private var selectedActivityIndex = 1
@@ -66,6 +73,7 @@ class FinalSetupActivity : AppCompatActivity() {
         weight = intent.getDoubleExtra("WEIGHT", 68.5)
         desiredWeight = intent.getDoubleExtra("DESIRED_WEIGHT", weight)
         goalId = intent.getIntExtra("GOAL_ID", 1)
+        allergies = intent.getStringExtra("ALLERGIES")
 
         if (userId == -1L) {
             Toast.makeText(this, "Lỗi: Không tìm thấy ID người dùng", Toast.LENGTH_SHORT).show()
@@ -95,6 +103,9 @@ class FinalSetupActivity : AppCompatActivity() {
         tvDifficultyLevel = findViewById(R.id.tvDifficultyLevel)
         tvDifficultyNote = findViewById(R.id.tvDifficultyNote)
         btnContinue = findViewById(R.id.btnContinue)
+
+        loadingOverlay = findViewById(R.id.loadingOverlay)
+        lottieAnimation = findViewById(R.id.lottieAnimation)
     }
 
     private fun setupListeners() {
@@ -199,6 +210,34 @@ class FinalSetupActivity : AppCompatActivity() {
         btnContinue.text = if (canNavigateMain) "Vào ứng dụng" else "Tính target calo"
     }
 
+    private fun navigateToMain() {
+        btnContinue.isEnabled = false
+        loadingOverlay.visibility = View.VISIBLE
+        lottieAnimation.playAnimation()
+
+        lottieAnimation.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+                goDirectlyToMain()
+            }
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+
+        loadingOverlay.postDelayed({
+            goDirectlyToMain()
+        }, 2500)
+    }
+
+    private fun goDirectlyToMain() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
+    }
+
     private fun createHealthProfile() {
         btnContinue.isEnabled = false
         btnContinue.text = "Đang tính..."
@@ -235,7 +274,8 @@ class FinalSetupActivity : AppCompatActivity() {
             activityLevel = activityEnum,
             goalType = goalEnum,
             desiredWeightKg = desiredWeight,
-            targetDays = selectedDurationWeeks * 7
+            targetDays = selectedDurationWeeks * 7,
+            allergies = allergies
         )
 
         lifecycleScope.launch {
@@ -245,7 +285,7 @@ class FinalSetupActivity : AppCompatActivity() {
                     canNavigateMain = true
                     showCalories(result.data)
                     updateButtonState()
-                    Toast.makeText(this@FinalSetupActivity, "Đã cập nhật hồ sơ sức khỏe", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@FinalSetupActivity, "Đã tính toán xong và lưu hồ sơ tạm thời", Toast.LENGTH_SHORT).show()
                 }
                 is ApiResult.Error -> {
                     btnContinue.isEnabled = true
@@ -274,12 +314,5 @@ class FinalSetupActivity : AppCompatActivity() {
 
     private fun formatCalories(value: Double): String {
         return String.format(Locale.US, "%.0f", value)
-    }
-
-    private fun navigateToMain() {
-        val intent = Intent(this@FinalSetupActivity, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
     }
 }

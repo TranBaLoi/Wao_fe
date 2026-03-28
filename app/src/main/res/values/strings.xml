@@ -53,4 +53,10 @@
 
     <string name="btn_log_food_text">Thêm bữa ăn</string>
     <string name="btn_log_workout_text">Ghi nhận tập luyện</string>
+    <string name="login_with_google">Tiếp tục bằng Google</string>
+    <string name="dont_have_account">Bạn chưa có tài khoản? Đăng ký ngay</string>
+
+    <string name="loading">Đang tải...</string>
+    <string name="placeholder_dots">...</string>
+    <string name="logout">Đăng xuất</string>
 </resources>

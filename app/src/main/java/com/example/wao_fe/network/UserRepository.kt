@@ -8,6 +8,11 @@ import com.example.wao_fe.network.models.VerifyEmailResponse
 import com.example.wao_fe.network.models.HealthProfileResponse
 import com.example.wao_fe.network.models.CreateHealthProfileRequest
 import com.example.wao_fe.network.models.DailySummaryResponse
+import com.example.wao_fe.network.models.MealPlanResponse
+import com.example.wao_fe.network.models.WorkoutProgramRequest
+import com.example.wao_fe.network.models.WorkoutProgramResponse
+import com.example.wao_fe.network.models.ApplyMealPlanRequest
+import com.example.wao_fe.network.models.UpdateUserRequest
 
 sealed class ApiResult<out T> {
     data class Success<T>(val data: T) : ApiResult<T>()
@@ -46,6 +51,18 @@ class UserRepository(
         }
     }
 
+    suspend fun getUserById(userId: Long): ApiResult<UserResponse> {
+        return safeApiCall {
+            apiService.getUserById(userId)
+        }
+    }
+
+    suspend fun updateUser(userId: Long, request: UpdateUserRequest): ApiResult<UserResponse> {
+        return safeApiCall {
+            apiService.updateUser(userId, request)
+        }
+    }
+
     suspend fun getLatestHealthProfile(userId: Long): ApiResult<HealthProfileResponse> {
         return safeApiCall {
             apiService.getLatestHealthProfile(userId)
@@ -62,6 +79,23 @@ class UserRepository(
         return safeApiCall {
             apiService.getTodaySummary(userId)
         }
+    }
+
+    suspend fun getMealPlanById(id: Long): ApiResult<MealPlanResponse> {
+        return safeApiCall { apiService.getMealPlanById(id) }
+    }
+
+    suspend fun generateMealPlan(userId: Long, date: String): ApiResult<MealPlanResponse> {
+        return safeApiCall { apiService.generateMealPlan(userId, date) }
+    }
+
+    suspend fun applyMealPlan(mealPlanId: Long, request: ApplyMealPlanRequest): ApiResult<Unit> {
+        return safeApiCall { apiService.applyMealPlan(mealPlanId, request) }
+    }
+
+    // Workout programs
+    suspend fun createWorkoutProgram(request: WorkoutProgramRequest): ApiResult<WorkoutProgramResponse> {
+        return safeApiCall { apiService.createWorkoutProgram(request) }
     }
 
     private suspend fun <T> safeApiCall(call: suspend () -> T): ApiResult<T> {

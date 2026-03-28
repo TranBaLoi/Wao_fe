@@ -2,6 +2,7 @@
 package com.example.wao_fe.namstats
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.wao_fe.R
 import com.example.wao_fe.namstats.views.NamTrendChartView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -68,6 +70,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     private lateinit var chartHint: TextView
     private lateinit var chartView: NamTrendChartView
     private lateinit var detailContainer: LinearLayout
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +82,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         setupControls()
         updateControlState()
         if (userId == -1L) {
-            Toast.makeText(this, "Khong tim thay thong tin dang nhap", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Không tìm thấy thông tin đăng nhập", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -102,6 +105,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         chartHint = findViewById(R.id.tv_chart_hint)
         chartView = findViewById(R.id.chart_trend)
         detailContainer = findViewById(R.id.container_detail_items)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
     }
 
     private fun setupControls() {
@@ -145,12 +149,43 @@ class StatisticsDashboardActivity : AppCompatActivity() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
+
+        bottomNavigationView.selectedItemId = R.id.nav_diary
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    startActivity(android.content.Intent(this, com.example.wao_fe.MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
+                }
+                R.id.nav_diary -> {
+                    startActivity(android.content.Intent(this, com.example.wao_fe.FoodDiaryActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
+                }
+                R.id.nav_menu -> {
+                    startActivity(android.content.Intent(this, com.example.wao_fe.MealPlanActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
+                }
+                R.id.nav_profile -> {
+                    startActivity(android.content.Intent(this, com.example.wao_fe.SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    overridePendingTransition(0, 0)
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun loadSelectedContent() {
         updateControlState()
         progressBar.visibility = View.VISIBLE
-        tvStatus.text = "Dang tai du lieu thong ke"
+        tvStatus.text = "Đang tải dữ liệu thống kê"
 
         lifecycleScope.launch {
             runCatching {
@@ -161,7 +196,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
                 }
             }.onFailure { error ->
                 progressBar.visibility = View.GONE
-                tvStatus.text = "Khong tai du lieu duoc: ${error.message ?: "Unknown error"}"
+                tvStatus.text = "Không tải dữ liệu được: ${error.message ?: "Lỗi không xác định"}"
                 Toast.makeText(this@StatisticsDashboardActivity, error.message, Toast.LENGTH_LONG).show()
             }
         }
@@ -184,11 +219,11 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         chartCard.visibility = View.VISIBLE
 
         tvSelectedRangeTitle.text = if (selectedPeriod == StatisticsPeriod.WEEK) {
-            "thong ke theo tuan"
+            "Thống kê theo tuần"
         } else {
-            "thong ke theo thang"
+            "Thống kê theo tháng"
         }
-        tvSelectedRangeSubtitle.text = "tu ngay ${formatDate(range.start)} den ngay ${formatDate(range.end)}"
+        tvSelectedRangeSubtitle.text = "Từ ngày ${formatDate(range.start)} đến ngày ${formatDate(range.end)}"
 
         updateMetricButtons()
         updateMetricChart()
@@ -200,9 +235,9 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         val inflater = LayoutInflater.from(this)
 
         val nutritionCard = inflater.inflate(R.layout.item_nam_stat_point, detailContainer, false)
-        nutritionCard.findViewById<TextView>(R.id.tv_point_title).text = "xem chi tiet ngay ${formatDate(snapshot.date)}"
+        nutritionCard.findViewById<TextView>(R.id.tv_point_title).text = "Chi tiết ngày ${formatDate(snapshot.date)}"
         nutritionCard.findViewById<TextView>(R.id.tv_point_subtitle).text =
-            "tong luong kalo: ${formatCalories(snapshot.nutrition.totalCalories)}"
+            "Tổng lượng calo: ${formatCalories(snapshot.nutrition.totalCalories)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_one).text =
             "Protein: ${formatGram(snapshot.nutrition.totalProtein)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_two).text =
@@ -210,24 +245,24 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         nutritionCard.findViewById<TextView>(R.id.tv_metric_three).text =
             "Fat: ${formatGram(snapshot.nutrition.totalFat)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_four).text =
-            "can nang hien tai ${formatWeight(snapshot.currentWeight)}"
+            "Cân nặng hiện tại: ${formatWeight(snapshot.currentWeight)}"
         detailContainer.addView(nutritionCard)
 
         val weightCard = inflater.inflate(R.layout.item_nam_stat_point, detailContainer, false)
-        weightCard.findViewById<TextView>(R.id.tv_point_title).text = "chi tiet can nang:"
+        weightCard.findViewById<TextView>(R.id.tv_point_title).text = "Chi tiết cân nặng"
         weightCard.findViewById<TextView>(R.id.tv_point_subtitle).text =
-            "can nang hien tai: ${formatWeight(snapshot.currentWeight)}"
+            "Cân nặng hiện tại: ${formatWeight(snapshot.currentWeight)}"
         weightCard.findViewById<TextView>(R.id.tv_metric_one).text =
-            "can nang cu: ${formatWeight(snapshot.previousWeight)}"
+            "Cân nặng cũ: ${formatWeight(snapshot.previousWeight)}"
         weightCard.findViewById<TextView>(R.id.tv_metric_two).text =
-            "hien tai: ${formatWeight(snapshot.currentWeight)}"
+            "Hiện tại: ${formatWeight(snapshot.currentWeight)}"
         weightCard.findViewById<TextView>(R.id.tv_metric_three).text =
-            "thay doi: ${formatWeightChange(snapshot.weightChange)}"
+            "Thay đổi: ${formatWeightChange(snapshot.weightChange)}"
         weightCard.findViewById<TextView>(R.id.tv_metric_four).text =
             if (snapshot.previousWeight == null && snapshot.fallbackWeight != null) {
-                "fallback tu profile: ${formatWeight(snapshot.fallbackWeight)}"
+                "Fallback từ profile: ${formatWeight(snapshot.fallbackWeight)}"
             } else {
-                "du lieu can nang tu log hien tai"
+                "Dữ liệu từ log cân nặng"
             }
         detailContainer.addView(weightCard)
     }
@@ -241,7 +276,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     private fun updateMetricChart() {
         val snapshot = currentRangeSnapshot ?: return
         updateMetricButtons()
-        chartView.setAxisUnits(yAxisUnitFor(selectedMetric), "Ngay")
+        chartView.setAxisUnits(yAxisUnitFor(selectedMetric), "Ngày")
 
         val chartPoints: List<Pair<String, Float>> = when (selectedMetric) {
             //nam them
@@ -298,28 +333,27 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         val view = LayoutInflater.from(this).inflate(R.layout.item_nam_stat_point, detailContainer, false)
         view.findViewById<TextView>(R.id.tv_point_title).text = formatRawDate(dateKey)
         view.findViewById<TextView>(R.id.tv_point_subtitle).text = when (selectedMetric) {
-            ChartMetric.WEIGHT -> "can nang: ${formatWeight(resolvedWeight)}"
-            ChartMetric.PROTEIN -> "Protein ${formatGram(nutrition?.totalProtein)}"
+            ChartMetric.WEIGHT -> "Cân nặng: ${formatWeight(resolvedWeight)}"
+            ChartMetric.PROTEIN -> "Protein: ${formatGram(nutrition?.totalProtein)}"
             ChartMetric.CARBS -> "Carbs: ${formatGram(nutrition?.totalCarbs)}"
             ChartMetric.FAT -> "Fat: ${formatGram(nutrition?.totalFat)}"
-            ChartMetric.CALORIES -> "tong kalo: ${formatCalories(nutrition?.totalCalories)}"
+            ChartMetric.CALORIES -> "Tổng lượng calo: ${formatCalories(nutrition?.totalCalories)}"
         }
 
         if (selectedMetric == ChartMetric.WEIGHT) {
             //nam them
-            view.findViewById<TextView>(R.id.tv_metric_one).text = "can nang cu: ${formatWeight(oldWeight)}"
+            view.findViewById<TextView>(R.id.tv_metric_one).text = "Cân nặng cũ: ${formatWeight(oldWeight)}"
             //nam them
-            view.findViewById<TextView>(R.id.tv_metric_two).text = "can nang hien tai: ${formatWeight(resolvedWeight)}"
+            view.findViewById<TextView>(R.id.tv_metric_two).text = "Cân nặng hiện tại: ${formatWeight(resolvedWeight)}"
             //nam them
-            view.findViewById<TextView>(R.id.tv_metric_three).text = "thay doi: ${formatWeightChange(weightChange)}"
-            //nam them
-            view.findViewById<TextView>(R.id.tv_metric_four).text = "so lan log: ${weightPoint?.logCount ?: 0}"
+            view.findViewById<TextView>(R.id.tv_metric_three).text = "Thay đổi: ${formatWeightChange(weightChange)}"
+            view.findViewById<TextView>(R.id.tv_metric_four).text = "Số lần log: ${weightPoint?.logCount ?: 0}"
         } else {
-            view.findViewById<TextView>(R.id.tv_metric_one).text = "Protein ${formatGram(nutrition?.totalProtein)}"
-            view.findViewById<TextView>(R.id.tv_metric_two).text = "Carbs ${formatGram(nutrition?.totalCarbs)}"
-            view.findViewById<TextView>(R.id.tv_metric_three).text = "Fat ${formatGram(nutrition?.totalFat)}"
+            view.findViewById<TextView>(R.id.tv_metric_one).text = "Protein: ${formatGram(nutrition?.totalProtein)}"
+            view.findViewById<TextView>(R.id.tv_metric_two).text = "Carbs: ${formatGram(nutrition?.totalCarbs)}"
+            view.findViewById<TextView>(R.id.tv_metric_three).text = "Fat: ${formatGram(nutrition?.totalFat)}"
             view.findViewById<TextView>(R.id.tv_metric_four).text =
-                "can nang hien tai ${formatWeight(resolvedWeight)}"
+                "Cân nặng hiện tại: ${formatWeight(resolvedWeight)}"
         }
         detailContainer.addView(view)
     }
@@ -349,9 +383,9 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         setButtonActive(btnPeriodMonth, selectedPeriod == StatisticsPeriod.MONTH)
 
         btnChooseDate.text = when (selectedPeriod) {
-            StatisticsPeriod.DAY -> "chon ngay: ${formatDate(selectedDate)}"
-            StatisticsPeriod.WEEK -> "chon 1 ngay trong tuan: ${formatDate(selectedDate)}"
-            StatisticsPeriod.MONTH -> "chon 1 ngay trong thang: ${formatDate(selectedDate)}"
+            StatisticsPeriod.DAY -> "Chọn ngày: ${formatDate(selectedDate)}"
+            StatisticsPeriod.WEEK -> "Chọn 1 ngày trong tuần: ${formatDate(selectedDate)}"
+            StatisticsPeriod.MONTH -> "Chọn 1 ngày trong tháng: ${formatDate(selectedDate)}"
         }
 
         val showChartControls = selectedPeriod != StatisticsPeriod.DAY
@@ -363,17 +397,23 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     private fun setButtonActive(button: Button, isActive: Boolean) {
-        button.alpha = if (isActive) 1f else 0.55f
+        if (isActive) {
+            button.setBackgroundColor(resources.getColor(R.color.wao_primary, theme))
+            button.setTextColor(resources.getColor(android.R.color.white, theme))
+        } else {
+            button.setBackgroundColor(resources.getColor(R.color.wao_slate_300, theme))
+            button.setTextColor(resources.getColor(R.color.wao_slate_600, theme))
+        }
         button.isAllCaps = false
     }
 
     private fun metricLabel(metric: ChartMetric): String {
         return when (metric) {
-            ChartMetric.WEIGHT -> "bieu do can nang"
-            ChartMetric.PROTEIN -> "bieu do protein"
-            ChartMetric.CARBS -> "bieu do carbs"
-            ChartMetric.FAT -> "bieu do fat"
-            ChartMetric.CALORIES -> "bieu do tong kalo"
+            ChartMetric.WEIGHT -> "Biểu đồ cân nặng"
+            ChartMetric.PROTEIN -> "Biểu đồ protein"
+            ChartMetric.CARBS -> "Biểu đồ carbs"
+            ChartMetric.FAT -> "Biểu đồ fat"
+            ChartMetric.CALORIES -> "Biểu đồ tổng lượng calo"
         }
     }
 
@@ -389,7 +429,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
 
     private fun finishLoading() {
         progressBar.visibility = View.GONE
-        tvStatus.text = "Da cap nhat luc ${nowTimeText()}"
+        tvStatus.text = "Đã cập nhật lúc ${nowTimeText()}"
     }
 
     private fun formatDate(date: LocalDate): String = date.format(dayFormatter)

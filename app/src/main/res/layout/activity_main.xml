@@ -23,11 +23,14 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/ivAvatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/ic_person"
                 android:background="@drawable/bg_logo_circle"
                 android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:tint="@color/green_dark"/>
 
             <LinearLayout
@@ -71,7 +74,7 @@
             android:clipToPadding="false"
             android:paddingBottom="80dp"
             app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-            app:layout_constraintBottom_toTopOf="@+id/bottomAppBar">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,38 +138,51 @@
                                     android:layout_marginTop="4dp"/>
                             </LinearLayout>
 
-                            <!-- Remaining (Center ring equivalent) -->
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:background="@drawable/bg_logo_circle"
-                                android:backgroundTint="#33FFFFFF"
-                                android:padding="16dp"
-                                android:minWidth="120dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Còn lại"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="14sp"/>
-                                <TextView
-                                    android:id="@+id/tvCalRemaining"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="28sp"
-                                    android:textStyle="bold"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="kcal"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="12sp"
-                                    android:alpha="0.8"/>
-                            </LinearLayout>
+                            <RelativeLayout
+                                android:layout_width="140dp"
+                                android:layout_height="140dp"
+                                android:layout_marginHorizontal="16dp">
+
+                                <ProgressBar
+                                    android:id="@+id/pbCalories"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:progressDrawable="@drawable/circular_progress_bar"
+                                    android:max="100"
+                                    android:progress="0" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:gravity="center"
+                                    android:background="@drawable/bg_logo_circle"
+                                    android:backgroundTint="#33FFFFFF"
+                                    android:layout_margin="12dp">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Còn lại"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="14sp"/>
+                                    <TextView
+                                        android:id="@+id/tvCalRemaining"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="0"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="28sp"
+                                        android:textStyle="bold"/>
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="kcal"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="12sp"
+                                        android:alpha="0.8"/>
+                                </LinearLayout>
+                            </RelativeLayout>
 
                             <!-- Burned -->
                             <LinearLayout
@@ -195,16 +211,6 @@
 
                         </LinearLayout>
 
-                        <ProgressBar
-                            android:id="@+id/pbCalories"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="8dp"
-                            android:layout_marginTop="20dp"
-                            android:max="100"
-                            android:progress="0"
-                            android:progressTint="#B0E57C"
-                            android:progressBackgroundTint="#4DFFFFFF" />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -240,6 +246,7 @@
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                             <TextView
+                                android:id="@+id/tvCarbsMain"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0g"
@@ -248,11 +255,13 @@
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                             <ProgressBar
+                                android:id="@+id/pbCarbsMain"
                                 style="?android:attr/progressBarStyleHorizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="4dp"
                                 android:layout_marginTop="8dp"
-                                android:progress="50"
+                                android:max="100"
+                                android:progress="0"
                                 android:progressTint="#FF9800"/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -278,6 +287,7 @@
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                             <TextView
+                                android:id="@+id/tvProteinMain"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0g"
@@ -286,11 +296,13 @@
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                             <ProgressBar
+                                android:id="@+id/pbProteinMain"
                                 style="?android:attr/progressBarStyleHorizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="4dp"
                                 android:layout_marginTop="8dp"
-                                android:progress="20"
+                                android:max="100"
+                                android:progress="0"
                                 android:progressTint="#E91E63"/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -316,6 +328,7 @@
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                             <TextView
+                                android:id="@+id/tvFatMain"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0g"
@@ -324,11 +337,13 @@
                                 android:textStyle="bold"
                                 android:textSize="16sp" />
                             <ProgressBar
+                                android:id="@+id/pbFatMain"
                                 style="?android:attr/progressBarStyleHorizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="4dp"
                                 android:layout_marginTop="8dp"
-                                android:progress="30"
+                                android:max="100"
+                                android:progress="0"
                                 android:progressTint="#2196F3"/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -437,6 +452,259 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
+
+                <!-- Quick Add Actions -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/btnLogFood"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Thêm món ăn"
+                            app:drawableStartCompat="@drawable/ic_wao_leaf"
+                            android:drawablePadding="16dp"
+                            app:drawableTint="@color/green_dark"
+                            android:padding="16dp"
+                            android:textColor="@color/wao_slate_900"
+                            android:textStyle="bold"
+                            android:background="?attr/selectableItemBackground"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#1A000000"
+                            android:layout_marginHorizontal="16dp"/>
+
+                        <TextView
+                            android:id="@+id/btnLogWorkout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Thêm hoạt động"
+                            app:drawableStartCompat="@drawable/ic_fitness_center"
+                            android:drawablePadding="16dp"
+                            app:drawableTint="@color/green_dark"
+                            android:padding="16dp"
+                            android:textColor="@color/wao_slate_900"
+                            android:textStyle="bold"
+                            android:background="?attr/selectableItemBackground"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#1A000000"
+                            android:layout_marginHorizontal="16dp"/>
+
+                        <TextView
+                            android:id="@+id/btnOpenStatistics"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Xem thống kê"
+                            app:drawableStartCompat="@drawable/ic_wao_chart"
+                            android:drawablePadding="16dp"
+                            app:drawableTint="@color/green_dark"
+                            android:padding="16dp"
+                            android:textColor="@color/wao_slate_900"
+                            android:textStyle="bold"
+                            android:background="?attr/selectableItemBackground"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Hoạt động tập luyện section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hoạt động tập luyện"
+                    android:textColor="@color/wao_slate_900"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/green_dark"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3"
+                            android:layout_marginBottom="16dp">
+
+                            <!-- Chạy bộ -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:src="@drawable/ic_run"
+                                    android:padding="12dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Chạy bộ"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                            <!-- Đạp xe -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:src="@drawable/ic_bike"
+                                    android:padding="12dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Đạp xe"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                            <!-- Cầu lông -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:src="@drawable/ic_tennis"
+                                    android:padding="12dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Cầu lông"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <!-- Pickleball -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:src="@drawable/ic_fitness_center"
+                                    android:padding="12dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pickleball"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                            <!-- Yoga -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:src="@drawable/ic_yoga_new"
+                                    android:padding="12dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Yoga"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                            <!-- Khác -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:src="@drawable/ic_more_horiz"
+                                    android:padding="12dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Khác"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <!-- Quick Add Actions -->
                 <androidx.cardview.widget.CardView

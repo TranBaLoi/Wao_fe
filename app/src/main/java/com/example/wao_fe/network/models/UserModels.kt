@@ -58,7 +58,8 @@ data class CreateHealthProfileRequest(
     val activityLevel: ActivityLevel,
     val goalType: GoalType,
     val desiredWeightKg: Double,
-    val targetDays: Int
+    val targetDays: Int,
+    val allergies: String? = null
 )
 
 data class DailyCalorieBreakdownResponse(
@@ -195,7 +196,12 @@ data class MealPlanFoodResponse(
     val foodId: Long,
     val foodName: String? = null,
     val mealType: MealType,
-    val servingQty: Double
+    val servingQty: Double,
+    val calories: Double? = null,
+    val protein: Double? = null,
+    val carbs: Double? = null,
+    val fat: Double? = null,
+    val containsAllergens: String? = null
 )
 
 data class MealPlanResponse(
@@ -205,6 +211,12 @@ data class MealPlanResponse(
     val type: MealPlanType,
     val userId: Long? = null,
     val foods: List<MealPlanFoodResponse> = emptyList()
+)
+
+data class ApplyMealPlanRequest(
+    val userId: Long,
+    val logDate: String,
+    val transientFoods: List<MealPlanFoodRequest>? = null
 )
 
 // Workout logs

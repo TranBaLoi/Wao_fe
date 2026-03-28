@@ -29,6 +29,7 @@ import com.example.wao_fe.network.models.WorkoutProgramResponse
 import com.example.wao_fe.network.models.GoogleLoginRequest
 import com.example.wao_fe.network.models.VerifyEmailRequest
 import com.example.wao_fe.network.models.VerifyEmailResponse
+import com.example.wao_fe.network.models.ApplyMealPlanRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -179,6 +180,18 @@ interface ApiService {
 
     @DELETE("api/meal-plans/{id}")
     suspend fun deleteMealPlan(@Path("id") id: Long)
+
+    @POST("api/meal-plans/generate")
+    suspend fun generateMealPlan(
+        @Query("userId") userId: Long,
+        @Query("date") date: String
+    ): MealPlanResponse
+
+    @POST("api/meal-plans/{mealPlanId}/apply")
+    suspend fun applyMealPlan(
+        @Path("mealPlanId") mealPlanId: Long,
+        @Body request: ApplyMealPlanRequest
+    )
 
     // Workout logs
     @POST("api/users/{userId}/workout-logs")
