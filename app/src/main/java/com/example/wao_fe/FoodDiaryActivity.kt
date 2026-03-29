@@ -1,6 +1,7 @@
 ﻿package com.example.wao_fe
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageButton
@@ -16,6 +17,7 @@ import com.example.wao_fe.network.NetworkClient
 import com.example.wao_fe.network.models.FoodLogResponse
 import com.example.wao_fe.network.models.FoodResponse
 import com.example.wao_fe.network.models.MealType
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
@@ -261,14 +263,46 @@ class FoodDiaryActivity : AppCompatActivity() {
 
             tvFoodName.text = log.foodName
             tvFoodInfo.text = "${formatServing(log.servingQty)} phần • ${log.totalCalories.roundToInt()} kcal"
-            ivFood.setImageResource(R.drawable.ic_wao_leaf)
+            bindFoodImage(ivFood, foodById[log.foodId]?.imageUrls)
 
             btnDelete.setOnClickListener {
                 confirmDelete(log)
             }
 
+            itemView.setOnClickListener {
+                openFoodDetail(log.foodId, log.foodName)
+            }
+
             container.addView(itemView)
         }
+    }
+
+    private fun bindFoodImage(imageView: ImageView, imageUrls: List<String>?) {
+        val imageUrl = imageUrls?.firstOrNull { it.isNotBlank() }
+        if (imageUrl.isNullOrBlank()) {
+            imageView.setImageResource(R.drawable.ic_wao_leaf)
+            imageView.imageTintList = ColorStateList.valueOf(getColor(R.color.green_dark))
+            imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            val padding = (16 * resources.displayMetrics.density).toInt()
+            imageView.setPadding(padding, padding, padding, padding)
+            return
+        }
+
+        imageView.imageTintList = null
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        imageView.setPadding(0, 0, 0, 0)
+        Glide.with(this)
+            .load(resolveImageUrl(imageUrl))
+            .placeholder(R.drawable.ic_wao_leaf)
+            .error(R.drawable.ic_wao_leaf)
+            .into(imageView)
+    }
+
+    private fun resolveImageUrl(rawUrl: String): String {
+        val trimmed = rawUrl.trim()
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed
+        val normalizedPath = if (trimmed.startsWith("/")) trimmed else "/$trimmed"
+        return "http://10.0.2.2:8080$normalizedPath"
     }
 
     private fun updateMacros(logs: List<FoodLogResponse>) {
@@ -304,6 +338,14 @@ class FoodDiaryActivity : AppCompatActivity() {
             putExtra(FoodSearchActivity.EXTRA_MEAL_TYPE, mealType.name)
         }
         searchFoodLauncher.launch(intent)
+    }
+
+    private fun openFoodDetail(foodId: Long, foodName: String) {
+        val intent = Intent(this, FoodDetailActivity::class.java).apply {
+            putExtra(FoodDetailActivity.EXTRA_FOOD_ID, foodId)
+            putExtra(FoodDetailActivity.EXTRA_FOOD_NAME, foodName)
+        }
+        startActivity(intent)
     }
 
     private fun confirmDelete(log: FoodLogResponse) {

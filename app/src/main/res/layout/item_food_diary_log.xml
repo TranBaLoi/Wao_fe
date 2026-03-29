@@ -21,8 +21,8 @@
             android:layout_height="80dp"
             android:background="@drawable/bg_logo_square"
             android:padding="16dp"
-            android:src="@drawable/ic_wao_leaf"
-            android:tint="@color/green_dark" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_wao_leaf" />
 
         <LinearLayout
             android:layout_width="0dp"

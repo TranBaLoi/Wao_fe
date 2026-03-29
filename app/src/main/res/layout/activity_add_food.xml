@@ -19,7 +19,9 @@
             android:layout_width="54dp"
             android:layout_height="54dp"
             android:background="@drawable/af_bg_icon_circle"
+            android:clickable="true"
             android:contentDescription="Quay lại"
+            android:focusable="true"
             android:padding="14dp"
             android:src="@drawable/ic_arrow_back"
             app:tint="#4D5950" />

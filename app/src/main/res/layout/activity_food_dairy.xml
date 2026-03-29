@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="?attr/actionBarSize">
+        android:paddingBottom="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,7 +63,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="12dp"
+            android:paddingBottom="132dp"
             android:scrollbars="none">
 
             <LinearLayout
@@ -516,23 +516,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:background="@drawable/fd_bg_add_button"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:gravity="center"
-                    android:orientation="horizontal"
+                    android:minHeight="92dp"
+                    android:orientation="vertical"
                     android:padding="12dp">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@android:drawable/ic_input_add"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/fd_ic_add_circle"
                         app:tint="#4E5F50" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Thêm món ăn"
+                        android:layout_marginTop="8dp"
+                        android:text="Thêm món ăn cho ăn nhẹ"
                         android:textColor="#4E5F50"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

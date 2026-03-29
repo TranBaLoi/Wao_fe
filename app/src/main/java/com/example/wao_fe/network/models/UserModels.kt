@@ -102,7 +102,8 @@ data class FoodResponse(
     val protein: Double,
     val carbs: Double,
     val fat: Double,
-    val isVerified: Boolean
+    val isVerified: Boolean,
+    val imageUrls: List<String> = emptyList()
 )
 
 // Food logs

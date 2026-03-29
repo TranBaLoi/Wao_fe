@@ -1,6 +1,7 @@
 ﻿package com.example.wao_fe
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -9,10 +10,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.wao_fe.network.NetworkClient
 import com.example.wao_fe.network.models.CreateFoodLogRequest
 import com.example.wao_fe.network.models.FoodResponse
@@ -51,6 +55,7 @@ class FoodSearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContentView(R.layout.activity_food_search)
 
         userId = intent.getLongExtra(EXTRA_USER_ID, -1)
@@ -87,8 +92,14 @@ class FoodSearchActivity : AppCompatActivity() {
 
     private fun setupActions() {
         findViewById<ImageButton>(R.id.btnBackDiary).setOnClickListener {
-            finish()
+            navigateBackToDiary()
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateBackToDiary()
+            }
+        })
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.selectedItemId = R.id.nav_menu
@@ -216,7 +227,7 @@ class FoodSearchActivity : AppCompatActivity() {
             tvCalories.text = "${food.calories.roundToInt()} kcal"
             tvServing.text = food.servingSize
             tvMeta.text = buildMeta(food)
-            ivFoodImage.setImageResource(R.drawable.ic_wao_leaf)
+            bindFoodImage(ivFoodImage, food.imageUrls)
 
             btnAdd.setOnClickListener {
                 addFoodToMeal(food)
@@ -224,6 +235,34 @@ class FoodSearchActivity : AppCompatActivity() {
 
             layoutSearchResults.addView(item)
         }
+    }
+
+    private fun bindFoodImage(imageView: ImageView, imageUrls: List<String>?) {
+        val imageUrl = imageUrls?.firstOrNull { it.isNotBlank() }
+        if (imageUrl.isNullOrBlank()) {
+            imageView.setImageResource(R.drawable.ic_wao_leaf)
+            imageView.imageTintList = ColorStateList.valueOf(getColor(R.color.green_dark))
+            imageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            val padding = (18 * resources.displayMetrics.density).toInt()
+            imageView.setPadding(padding, padding, padding, padding)
+            return
+        }
+
+        imageView.imageTintList = null
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+        imageView.setPadding(0, 0, 0, 0)
+        Glide.with(this)
+            .load(resolveImageUrl(imageUrl))
+            .placeholder(R.drawable.ic_wao_leaf)
+            .error(R.drawable.ic_wao_leaf)
+            .into(imageView)
+    }
+
+    private fun resolveImageUrl(rawUrl: String): String {
+        val trimmed = rawUrl.trim()
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed
+        val normalizedPath = if (trimmed.startsWith("/")) trimmed else "/$trimmed"
+        return "http://10.0.2.2:8080$normalizedPath"
     }
 
     private fun addFoodToMeal(food: FoodResponse) {
@@ -283,6 +322,15 @@ class FoodSearchActivity : AppCompatActivity() {
 
     private fun toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateBackToDiary() {
+        startActivity(
+            Intent(this, FoodDiaryActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+        )
+        finish()
     }
 
     private enum class FilterType { ALL, POPULAR, HEALTHY }

@@ -12,8 +12,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.wao_fe.network.NetworkClient
 import com.example.wao_fe.network.models.FoodRequest
@@ -59,6 +61,7 @@ class AddFoodActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContentView(R.layout.activity_add_food)
 
         initViews()
@@ -87,8 +90,14 @@ class AddFoodActivity : AppCompatActivity() {
 
     private fun setupActions() {
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
-            finish()
+            navigateBackToHome()
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigateBackToHome()
+            }
+        })
 
         cardUpload.setOnClickListener {
             imagePicker.launch("image/*")
@@ -230,5 +239,14 @@ class AddFoodActivity : AppCompatActivity() {
 
     private fun toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateBackToHome() {
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+        )
+        finish()
     }
 }

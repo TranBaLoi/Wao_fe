@@ -74,6 +74,12 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <!-- Food Detail Screen -->
+        <activity
+            android:name=".FoodDetailActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
         <!-- User Info Screen -->
         <activity
             android:name=".UserInfoActivity"

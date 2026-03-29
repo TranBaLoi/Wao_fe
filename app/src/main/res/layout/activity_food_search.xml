@@ -19,7 +19,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/af_bg_icon_circle"
+            android:clickable="true"
             android:contentDescription="Quay lại nhật ký"
+            android:focusable="true"
             android:padding="12dp"
             android:src="@drawable/ic_arrow_back"
             app:tint="#4D5950" />
