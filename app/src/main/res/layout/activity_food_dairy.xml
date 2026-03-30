@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E4E9DF">
+    android:background="@color/green_light_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,10 +14,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="@color/green_light_bg"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="14dp">
 
             <ImageView
                 android:layout_width="48dp"
@@ -37,9 +37,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nhật ký ăn uống"
+                    android:text="Nhật Ký Ăn Uống"
                     android:textColor="@color/green_dark"
-                    android:textSize="32sp"
+                    android:textSize="26sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textColor="#5D6A61"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <ImageView
@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="14dp">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="20dp">
+                        android:padding="18dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Năng lượng tiêu thụ"
                                     android:textColor="@android:color/white"
-                                    android:textSize="18sp" />
+                                    android:textSize="16sp" />
 
                                 <TextView
                                     android:id="@+id/tvConsumedCalories"
@@ -110,7 +110,7 @@
                                     android:layout_marginTop="10dp"
                                     android:text="0 kcal"
                                     android:textColor="@android:color/white"
-                                    android:textSize="36sp"
+                                    android:textSize="32sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -124,7 +124,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Mục tiêu"
                                     android:textColor="@android:color/white"
-                                    android:textSize="18sp" />
+                                    android:textSize="16sp" />
 
                                 <TextView
                                     android:id="@+id/tvTargetCalories"
@@ -133,7 +133,7 @@
                                     android:layout_marginTop="10dp"
                                     android:text="0 kcal"
                                     android:textColor="@android:color/white"
-                                    android:textSize="28sp"
+                                    android:textSize="24sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
                         </LinearLayout>
@@ -142,8 +142,8 @@
                             android:id="@+id/pbCalories"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="10dp"
-                            android:layout_marginTop="22dp"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="18dp"
                             android:max="100"
                             android:progress="0"
                             android:progressBackgroundTint="#68FFFFFF"
@@ -154,7 +154,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="12dp"
                     android:orientation="horizontal"
                     android:weightSum="3">
 
@@ -171,14 +171,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="14dp">
+                            android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Protein"
                                 android:textColor="#586259"
-                                android:textSize="13sp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/tvProtein"
@@ -187,7 +187,7 @@
                                 android:layout_marginTop="8dp"
                                 android:text="0g"
                                 android:textColor="#04792A"
-                                android:textSize="18sp"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
 
                             <ProgressBar
@@ -216,14 +216,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="14dp">
+                            android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Carbs"
                                 android:textColor="#586259"
-                                android:textSize="13sp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/tvCarbs"
@@ -232,7 +232,7 @@
                                 android:layout_marginTop="8dp"
                                 android:text="0g"
                                 android:textColor="#996104"
-                                android:textSize="18sp"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
 
                             <ProgressBar
@@ -261,14 +261,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="14dp">
+                            android:padding="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Fat"
                                 android:textColor="#586259"
-                                android:textSize="13sp" />
+                                android:textSize="12sp" />
 
                             <TextView
                                 android:id="@+id/tvFat"
@@ -277,7 +277,7 @@
                                 android:layout_marginTop="8dp"
                                 android:text="0g"
                                 android:textColor="#0A609B"
-                                android:textSize="18sp"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
 
                             <ProgressBar
@@ -297,7 +297,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
+                    android:layout_marginTop="22dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -307,7 +307,7 @@
                         android:layout_weight="1"
                         android:text="Bữa sáng"
                         android:textColor="#202722"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -316,7 +316,7 @@
                         android:layout_height="wrap_content"
                         android:text="0 kcal"
                         android:textColor="#44554B"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -336,13 +336,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:minHeight="92dp"
+                    android:minHeight="84dp"
                     android:orientation="vertical"
                     android:padding="12dp">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:src="@drawable/fd_ic_add_circle"
                         android:tint="#4E5F50" />
 
@@ -352,13 +352,13 @@
                         android:layout_marginTop="8dp"
                         android:text="Thêm món ăn cho bữa sáng"
                         android:textColor="#4E5F50"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
+                    android:layout_marginTop="22dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -368,7 +368,7 @@
                         android:layout_weight="1"
                         android:text="Bữa trưa"
                         android:textColor="#202722"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -377,7 +377,7 @@
                         android:layout_height="wrap_content"
                         android:text="0 kcal"
                         android:textColor="#44554B"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -397,13 +397,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:minHeight="92dp"
+                    android:minHeight="84dp"
                     android:orientation="vertical"
                     android:padding="12dp">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:src="@drawable/fd_ic_add_circle"
                         android:tint="#4E5F50" />
 
@@ -413,13 +413,13 @@
                         android:layout_marginTop="8dp"
                         android:text="Thêm món ăn cho bữa trưa"
                         android:textColor="#4E5F50"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
+                    android:layout_marginTop="22dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -429,7 +429,7 @@
                         android:layout_weight="1"
                         android:text="Bữa tối"
                         android:textColor="#202722"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -438,7 +438,7 @@
                         android:layout_height="wrap_content"
                         android:text="0 kcal"
                         android:textColor="#44554B"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -458,13 +458,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:minHeight="92dp"
+                    android:minHeight="84dp"
                     android:orientation="vertical"
                     android:padding="12dp">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:src="@drawable/fd_ic_add_circle"
                         android:tint="#4E5F50" />
 
@@ -474,13 +474,13 @@
                         android:layout_marginTop="8dp"
                         android:text="Thêm món ăn cho bữa tối"
                         android:textColor="#4E5F50"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
+                    android:layout_marginTop="22dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -490,7 +490,7 @@
                         android:layout_weight="1"
                         android:text="Ăn nhẹ"
                         android:textColor="#202722"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -499,7 +499,7 @@
                         android:layout_height="wrap_content"
                         android:text="0 kcal"
                         android:textColor="#44554B"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -519,13 +519,13 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
-                    android:minHeight="92dp"
+                    android:minHeight="84dp"
                     android:orientation="vertical"
                     android:padding="12dp">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:src="@drawable/fd_ic_add_circle"
                         app:tint="#4E5F50" />
 
@@ -535,7 +535,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Thêm món ăn cho ăn nhẹ"
                         android:textColor="#4E5F50"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
@@ -577,3 +577,4 @@
         app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

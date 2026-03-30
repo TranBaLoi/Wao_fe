@@ -60,7 +60,7 @@
         <activity
             android:name=".FoodDiaryActivity"
             android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="false" />
 
         <!-- Add Food Screen -->
         <activity
