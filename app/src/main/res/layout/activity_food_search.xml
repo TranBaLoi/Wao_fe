@@ -1,205 +1,207 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green_light_bg"
-    android:orientation="vertical">
+    android:background="@color/green_light_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/green_light_bg"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="14dp">
-
-        <ImageButton
-            android:id="@+id/btnBackDiary"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/af_bg_icon_circle"
-            android:clickable="true"
-            android:contentDescription="Quay lại nhật ký"
-            android:focusable="true"
-            android:padding="12dp"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="#4D5950" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tìm Kiếm Món Ăn"
-                android:textColor="@color/green_dark"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvMealHint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Thêm cho bữa sáng"
-                android:textColor="#6A746E"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="KHÁM PHÁ DINH DƯỠNG"
-            android:textColor="#8D5601"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Tìm kiếm món ăn"
-            android:textColor="#1A221E"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+        android:paddingBottom="?attr/actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/fs_bg_search_input"
+            android:layout_height="wrap_content"
+            android:background="@color/green_light_bg"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
+            android:padding="14dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/fs_ic_search"
-                app:tint="#7E8882" />
+            <ImageButton
+                android:id="@+id/btnBackDiary"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/af_bg_icon_circle"
+                android:clickable="true"
+                android:contentDescription="Quay lại nhật ký"
+                android:focusable="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="#4D5950" />
 
-            <EditText
-                android:id="@+id/etSearchFood"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="Phở bò, Salad ức gà, Bún chả..."
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:paddingStart="10dp"
-                android:textColor="#2D3631"
-                android:textColorHint="#8F9792"
-                android:textSize="16sp" />
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tìm kiếm món ăn"
+                    android:textColor="@color/green_dark"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMealHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Thêm cho bữa sáng"
+                    android:textColor="#6A746E"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
-                android:id="@+id/chipAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/fs_bg_chip_selected"
-                android:paddingHorizontal="18dp"
-                android:paddingVertical="8dp"
-                android:text="Tất cả"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:text="KHÁM PHÁ DINH DƯỠNG"
+                android:textColor="#8D5601"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/chipPopular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/fs_bg_chip_normal"
-                android:paddingHorizontal="18dp"
-                android:paddingVertical="8dp"
-                android:text="Phổ biến"
-                android:textColor="#435046"
-                android:textSize="14sp" />
+                android:layout_marginTop="6dp"
+                android:text="Tìm kiếm món ăn"
+                android:textColor="#1A221E"
+                android:textSize="40sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/chipHealthy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/fs_bg_chip_normal"
-                android:paddingHorizontal="18dp"
-                android:paddingVertical="8dp"
-                android:text="Healthy"
-                android:textColor="#435046"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/fs_bg_search_input"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp"
-        android:scrollbars="none">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/fs_ic_search"
+                    app:tint="#7E8882" />
 
-        <LinearLayout
-            android:id="@+id/layoutSearchResults"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+                <EditText
+                    android:id="@+id/etSearchFood"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="Phở bò, Salad ức gà, Bún chả..."
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:paddingStart="10dp"
+                    android:textColor="#2D3631"
+                    android:textColorHint="#8F9792"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false">
-
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@android:color/white"
-            app:fabCradleMargin="10dp"
-            app:fabCradleRoundedCornerRadius="20dp"
-            app:fabCradleVerticalOffset="10dp">
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottomNavigationView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/transparent"
-                app:elevation="0dp"
-                app:itemIconTint="@color/green_dark"
-                app:itemTextColor="@color/green_dark"
-                app:labelVisibilityMode="labeled"
-                app:menu="@menu/bottom_nav_menu" />
-        </com.google.android.material.bottomappbar.BottomAppBar>
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddFood"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/chipAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/fs_bg_chip_selected"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Tất cả"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/chipPopular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/fs_bg_chip_normal"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Phổ biến"
+                    android:textColor="#435046"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/chipHealthy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/fs_bg_chip_normal"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="Healthy"
+                    android:textColor="#435046"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layoutSearchResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@android:color/white"
+        app:fabCradleMargin="10dp"
+        app:fabCradleRoundedCornerRadius="20dp"
+        app:fabCradleVerticalOffset="10dp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:contentDescription="Thêm món ăn mới"
-            android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/green_primary"
-            app:tint="@android:color/white" />
-    </FrameLayout>
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:itemIconTint="@color/green_dark"
+            app:itemTextColor="@color/green_dark"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_nav_menu" />
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddFood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Thêm món ăn mới"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/green_primary"
+        app:tint="@android:color/white"
+        app:layout_anchor="@id/bottomAppBar"
+        app:layout_anchorGravity="center" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

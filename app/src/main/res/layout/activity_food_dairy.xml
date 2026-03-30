@@ -569,11 +569,11 @@
         android:id="@+id/fabAddFood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
         android:contentDescription="Thêm món ăn mới"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/green_primary"
         app:layout_anchor="@id/bottomAppBar"
+        app:layout_anchorGravity="center"
         app:tint="@android:color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
