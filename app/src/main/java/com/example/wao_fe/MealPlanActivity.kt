@@ -1,20 +1,31 @@
 package com.example.wao_fe
 
 import android.animation.Animator
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieAnimationView
+import com.example.wao_fe.component.FloatingAddMenu
+import com.example.wao_fe.component.MealPlanItemMode
+import com.example.wao_fe.component.MealPlanItemRenderer
+import com.example.wao_fe.network.ApiResult
+import com.example.wao_fe.network.UserRepository
+import com.example.wao_fe.network.models.ApplyMealPlanRequest
 import com.example.wao_fe.network.models.MealPlanFoodResponse
+import com.example.wao_fe.network.models.MealPlanResponse
 import com.example.wao_fe.network.models.MealType
 import com.example.wao_fe.viewmodel.MealPlanState
 import com.example.wao_fe.viewmodel.MealPlanViewModel
@@ -22,6 +33,9 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,6 +43,7 @@ import java.util.Locale
 class MealPlanActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MealPlanViewModel
+    private val userRepository = UserRepository()
     private var userId: Long = -1
 
     private lateinit var tvDate: TextView
@@ -52,8 +67,25 @@ class MealPlanActivity : AppCompatActivity() {
     private lateinit var lottieOverlay: View
     private lateinit var lottieAnimation: LottieAnimationView
 
+    private lateinit var progressSavedPlans: ProgressBar
+    private lateinit var listSavedPlans: LinearLayout
+    private lateinit var tvSavedPlansEmpty: TextView
+
+    private var savedMealPlans: MutableList<MealPlanResponse> = mutableListOf()
+
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var fabAddFood: FloatingActionButton
+    private var floatingMenuDialog: android.app.Dialog? = null
+    private var isDraftApplied = false
+
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents.isNullOrBlank()) {
+            Toast.makeText(this, "Đã hủy quét", Toast.LENGTH_SHORT).show()
+        } else {
+            Log.i("BarcodeScan", "MealPlan scan: ${result.contents}")
+            Toast.makeText(this, "Mã vạch: ${result.contents}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +99,17 @@ class MealPlanActivity : AppCompatActivity() {
         initViews()
         setupListeners()
         observeViewModel()
+
+        if (userId == -1L) {
+            Toast.makeText(this, "Không tìm thấy người dùng", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (userId != -1L) {
+            loadSavedMealPlans()
+        }
     }
 
     private fun initViews() {
@@ -91,6 +134,10 @@ class MealPlanActivity : AppCompatActivity() {
         lottieOverlay = findViewById(R.id.lottieOverlay)
         lottieAnimation = findViewById(R.id.lottieAnimation)
 
+        progressSavedPlans = findViewById(R.id.progressSavedPlans)
+        listSavedPlans = findViewById(R.id.listSavedPlans)
+        tvSavedPlansEmpty = findViewById(R.id.tvSavedPlansEmpty)
+
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         fabAddFood = findViewById(R.id.fabAddFood)
 
@@ -110,11 +157,21 @@ class MealPlanActivity : AppCompatActivity() {
         }
 
         btnApply.setOnClickListener {
-            if (userId != -1L) {
-                viewModel.applyMealPlan(userId)
+            if (userId == -1L) return@setOnClickListener
+
+            if (!isDraftApplied) {
+                viewModel.applySuggestionToDraft(userId)
+            } else {
+                confirmSaveMealPlan()
             }
         }
-
+        fabAddFood.setOnClickListener {
+            if (floatingMenuDialog?.isShowing == true) {
+                floatingMenuDialog?.dismiss()
+            } else {
+                showFloatingMenu()
+            }
+        }
         bottomNavigationView.selectedItemId = R.id.nav_menu
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -149,9 +206,12 @@ class MealPlanActivity : AppCompatActivity() {
                     shimmerViewContainer.visibility = View.GONE
                     shimmerViewContainer.stopShimmer()
                     contentContainer.visibility = View.GONE
-                    emptyState.visibility = View.VISIBLE
+                    emptyState.visibility = if (savedMealPlans.isEmpty()) View.VISIBLE else View.GONE
                     bottomBar.visibility = View.GONE
                     fabGenerateAI.visibility = View.VISIBLE
+                    isDraftApplied = false
+                    btnApply.isEnabled = true
+                    btnApply.text = "✅ Áp dụng vào bản nháp"
                 }
                 is MealPlanState.Loading -> {
                     emptyState.visibility = View.GONE
@@ -162,7 +222,7 @@ class MealPlanActivity : AppCompatActivity() {
                     shimmerViewContainer.visibility = View.VISIBLE
                     shimmerViewContainer.startShimmer()
                 }
-                is MealPlanState.Success -> {
+                is MealPlanState.SuggestionReady -> {
                     shimmerViewContainer.stopShimmer()
                     shimmerViewContainer.visibility = View.GONE
                     emptyState.visibility = View.GONE
@@ -170,41 +230,71 @@ class MealPlanActivity : AppCompatActivity() {
                     bottomBar.visibility = View.VISIBLE
                     fabGenerateAI.visibility = View.VISIBLE
                     fabGenerateAI.text = "Gợi ý lại"
+                    isDraftApplied = false
+                    btnApply.isEnabled = true
+                    btnApply.text = "✅ Áp dụng vào bản nháp"
 
                     renderMealPlan(state.data.foods)
                 }
-                is MealPlanState.Error -> {
+                is MealPlanState.DraftReady -> {
                     shimmerViewContainer.stopShimmer()
                     shimmerViewContainer.visibility = View.GONE
-                    emptyState.visibility = View.VISIBLE
+                    emptyState.visibility = View.GONE
+                    contentContainer.visibility = View.VISIBLE
+                    bottomBar.visibility = View.VISIBLE
                     fabGenerateAI.visibility = View.VISIBLE
-                    Toast.makeText(this, "Lỗi: ${state.message}", Toast.LENGTH_LONG).show()
+                    isDraftApplied = true
+                    btnApply.isEnabled = true
+                    btnApply.text = "💾 Lưu vào Thực đơn"
+
+                    renderMealPlan(state.draft.previewFoods)
+                    Toast.makeText(this, "Đã thêm vào Thực đơn tạm", Toast.LENGTH_SHORT).show()
                 }
-                is MealPlanState.Applying -> {
+                is MealPlanState.SavingDraft -> {
                     btnApply.isEnabled = false
-                    btnApply.text = "Đang áp dụng..."
+                    btnApply.text = "Đang lưu..."
                 }
-                is MealPlanState.AppliedSuccess -> {
+                is MealPlanState.DraftSaved -> {
+                    btnApply.isEnabled = true
+                    btnApply.text = "💾 Lưu vào Thực đơn"
                     lottieOverlay.visibility = View.VISIBLE
+                    lottieAnimation.removeAllAnimatorListeners()
                     lottieAnimation.playAnimation()
 
                     lottieAnimation.addAnimatorListener(object : Animator.AnimatorListener {
                         override fun onAnimationStart(animation: Animator) {}
                         override fun onAnimationEnd(animation: Animator) {
-                            Toast.makeText(this@MealPlanActivity, "Đã áp dụng thực đơn hôm nay!", Toast.LENGTH_SHORT).show()
-                            finish()
+                            lottieOverlay.visibility = View.GONE
+                            Toast.makeText(this@MealPlanActivity, "Đã lưu Thực đơn thành công", Toast.LENGTH_SHORT).show()
+                            viewModel.resetState()
+                            loadSavedMealPlans()
                         }
                         override fun onAnimationCancel(animation: Animator) {}
                         override fun onAnimationRepeat(animation: Animator) {}
                     })
                 }
-                is MealPlanState.AppliedError -> {
+                is MealPlanState.Error -> {
+                    shimmerViewContainer.stopShimmer()
+                    shimmerViewContainer.visibility = View.GONE
+                    emptyState.visibility = if (savedMealPlans.isEmpty()) View.VISIBLE else View.GONE
+                    fabGenerateAI.visibility = View.VISIBLE
                     btnApply.isEnabled = true
-                    btnApply.text = "✅ Áp dụng Thực đơn này"
-                    Toast.makeText(this, "Lỗi áp dụng: ${state.message}", Toast.LENGTH_LONG).show()
+                    btnApply.text = if (isDraftApplied) "💾 Lưu vào Thực đơn" else "✅ Áp dụng vào bản nháp"
+                    Toast.makeText(this, "Lỗi: ${state.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
+    }
+
+    private fun confirmSaveMealPlan() {
+        AlertDialog.Builder(this)
+            .setTitle("Lưu Thực đơn")
+            .setMessage("Xác nhận lưu Thực đơn tạm lên hệ thống?")
+            .setNegativeButton("Hủy", null)
+            .setPositiveButton("Lưu") { _, _ ->
+                viewModel.saveDraftMealPlan()
+            }
+            .show()
     }
 
     private fun renderMealPlan(foods: List<MealPlanFoodResponse>) {
@@ -262,5 +352,202 @@ class MealPlanActivity : AppCompatActivity() {
 
         return view
     }
+
+    private fun showFloatingMenu() {
+        if (floatingMenuDialog == null) {
+            floatingMenuDialog = FloatingAddMenu.create(
+                activity = this,
+                onScanBarcode = { startBarcodeScanner() }
+            )
+            floatingMenuDialog?.setOnDismissListener {
+                floatingMenuDialog = null
+            }
+        }
+        floatingMenuDialog?.show()
+    }
+
+    private fun startBarcodeScanner() {
+        val options = ScanOptions().apply {
+            setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
+            setBeepEnabled(true)
+            setOrientationLocked(true)
+            setCaptureActivity(CustomScannerActivity::class.java)
+        }
+        barcodeLauncher.launch(options)
+    }
+
+    private fun loadSavedMealPlans() {
+        progressSavedPlans.visibility = View.VISIBLE
+        tvSavedPlansEmpty.visibility = View.GONE
+        listSavedPlans.visibility = View.GONE
+
+        lifecycleScope.launch {
+            when (val result = userRepository.getUserMealPlans(userId)) {
+                is ApiResult.Success -> {
+                    savedMealPlans = result.data.toMutableList()
+                    renderSavedMealPlans()
+                }
+                is ApiResult.Error -> {
+                    progressSavedPlans.visibility = View.GONE
+                    listSavedPlans.visibility = View.GONE
+                    tvSavedPlansEmpty.visibility = View.VISIBLE
+                    tvSavedPlansEmpty.text = "Không tải được danh sách Thực đơn"
+                    Toast.makeText(this@MealPlanActivity, result.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun renderSavedMealPlans() {
+        progressSavedPlans.visibility = View.GONE
+        listSavedPlans.removeAllViews()
+
+        if (savedMealPlans.isEmpty()) {
+            listSavedPlans.visibility = View.GONE
+            tvSavedPlansEmpty.visibility = View.VISIBLE
+            emptyState.visibility = View.VISIBLE
+            return
+        }
+
+        tvSavedPlansEmpty.visibility = View.GONE
+        listSavedPlans.visibility = View.VISIBLE
+        if (viewModel.state.value == MealPlanState.Idle) {
+            emptyState.visibility = View.GONE
+        }
+
+        MealPlanItemRenderer.render(
+            container = listSavedPlans,
+            mealPlans = savedMealPlans,
+            mode = MealPlanItemMode.MANAGE,
+            onViewDetail = { mealPlan ->
+                startActivity(
+                    Intent(this, MealPlanDetailActivity::class.java)
+                        .putExtra(SavedMealPlansActivity.EXTRA_MEAL_PLAN_ID, mealPlan.id)
+                )
+            },
+            onAdjust = { mealPlan ->
+                showAdjustMealPlanDialog(mealPlan)
+            },
+            onDelete = { mealPlan ->
+                confirmDeleteMealPlan(mealPlan)
+            },
+            onApply = { mealPlan ->
+                confirmApplyMealPlanToDiary(mealPlan)
+            }
+        )
+    }
+
+    private fun confirmApplyMealPlanToDiary(mealPlan: MealPlanResponse) {
+        AlertDialog.Builder(this)
+            .setTitle("Áp dụng vào Nhật ký")
+            .setMessage("Áp dụng '${mealPlan.name}' vào nhật ký ăn hôm nay?")
+            .setNegativeButton("Hủy", null)
+            .setPositiveButton("Áp dụng") { _, _ ->
+                applyMealPlanToDiary(mealPlan)
+            }
+            .show()
+    }
+
+    private fun applyMealPlanToDiary(mealPlan: MealPlanResponse) {
+        val logDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val request = ApplyMealPlanRequest(
+            userId = userId,
+            logDate = logDate
+        )
+
+        lifecycleScope.launch {
+            when (val result = userRepository.applyMealPlan(mealPlan.id, request)) {
+                is ApiResult.Success -> {
+                    Toast.makeText(
+                        this@MealPlanActivity,
+                        "Đã áp dụng vào Nhật Ký cho ngày $logDate",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is ApiResult.Error -> {
+                    Toast.makeText(this@MealPlanActivity, result.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun showAdjustMealPlanDialog(mealPlan: MealPlanResponse) {
+        val spacing = (12 * resources.displayMetrics.density).toInt()
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(spacing * 2, spacing, spacing * 2, 0)
+        }
+
+        val etName = EditText(this).apply {
+            hint = "Tên thực đơn"
+            setText(mealPlan.name)
+        }
+
+        val etDescription = EditText(this).apply {
+            hint = "Mô tả (có thể bỏ trống)"
+            setText(mealPlan.description.orEmpty())
+            minLines = 2
+        }
+
+        container.addView(etName)
+        container.addView(etDescription)
+
+        AlertDialog.Builder(this)
+            .setTitle("Điều chỉnh thực đơn")
+            .setView(container)
+            .setNegativeButton("Hủy", null)
+            .setPositiveButton("Tiếp tục") { _, _ ->
+                val editedName = etName.text?.toString()?.trim().orEmpty()
+                if (editedName.isEmpty()) {
+                    Toast.makeText(this, "Tên thực không được để trống", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val editedDescription = etDescription.text?.toString()?.trim()?.ifEmpty { null }
+                viewModel.editSavedMealPlan(
+                    userId = userId,
+                    mealPlan = mealPlan,
+                    nameOverride = editedName,
+                    descriptionOverride = editedDescription
+                )
+                Toast.makeText(this, "Đang chỉnh sửa bản nháp", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+    private fun confirmDeleteMealPlan(mealPlan: MealPlanResponse) {
+        AlertDialog.Builder(this)
+            .setTitle("Xóa thực đơn")
+            .setMessage("Bạn có chắc chắn muốn xóa '${mealPlan.name}'?")
+            .setNegativeButton("Hủy", null)
+            .setPositiveButton("Xóa") { _, _ ->
+                lifecycleScope.launch {
+                    when (val result = userRepository.deleteMealPlan(mealPlan.id)) {
+                        is ApiResult.Success -> {
+                            savedMealPlans.removeAll { it.id == mealPlan.id }
+                            renderSavedMealPlans()
+                            Toast.makeText(
+                                this@MealPlanActivity,
+                                "Đã xóa Thực đơn.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is ApiResult.Error -> {
+                            Toast.makeText(this@MealPlanActivity, result.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+            .show()
+    }
+
+    override fun onDestroy() {
+        floatingMenuDialog?.setOnDismissListener(null)
+        runCatching { floatingMenuDialog?.dismiss() }
+        floatingMenuDialog = null
+        super.onDestroy()
+    }
 }
+
 

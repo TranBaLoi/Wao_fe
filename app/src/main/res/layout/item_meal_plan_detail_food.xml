@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="12dp"
+    android:background="@drawable/bg_card_white"
+    android:elevation="2dp"
+    android:padding="16dp">
+
+    <!-- 1. Tên món ăn (To, In đậm) -->
+    <TextView
+        android:id="@+id/tvFoodName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/wao_slate_900"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Thịt bò xào súp lơ xanh" />
+
+    <!-- 2. Hàng chứa Khẩu phần và Dinh dưỡng -->
+    <LinearLayout
+        android:id="@+id/layoutQuickInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tvFoodName">
+
+        <!-- Khẩu phần -->
+        <TextView
+            android:id="@+id/tvServing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip_gray"
+            android:drawablePadding="6dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/wao_slate_800"
+            android:textSize="12sp"
+            app:drawableTint="@color/wao_slate_500"
+            tools:text="1 phần (200g)" />
+
+        <!-- Dinh dưỡng (Macros/Calo) -->
+        <TextView
+            android:id="@+id/tvNutrition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_chip_green_light"
+            android:drawablePadding="6dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:textColor="#166534"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_fitness_center"
+            app:drawableTint="#166534"
+            tools:text="350 kcal | P: 25g" />
+    </LinearLayout>
+
+    <!-- Đường kẻ ngang phân cách nhẹ nhàng -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#E2E8F0"
+        app:layout_constraintTop_toBottomOf="@id/layoutQuickInfo" />
+
+    <!-- 3. Khu vực Nguyên liệu -->
+    <TextView
+        android:id="@+id/labelIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Nguyên liệu:"
+        android:textColor="@color/wao_slate_800"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:drawableTint="@color/green_dark"
+        android:drawablePadding="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
+
+    <TextView
+        android:id="@+id/tvIngredients"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:lineSpacingExtra="4dp"
+        android:textColor="@color/wao_slate_600"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/labelIngredients"
+        tools:text="• 150g thịt bò thăn\n• 100g súp lơ xanh\n• Tỏi, dầu hào, tiêu" />
+
+    <!-- 4. Khu vực Cách làm (Đặt trong một box màu xám nhạt để nhấn mạnh) -->
+    <LinearLayout
+        android:id="@+id/layoutGuide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/tvIngredients">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hướng dẫn chế biến"
+            android:textColor="@color/wao_slate_800"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:drawableTint="@color/wao_slate_600"
+            android:drawablePadding="6dp" />
+
+        <TextView
+            android:id="@+id/tvGuide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:lineSpacingExtra="4dp"
+            android:textColor="@color/wao_slate_600"
+            android:textSize="13sp"
+            tools:text="1. Ướp thịt bò với tỏi và dầu hào trong 15 phút.\n2. Chần súp lơ qua nước sôi.\n3. Xào thịt bò lửa lớn, cho súp lơ vào đảo đều rồi tắt bếp." />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

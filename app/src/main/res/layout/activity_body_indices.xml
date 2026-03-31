@@ -288,11 +288,12 @@
                             android:id="@+id/btnDecreaseWeight"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:padding="12dp"
-                            android:src="@drawable/ic_wao_leaf"
-                            android:rotation="270"
-                            android:background="@drawable/circle_primary_alpha"
-                            app:tint="@color/green_dark"/>
+                             android:src="@drawable/ic_minus"
+                             android:padding="8dp"
+                             android:background="@drawable/circle_primary_alpha"
+                             app:tint="@color/green_dark"
+                             android:clickable="true"
+                             android:focusable="true"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -308,11 +309,12 @@
                             android:id="@+id/btnIncreaseWeight"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:padding="12dp"
-                            android:src="@drawable/ic_wao_leaf"
-                            android:rotation="90"
+                            android:src="@drawable/ic_minus"
+                            android:padding="8dp"
                             android:background="@drawable/circle_primary_alpha"
-                            app:tint="@color/green_dark"/>
+                            app:tint="@color/green_dark"
+                            android:clickable="true"
+                            android:focusable="true"/>
                     </LinearLayout>
 
                     <!-- BMI Result -->

@@ -114,11 +114,16 @@ Request body:
 ```
 Response `200` (khong body)
 
+### POST `/api/users/upload-avatar`
+Request form-data:
+- `file` (MultipartFile): File ảnh đại diện cần upload.
+Response `200`: `{"imgUrl": "https://avatar-url.com/image.jpg"}`
+
 ### POST `/api/users/{id}/avatar`
 Path param: `id` (Long)
 Request form-data:
 - `file` (MultipartFile): File ảnh đại diện cần upload.
-Response `200`: `UserDto.Response` (User có thông tin `img` mới được upload)
+Response `200`: `{"imgUrl": "https://avatar-url.com/image.jpg"}`
 
 ### DELETE `/api/users/{id}`
 Path param: `id` (Long)

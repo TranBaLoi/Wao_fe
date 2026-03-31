@@ -3,6 +3,7 @@
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,11 +13,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.wao_fe.component.FloatingAddMenu
 import com.example.wao_fe.network.NetworkClient
 import com.example.wao_fe.network.models.FoodResponse
 import com.example.wao_fe.network.models.MealType
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -34,6 +38,16 @@ class FoodDetailActivity : AppCompatActivity() {
 
     private var foodId: Long = -1L
     private var fallbackName: String = "Mon an"
+    private var floatingMenuDialog: android.app.Dialog? = null
+
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents.isNullOrBlank()) {
+            toast("Đã hủy quét")
+        } else {
+            Log.i("BarcodeScan", "FoodDetail scan: ${result.contents}")
+            toast("Mã vạch: ${result.contents}")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +88,11 @@ class FoodDetailActivity : AppCompatActivity() {
         })
 
         findViewById<FloatingActionButton>(R.id.fabAddFood).setOnClickListener {
-            startActivity(Intent(this, AddFoodActivity::class.java))
+            if (floatingMenuDialog?.isShowing == true) {
+                floatingMenuDialog?.dismiss()
+            } else {
+                showFloatingMenu()
+            }
         }
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
@@ -123,6 +141,32 @@ class FoodDetailActivity : AppCompatActivity() {
         tvCarbs.text = "0g"
         tvFat.text = "0g"
         tvServing.text = "Chua cap nhat khau phan"
+    }
+
+    private fun showFloatingMenu() {
+        if (floatingMenuDialog == null) {
+            floatingMenuDialog = FloatingAddMenu.create(
+                activity = this,
+                onScanBarcode = { startBarcodeScanner() },
+                onCreateFood = {
+                    startActivity(Intent(this, AddFoodActivity::class.java))
+                }
+            )
+            floatingMenuDialog?.setOnDismissListener {
+                floatingMenuDialog = null
+            }
+        }
+        floatingMenuDialog?.show()
+    }
+
+    private fun startBarcodeScanner() {
+        val options = ScanOptions().apply {
+            setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
+            setBeepEnabled(true)
+            setOrientationLocked(true)
+            setCaptureActivity(CustomScannerActivity::class.java)
+        }
+        barcodeLauncher.launch(options)
     }
 
     private fun loadFoodDetail() {
@@ -186,6 +230,13 @@ class FoodDetailActivity : AppCompatActivity() {
         }
         startActivity(intent)
         finish()
+    }
+
+    override fun onDestroy() {
+        floatingMenuDialog?.setOnDismissListener(null)
+        runCatching { floatingMenuDialog?.dismiss() }
+        floatingMenuDialog = null
+        super.onDestroy()
     }
 
     companion object {

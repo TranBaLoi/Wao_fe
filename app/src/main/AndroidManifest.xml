@@ -133,6 +133,16 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".SavedMealPlansActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".MealPlanDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <!-- Settings Screen -->
         <activity
             android:name=".SettingsActivity"

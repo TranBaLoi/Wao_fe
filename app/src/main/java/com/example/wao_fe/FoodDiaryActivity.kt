@@ -3,6 +3,7 @@
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -18,8 +19,11 @@ import com.example.wao_fe.network.models.FoodLogResponse
 import com.example.wao_fe.network.models.FoodResponse
 import com.example.wao_fe.network.models.MealType
 import com.bumptech.glide.Glide
+import com.example.wao_fe.component.FloatingAddMenu
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.text.SimpleDateFormat
@@ -48,6 +52,7 @@ class FoodDiaryActivity : AppCompatActivity() {
     private var targetCalories: Double = 2000.0
     private var allFoods: List<FoodResponse> = emptyList()
     private var foodById: Map<Long, FoodResponse> = emptyMap()
+    private var floatingMenuDialog: android.app.Dialog? = null
 
     private val addFoodLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -62,6 +67,15 @@ class FoodDiaryActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             loadDiaryData()
+        }
+    }
+
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents.isNullOrBlank()) {
+            toast("Đã hủy quét")
+        } else {
+            Log.i("BarcodeScan", "FoodDiary scan: ${result.contents}")
+            toast("Mã vạch: ${result.contents}")
         }
     }
 
@@ -132,7 +146,11 @@ class FoodDiaryActivity : AppCompatActivity() {
         }
 
         findViewById<FloatingActionButton>(R.id.fabAddFood).setOnClickListener {
-            addFoodLauncher.launch(Intent(this, AddFoodActivity::class.java))
+            if (floatingMenuDialog?.isShowing == true) {
+                floatingMenuDialog?.dismiss()
+            } else {
+                showFloatingMenu()
+            }
         }
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
@@ -170,6 +188,32 @@ class FoodDiaryActivity : AppCompatActivity() {
     private fun setupDate() {
         val formatter = SimpleDateFormat("EEEE, dd/MM", Locale("vi", "VN"))
         tvDiaryDate.text = formatter.format(java.util.Date())
+    }
+
+    private fun showFloatingMenu() {
+        if (floatingMenuDialog == null) {
+            floatingMenuDialog = FloatingAddMenu.create(
+                activity = this,
+                onScanBarcode = { startBarcodeScanner() },
+                onCreateFood = {
+                    addFoodLauncher.launch(Intent(this, AddFoodActivity::class.java))
+                }
+            )
+            floatingMenuDialog?.setOnDismissListener {
+                floatingMenuDialog = null
+            }
+        }
+        floatingMenuDialog?.show()
+    }
+
+    private fun startBarcodeScanner() {
+        val options = ScanOptions().apply {
+            setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
+            setBeepEnabled(true)
+            setOrientationLocked(true)
+            setCaptureActivity(CustomScannerActivity::class.java)
+        }
+        barcodeLauncher.launch(options)
     }
 
     private fun loadDiaryData() {
@@ -385,6 +429,13 @@ class FoodDiaryActivity : AppCompatActivity() {
 
     private fun toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        floatingMenuDialog?.setOnDismissListener(null)
+        runCatching { floatingMenuDialog?.dismiss() }
+        floatingMenuDialog = null
+        super.onDestroy()
     }
 
     private data class MealSectionViews(

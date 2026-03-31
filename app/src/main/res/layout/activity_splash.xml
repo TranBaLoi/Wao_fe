@@ -140,7 +140,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/wao_card_gradient"/>
+                    android:background="@drawable/img_splash"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -177,7 +177,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Bắt đầu hành trình dinh dưỡng của bạn ngay hôm nay cùng cộng đồng Wao."
-                        android:textColor="@color/wao_slate_100"
+                        android:textColor="@color/black"
                         android:textSize="14sp"
                         android:fontFamily="sans-serif-medium"/>
                 </LinearLayout>

@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.wao_fe.namstats.StatisticsDashboardActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.wao_fe.component.FloatingAddMenu
 import com.example.wao_fe.network.ApiResult
 import com.example.wao_fe.network.OpenFoodFactsApi
 import com.example.wao_fe.network.UserRepository
@@ -41,11 +42,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabAddFood: FloatingActionButton
     private lateinit var ivAvatar: ImageView
     private lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
+    private lateinit var btnUpdateWeight: android.widget.Button
 
+    private var floatingMenuDialog: android.app.Dialog? = null
     private val userRepository = UserRepository()
     private var userId: Long = -1
-
-    private var addFoodBottomSheetDialog: com.google.android.material.bottomsheet.BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +78,12 @@ class MainActivity : AppCompatActivity() {
         fabAddFood = findViewById(R.id.fabAddFood)
         ivAvatar = findViewById(R.id.ivAvatar)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
+        btnUpdateWeight = findViewById(R.id.btnUpdateWeight)
+
+        btnUpdateWeight.setOnClickListener {
+            val bottomSheet = UpdateWeightBottomSheet()
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        }
 
         ivAvatar.setOnClickListener {
             startActivity(android.content.Intent(this, EditProfileActivity::class.java))
@@ -108,10 +115,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<TextView>(R.id.btnLogFood).setOnClickListener {
+        /*
+        findViewById<TextView>(R.id.btnLogFood)?.setOnClickListener {
             Toast.makeText(this, "Tính năng Thêm món ăn đang phát triển", Toast.LENGTH_SHORT).show()
         }
-        findViewById<TextView>(R.id.btnLogWorkout).setOnClickListener {
+        findViewById<TextView>(R.id.btnLogWorkout)?.setOnClickListener {
             Toast.makeText(this, "Tính năng Ghi nhận tập luyện đang phát triển", Toast.LENGTH_SHORT).show()
         }
 
@@ -121,72 +129,28 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, StatisticsDashboardActivity::class.java))
             }
         }
+        */
 
-        fabAddFood.setOnClickListener { view ->
-            if (addFoodBottomSheetDialog?.isShowing == true) {
-                addFoodBottomSheetDialog?.dismiss()
-                addFoodBottomSheetDialog = null
+        fabAddFood.setOnClickListener {
+            if (floatingMenuDialog?.isShowing == true) {
+                floatingMenuDialog?.dismiss()
             } else {
-                showAddFoodBottomSheet()
+                showFloatingMenu()
             }
         }
     }
 
-    private fun showAddFoodBottomSheet() {
-        if (addFoodBottomSheetDialog == null) {
-            addFoodBottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+    private fun showFloatingMenu() {
+        if (floatingMenuDialog == null) {
+            floatingMenuDialog = FloatingAddMenu.create(
+                activity = this,
+                onScanBarcode = { startBarcodeScanner() }
+            )
+            floatingMenuDialog?.setOnDismissListener {
+                floatingMenuDialog = null
+            }
         }
-        val bottomSheetDialog = addFoodBottomSheetDialog!!
-        val view = layoutInflater.inflate(R.layout.layout_bottom_sheet_add, null)
-        bottomSheetDialog.setContentView(view)
-
-        // Make sure it clears the reference on dismiss
-        bottomSheetDialog.setOnDismissListener {
-            addFoodBottomSheetDialog = null
-        }
-
-        // Find buttons in bottom sheet
-        view.findViewById<android.view.View>(R.id.btnSearchFood).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Ghi lại bữa ăn", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnScanBarcode).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            startBarcodeScanner()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnVoiceNote).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Ghi bằng giọng nói đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnLogWater).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Uống nước đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnLogActivity).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Ghi lại hoạt động đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnLogWeight).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Cân nặng đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnCreateRecipe).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Tạo công thức đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        view.findViewById<android.view.View>(R.id.btnCreateFood).setOnClickListener {
-            bottomSheetDialog.dismiss()
-            Toast.makeText(this, "Tính năng Tạo thực phẩm đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        bottomSheetDialog.show()
+        floatingMenuDialog?.show()
     }
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
@@ -341,5 +305,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        floatingMenuDialog?.setOnDismissListener(null)
+        runCatching { floatingMenuDialog?.dismiss() }
+        floatingMenuDialog = null
+        super.onDestroy()
     }
 }

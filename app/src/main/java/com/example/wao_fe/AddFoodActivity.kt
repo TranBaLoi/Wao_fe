@@ -17,12 +17,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.wao_fe.component.FloatingAddMenu
 import com.example.wao_fe.network.NetworkClient
 import com.example.wao_fe.network.models.FoodRequest
 import com.example.wao_fe.network.models.MealType
 import com.google.gson.Gson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -49,6 +52,7 @@ class AddFoodActivity : AppCompatActivity() {
 
     private var selectedImageUri: Uri? = null
     private var isSaving = false
+    private var floatingMenuDialog: android.app.Dialog? = null
 
     private val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
@@ -56,6 +60,14 @@ class AddFoodActivity : AppCompatActivity() {
             ivUploaded.visibility = View.VISIBLE
             layoutUploadPlaceholder.visibility = View.GONE
             ivUploaded.setImageURI(uri)
+        }
+    }
+
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        if (result.contents.isNullOrBlank()) {
+            toast("Đã hủy quét")
+        } else {
+            toast("Mã vạch: ${result.contents}")
         }
     }
 
@@ -104,7 +116,11 @@ class AddFoodActivity : AppCompatActivity() {
         }
 
         findViewById<FloatingActionButton>(R.id.fabAddFood).setOnClickListener {
-            // Already on add screen
+            if (floatingMenuDialog?.isShowing == true) {
+                floatingMenuDialog?.dismiss()
+            } else {
+                showFloatingMenu()
+            }
         }
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
@@ -144,6 +160,30 @@ class AddFoodActivity : AppCompatActivity() {
                 submitCreateFood()
             }
         }
+    }
+
+    private fun showFloatingMenu() {
+        if (floatingMenuDialog == null) {
+            floatingMenuDialog = FloatingAddMenu.create(
+                activity = this,
+                onScanBarcode = { startBarcodeScanner() },
+                onCreateFood = { toast("Bạn đang ở trang tạo thực phẩm") }
+            )
+            floatingMenuDialog?.setOnDismissListener {
+                floatingMenuDialog = null
+            }
+        }
+        floatingMenuDialog?.show()
+    }
+
+    private fun startBarcodeScanner() {
+        val options = ScanOptions().apply {
+            setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
+            setBeepEnabled(true)
+            setOrientationLocked(true)
+            setCaptureActivity(CustomScannerActivity::class.java)
+        }
+        barcodeLauncher.launch(options)
     }
 
     private fun submitCreateFood() {
@@ -248,5 +288,12 @@ class AddFoodActivity : AppCompatActivity() {
             }
         )
         finish()
+    }
+
+    override fun onDestroy() {
+        floatingMenuDialog?.setOnDismissListener(null)
+        runCatching { floatingMenuDialog?.dismiss() }
+        floatingMenuDialog = null
+        super.onDestroy()
     }
 }

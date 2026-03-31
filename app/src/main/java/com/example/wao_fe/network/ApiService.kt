@@ -178,6 +178,12 @@ interface ApiService {
     @GET("api/meal-plans/{id}")
     suspend fun getMealPlanById(@Path("id") id: Long): MealPlanResponse
 
+    @PUT("api/meal-plans/{id}")
+    suspend fun updateMealPlan(
+        @Path("id") id: Long,
+        @Body request: MealPlanRequest
+    ): MealPlanResponse
+
     @DELETE("api/meal-plans/{id}")
     suspend fun deleteMealPlan(@Path("id") id: Long)
 

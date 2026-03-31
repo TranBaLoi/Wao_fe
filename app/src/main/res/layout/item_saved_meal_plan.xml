@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:background="@drawable/bg_card_white"
+	android:padding="16dp"
+	android:layout_marginBottom="12dp"
+	android:clickable="true"
+	android:focusable="true"
+	android:foreground="?attr/selectableItemBackground">
+
+	<TextView
+		android:id="@+id/tvMealPlanName"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Thuc don"
+		android:textColor="@color/wao_slate_900"
+		android:textSize="17sp"
+		android:textStyle="bold" />
+
+	<TextView
+		android:id="@+id/tvMealPlanMeta"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="6dp"
+		android:text="Loai"
+		android:textColor="@color/wao_slate_600"
+		android:textSize="13sp" />
+
+	<TextView
+		android:id="@+id/tvFoodsCount"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="4dp"
+		android:text="0 mon an"
+		android:textColor="@color/wao_slate_500"
+		android:textSize="13sp" />
+</LinearLayout>
+

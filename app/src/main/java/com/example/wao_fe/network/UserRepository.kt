@@ -12,6 +12,7 @@ import com.example.wao_fe.network.models.MealPlanResponse
 import com.example.wao_fe.network.models.WorkoutProgramRequest
 import com.example.wao_fe.network.models.WorkoutProgramResponse
 import com.example.wao_fe.network.models.ApplyMealPlanRequest
+import com.example.wao_fe.network.models.MealPlanRequest
 import com.example.wao_fe.network.models.UpdateUserRequest
 
 sealed class ApiResult<out T> {
@@ -85,12 +86,28 @@ class UserRepository(
         return safeApiCall { apiService.getMealPlanById(id) }
     }
 
+    suspend fun getUserMealPlans(userId: Long): ApiResult<List<MealPlanResponse>> {
+        return safeApiCall { apiService.getUserMealPlans(userId) }
+    }
+
+    suspend fun createMealPlan(request: MealPlanRequest): ApiResult<MealPlanResponse> {
+        return safeApiCall { apiService.createMealPlan(request) }
+    }
+
+    suspend fun updateMealPlan(mealPlanId: Long, request: MealPlanRequest): ApiResult<MealPlanResponse> {
+        return safeApiCall { apiService.updateMealPlan(mealPlanId, request) }
+    }
+
     suspend fun generateMealPlan(userId: Long, date: String): ApiResult<MealPlanResponse> {
         return safeApiCall { apiService.generateMealPlan(userId, date) }
     }
 
     suspend fun applyMealPlan(mealPlanId: Long, request: ApplyMealPlanRequest): ApiResult<Unit> {
         return safeApiCall { apiService.applyMealPlan(mealPlanId, request) }
+    }
+
+    suspend fun deleteMealPlan(mealPlanId: Long): ApiResult<Unit> {
+        return safeApiCall { apiService.deleteMealPlan(mealPlanId) }
     }
 
     // Workout programs

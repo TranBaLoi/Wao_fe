@@ -59,4 +59,43 @@
     <string name="loading">Đang tải...</string>
     <string name="placeholder_dots">...</string>
     <string name="logout">Đăng xuất</string>
+
+    <!-- Edit Profile -->
+    <string name="edit_profile_title">Chỉnh sửa thông tin</string>
+    <string name="edit_profile_full_name">Họ và tên</string>
+    <string name="edit_profile_full_name_hint">Nhập tên hiển thị của bạn</string>
+    <string name="edit_profile_gender">Giới tính</string>
+    <string name="edit_profile_dob">Ngày sinh (YYYY-MM-DD)</string>
+    <string name="edit_profile_dob_hint">VD: 1998-01-20</string>
+    <string name="edit_profile_height">Chiều cao (cm)</string>
+    <string name="edit_profile_height_hint">172.0</string>
+    <string name="edit_profile_target_days">Thời gian (ngày)</string>
+    <string name="edit_profile_target_days_hint">90</string>
+    <string name="edit_profile_activity_level">Mức độ vận động</string>
+    <string name="edit_profile_goal_type">Mục tiêu cá nhân</string>
+    <string name="edit_profile_allergies">Dị ứng (cách nhau bởi dấu phẩy)</string>
+    <string name="edit_profile_allergies_hint">VD: PEANUT, MILK</string>
+    <string name="edit_profile_save">Lưu thay đổi</string>
+    <string name="edit_profile_saving">Đang lưu...</string>
+
+    <string name="gender_male">Nam</string>
+    <string name="gender_female">Nữ</string>
+    <string name="gender_other">Khác</string>
+
+    <string name="activity_sedentary">Ít vận động</string>
+    <string name="activity_lightly_active">Vận động nhẹ</string>
+    <string name="activity_moderately_active">Vận động vừa</string>
+    <string name="activity_very_active">Vận động nhiều</string>
+    <string name="activity_extra_active">Vận động rất nhiều</string>
+
+    <string name="goal_lose_weight">Giảm cân</string>
+    <string name="goal_gain_weight">Tăng cân</string>
+    <string name="goal_maintain">Giữ cân</string>
+
+    <string name="edit_profile_fill_required">Vui lòng nhập đầy đủ thông tin</string>
+    <string name="edit_profile_missing_user_id">Lỗi không tìm thấy ID người dùng</string>
+    <string name="edit_profile_missing_existing_profile">Không thể lưu vì chưa tải được hồ sơ hiện tại</string>
+    <string name="edit_profile_user_error">Lỗi thông tin người dùng: %1$s</string>
+    <string name="edit_profile_health_error">Lỗi hồ sơ sức khỏe: %1$s</string>
+    <string name="edit_profile_save_success">Đã lưu toàn bộ thông tin!</string>
 </resources>

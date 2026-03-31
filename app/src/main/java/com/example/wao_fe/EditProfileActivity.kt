@@ -20,7 +20,9 @@ import com.example.wao_fe.network.models.ActivityLevel
 import com.example.wao_fe.network.models.CreateHealthProfileRequest
 import com.example.wao_fe.network.models.Gender
 import com.example.wao_fe.network.models.GoalType
+import com.example.wao_fe.network.models.HealthProfileResponse
 import com.example.wao_fe.network.models.UpdateUserRequest
+import java.util.Locale
 import kotlinx.coroutines.launch
 
 class EditProfileActivity : AppCompatActivity() {
@@ -32,7 +34,6 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var spinnerGender: Spinner
     private lateinit var etDob: EditText
     private lateinit var etHeight: EditText
-    private lateinit var etWeight: EditText
     private lateinit var etDesiredWeight: EditText
     private lateinit var etTargetDays: EditText
     private lateinit var spinnerActivityLevel: Spinner
@@ -43,6 +44,28 @@ class EditProfileActivity : AppCompatActivity() {
 
     private var userId: Long = -1
     private val userRepository = UserRepository()
+    private var currentHealthProfile: HealthProfileResponse? = null
+
+    private data class SpinnerOption<T>(val label: String, val value: T)
+
+    private lateinit var genderOptions: List<SpinnerOption<Gender>>
+    private lateinit var activityOptions: List<SpinnerOption<ActivityLevel>>
+    private lateinit var goalOptions: List<SpinnerOption<GoalType>>
+
+    // Display Vietnamese labels in UI while keeping API-safe tokens when saving.
+    private val allergyViMap = mapOf(
+        "SEAFOOD" to "🦐 Hải sản (Seafood)",
+        "PEANUT" to "🥜 Đậu phộng (Peanut)",
+        "DAIRY" to "🥛 Sữa (Dairy)",
+        "GLUTEN" to "🥖 Gluten",
+        "EGG" to "🥚 Trứng (Egg)",
+        "SOY" to "🫘 Đậu nành (Soy)",
+        "TREE_NUT" to "🌰 Hạt cây (Tree Nut)",
+        "FISH" to "🐠 Cá (Fish)",
+        "MILK" to "🥛 Sữa (Dairy)"
+    )
+
+    private val allergyApiMap = allergyViMap.entries.associate { (api, vi) -> vi.lowercase(Locale.ROOT) to api }
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
@@ -90,7 +113,6 @@ class EditProfileActivity : AppCompatActivity() {
         spinnerGender = findViewById(R.id.spinnerGender)
         etDob = findViewById(R.id.etDob)
         etHeight = findViewById(R.id.etHeight)
-        etWeight = findViewById(R.id.etWeight)
         etDesiredWeight = findViewById(R.id.etDesiredWeight)
         etTargetDays = findViewById(R.id.etTargetDays)
         spinnerActivityLevel = findViewById(R.id.spinnerActivityLevel)
@@ -101,14 +123,40 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun setupSpinners() {
-        val genders = arrayOf("MALE", "FEMALE", "OTHER")
-        spinnerGender.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, genders)
+        genderOptions = listOf(
+            SpinnerOption(getString(R.string.gender_male), Gender.MALE),
+            SpinnerOption(getString(R.string.gender_female), Gender.FEMALE),
+            SpinnerOption(getString(R.string.gender_other), Gender.OTHER)
+        )
+        spinnerGender.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            genderOptions.map { it.label }
+        )
 
-        val activities = arrayOf("SEDENTARY", "LIGHTLY_ACTIVE", "MODERATELY_ACTIVE", "VERY_ACTIVE", "EXTRA_ACTIVE")
-        spinnerActivityLevel.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, activities)
+        activityOptions = listOf(
+            SpinnerOption(getString(R.string.activity_sedentary), ActivityLevel.SEDENTARY),
+            SpinnerOption(getString(R.string.activity_lightly_active), ActivityLevel.LIGHTLY_ACTIVE),
+            SpinnerOption(getString(R.string.activity_moderately_active), ActivityLevel.MODERATELY_ACTIVE),
+            SpinnerOption(getString(R.string.activity_very_active), ActivityLevel.VERY_ACTIVE),
+            SpinnerOption(getString(R.string.activity_extra_active), ActivityLevel.EXTRA_ACTIVE)
+        )
+        spinnerActivityLevel.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            activityOptions.map { it.label }
+        )
 
-        val goals = arrayOf("LOSE_WEIGHT", "GAIN_WEIGHT", "MAINTAIN")
-        spinnerGoalType.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, goals)
+        goalOptions = listOf(
+            SpinnerOption(getString(R.string.goal_lose_weight), GoalType.LOSE_WEIGHT),
+            SpinnerOption(getString(R.string.goal_gain_weight), GoalType.GAIN_WEIGHT),
+            SpinnerOption(getString(R.string.goal_maintain), GoalType.MAINTAIN)
+        )
+        spinnerGoalType.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            goalOptions.map { it.label }
+        )
     }
 
     private fun loadCurrentProfile() {
@@ -125,21 +173,25 @@ class EditProfileActivity : AppCompatActivity() {
             when (val result = userRepository.getLatestHealthProfile(userId)) {
                 is ApiResult.Success -> {
                     val profile = result.data
+                    currentHealthProfile = profile
 
-                    val genders = arrayOf("MALE", "FEMALE", "OTHER")
-                    spinnerGender.setSelection(genders.indexOf(profile.gender.name).takeIf { it >= 0 } ?: 0)
+                    spinnerGender.setSelection(
+                        genderOptions.indexOfFirst { it.value == profile.gender }.takeIf { it >= 0 } ?: 0
+                    )
 
                     etDob.setText(profile.dob)
                     etHeight.setText(profile.heightCm.toString())
-                    etWeight.setText(profile.weightKg.toString())
                     etDesiredWeight.setText(profile.desiredWeightKg.toString())
                     etTargetDays.setText(profile.targetDays.toString())
+                    etAllergies.setText(localizeAllergiesForDisplay(profile.allergies))
 
-                    val activities = arrayOf("SEDENTARY", "LIGHTLY_ACTIVE", "MODERATELY_ACTIVE", "VERY_ACTIVE", "EXTRA_ACTIVE")
-                    spinnerActivityLevel.setSelection(activities.indexOf(profile.activityLevel.name).takeIf { it >= 0 } ?: 0)
+                    spinnerActivityLevel.setSelection(
+                        activityOptions.indexOfFirst { it.value == profile.activityLevel }.takeIf { it >= 0 } ?: 0
+                    )
 
-                    val goals = arrayOf("LOSE_WEIGHT", "GAIN_WEIGHT", "MAINTAIN")
-                    spinnerGoalType.setSelection(goals.indexOf(profile.goalType.name).takeIf { it >= 0 } ?: 0)
+                    spinnerGoalType.setSelection(
+                        goalOptions.indexOfFirst { it.value == profile.goalType }.takeIf { it >= 0 } ?: 0
+                    )
                 }
                 else -> {}
             }
@@ -162,23 +214,28 @@ class EditProfileActivity : AppCompatActivity() {
         val newName = etFullName.text.toString().trim()
         val dob = etDob.text.toString().trim()
         val heightStr = etHeight.text.toString()
-        val weightStr = etWeight.text.toString()
         val desiredWeightStr = etDesiredWeight.text.toString()
         val targetDaysStr = etTargetDays.text.toString()
-        val allergies = etAllergies.text.toString().trim().takeIf { it.isNotEmpty() }
+        val allergies = normalizeAllergiesForApi(etAllergies.text.toString())
 
-        if (newName.isEmpty() || dob.isEmpty() || heightStr.isEmpty() || weightStr.isEmpty() || desiredWeightStr.isEmpty() || targetDaysStr.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
+        if (newName.isEmpty() || dob.isEmpty() || heightStr.isEmpty() || targetDaysStr.isEmpty()) {
+            Toast.makeText(this, getString(R.string.edit_profile_fill_required), Toast.LENGTH_SHORT).show()
             return
         }
 
         if (userId == -1L) {
-            Toast.makeText(this, "Lỗi không tìm thấy ID người dùng", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.edit_profile_missing_user_id), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val existingProfile = currentHealthProfile
+        if (existingProfile == null) {
+            Toast.makeText(this, getString(R.string.edit_profile_missing_existing_profile), Toast.LENGTH_SHORT).show()
             return
         }
 
         btnSave.isEnabled = false
-        btnSave.text = "Đang lưu..."
+        btnSave.text = getString(R.string.edit_profile_saving)
 
         lifecycleScope.launch {
             // Update User Name
@@ -190,39 +247,71 @@ class EditProfileActivity : AppCompatActivity() {
                     true
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this@EditProfileActivity, "Lỗi User: ${res.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@EditProfileActivity,
+                        getString(R.string.edit_profile_user_error, res.message),
+                        Toast.LENGTH_LONG
+                    ).show()
                     false
                 }
             }
 
-            // Create New Health Profile
+            // Keep hidden fields unchanged by reusing values from the existing profile.
             val healthRequest = CreateHealthProfileRequest(
-                gender = Gender.valueOf(spinnerGender.selectedItem.toString()),
+                gender = genderOptions.getOrNull(spinnerGender.selectedItemPosition)?.value ?: existingProfile.gender,
                 dob = dob,
                 heightCm = heightStr.toDoubleOrNull() ?: 170.0,
-                weightKg = weightStr.toDoubleOrNull() ?: 60.0,
-                activityLevel = ActivityLevel.valueOf(spinnerActivityLevel.selectedItem.toString()),
-                goalType = GoalType.valueOf(spinnerGoalType.selectedItem.toString()),
-                desiredWeightKg = desiredWeightStr.toDoubleOrNull() ?: 60.0,
+                weightKg = existingProfile.weightKg,
+                activityLevel = activityOptions.getOrNull(spinnerActivityLevel.selectedItemPosition)?.value
+                    ?: existingProfile.activityLevel,
+                goalType = goalOptions.getOrNull(spinnerGoalType.selectedItemPosition)?.value ?: existingProfile.goalType,
+                desiredWeightKg = desiredWeightStr.toDoubleOrNull() ?: existingProfile.desiredWeightKg,
                 targetDays = targetDaysStr.toIntOrNull() ?: 30,
-                allergies = allergies
+                allergies = allergies,
+                preferenceVector = existingProfile.preferenceVector
             )
 
             val healthSuccess = when (val res = userRepository.createHealthProfile(userId, healthRequest)) {
                 is ApiResult.Success -> true
                 is ApiResult.Error -> {
-                    Toast.makeText(this@EditProfileActivity, "Lỗi Health Profile: ${res.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@EditProfileActivity,
+                        getString(R.string.edit_profile_health_error, res.message),
+                        Toast.LENGTH_LONG
+                    ).show()
                     false
                 }
             }
 
             btnSave.isEnabled = true
-            btnSave.text = "Lưu thay đổi"
+            btnSave.text = getString(R.string.edit_profile_save)
 
             if (userSuccess && healthSuccess) {
-                Toast.makeText(this@EditProfileActivity, "Đã lưu toàn bộ thông tin!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@EditProfileActivity, getString(R.string.edit_profile_save_success), Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
+    }
+
+    private fun localizeAllergiesForDisplay(raw: String?): String {
+        if (raw.isNullOrBlank()) return ""
+        return raw.split(',')
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString(", ") { token ->
+                allergyViMap[token.uppercase(Locale.ROOT)] ?: token
+            }
+    }
+
+    private fun normalizeAllergiesForApi(input: String?): String? {
+        if (input.isNullOrBlank()) return null
+        val normalized = input.split(',')
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .joinToString(", ") { token ->
+                val key = token.lowercase(Locale.ROOT)
+                allergyApiMap[key] ?: token.uppercase(Locale.ROOT)
+            }
+        return normalized.takeIf { it.isNotBlank() }
     }
 }

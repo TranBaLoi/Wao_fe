@@ -156,11 +156,9 @@
 
                 <!-- Height -->
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -182,13 +180,14 @@
                         android:hint="172.0" />
                 </LinearLayout>
 
-                <!-- Current Weight -->
+                <!-- Current Weight is intentionally hidden on edit screen -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginStart="8dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -230,7 +229,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mục tiêu mới (kg)"
+                        android:text="Cân nặng mục tiêu (kg)"
                         android:textColor="@color/wao_slate_600"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
@@ -329,7 +328,7 @@
                 android:textSize="16sp"
                 android:inputType="text"
                 android:textColor="@color/wao_slate_900"
-                android:hint="VD: PEANUT, MILK" />
+                android:hint="VD: Hải sản, Đậu phộng" />
 
             <!-- Save Button -->
             <Button

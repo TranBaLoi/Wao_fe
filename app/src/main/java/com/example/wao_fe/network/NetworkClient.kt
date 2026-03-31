@@ -12,6 +12,7 @@ object NetworkClient {
 
     // Emulator should use 10.0.2.2 to reach localhost on host machine.
     private const val BASE_URL = "http://10.0.2.2:8080/"
+//    172.20.10.2
 
     val gson: Gson = GsonBuilder().create()
 

@@ -59,7 +59,8 @@ data class CreateHealthProfileRequest(
     val goalType: GoalType,
     val desiredWeightKg: Double,
     val targetDays: Int,
-    val allergies: String? = null
+    val allergies: String? = null,
+    val preferenceVector: String? = null
 )
 
 data class DailyCalorieBreakdownResponse(
@@ -81,7 +82,9 @@ data class HealthProfileResponse(
     val targetDays: Int,
     val targetCalories: Double,
     val dailyCalories: Double,
-    val dailyCalorieBreakdown: DailyCalorieBreakdownResponse
+    val dailyCalorieBreakdown: DailyCalorieBreakdownResponse,
+    val allergies: String? = null,
+    val preferenceVector: String? = null
 )
 
 // Food
@@ -103,7 +106,9 @@ data class FoodResponse(
     val carbs: Double,
     val fat: Double,
     val isVerified: Boolean,
-    val imageUrls: List<String> = emptyList()
+    val imageUrls: List<String> = emptyList(),
+    val ingredients: String? = null,
+    val containsAllergens: String? = null
 )
 
 // Food logs
@@ -213,6 +218,29 @@ data class MealPlanResponse(
     val userId: Long? = null,
     val foods: List<MealPlanFoodResponse> = emptyList()
 )
+
+data class MealPlanDraft(
+    val name: String,
+    val description: String? = null,
+    val userId: Long,
+    val previewFoods: List<MealPlanFoodResponse> = emptyList()
+) {
+    fun toRequest(): MealPlanRequest {
+        return MealPlanRequest(
+            name = name,
+            description = description,
+            type = MealPlanType.USER_CUSTOM,
+            userId = userId,
+            foods = previewFoods.map {
+                MealPlanFoodRequest(
+                    foodId = it.foodId,
+                    mealType = it.mealType,
+                    servingQty = it.servingQty
+                )
+            }
+        )
+    }
+}
 
 data class ApplyMealPlanRequest(
     val userId: Long,
