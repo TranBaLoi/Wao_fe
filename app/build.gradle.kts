@@ -64,6 +64,7 @@ dependencies {
     // Image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.guolindev.permissionx:permissionx:1.7.1")
 
     // UI components

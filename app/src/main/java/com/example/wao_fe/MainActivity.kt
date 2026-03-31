@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvWater: TextView
     private lateinit var tvSteps: TextView
     private lateinit var fabAddFood: FloatingActionButton
+    private lateinit var fabChatbot: ImageView
     private lateinit var ivAvatar: ImageView
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var btnUpdateWeight: android.widget.Button
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         if (userId != -1L) {
             fetchDashboardData()
         } else {
-            Toast.makeText(this, "Khong tim thay thong tin phien dang nhap", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Không tìm thấy thông tin phiên đăng nhập", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         tvWater = findViewById(R.id.tvWater)
         tvSteps = findViewById(R.id.tvSteps)
         fabAddFood = findViewById(R.id.fabAddFood)
+        fabChatbot = findViewById(R.id.fabChatbot)
         ivAvatar = findViewById(R.id.ivAvatar)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         btnUpdateWeight = findViewById(R.id.btnUpdateWeight)
@@ -105,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_home -> true
                 else -> {
-                    Toast.makeText(this, "Tinh nang dang phat trien", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Tính năng đang phát triển", Toast.LENGTH_SHORT).show()
                     false
                 }
             }
@@ -127,6 +129,10 @@ class MainActivity : AppCompatActivity() {
                 showFloatingMenu()
             }
         }
+
+        fabChatbot.setOnClickListener {
+            startActivity(Intent(this, ChatbotActivity::class.java))
+        }
     }
 
     private fun showFloatingMenu() {
@@ -144,20 +150,20 @@ class MainActivity : AppCompatActivity() {
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents == null) {
-            Log.w("BarcodeScan", "Nguoi dung da huy qua trinh quet")
+            Log.w("BarcodeScan", "Người dùng đã hủy quá trình quét")
             Toast.makeText(this, "Da huy quet", Toast.LENGTH_LONG).show()
         } else {
             val barcode = result.contents
-            Log.i("BarcodeScan", "Quet thanh cong ma vach: $barcode")
-            Toast.makeText(this, "Dang xu ly ma vach...", Toast.LENGTH_SHORT).show()
+            Log.i("BarcodeScan", "Quét thành công mã vạch: $barcode")
+            Toast.makeText(this, "Đang xử lý mã vạch...", Toast.LENGTH_SHORT).show()
             fetchProductInfo(barcode)
         }
     }
 
     private fun startBarcodeScanner() {
-        Log.d("BarcodeScan", "Bat dau goi Activity quet ma vach")
+        Log.d("BarcodeScan", "Bắt đầu gọi Activity quét mã vạch")
         val options = ScanOptions()
-        options.setPrompt("Dat ma vach san pham vao giua khung hinh")
+        options.setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
         options.setBeepEnabled(true)
         options.setOrientationLocked(true)
         options.setCaptureActivity(CustomScannerActivity::class.java)
@@ -165,7 +171,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchProductInfo(barcode: String) {
-        Log.d("BarcodeScan", "Bat dau goi API OpenFoodFacts cho barcode: $barcode")
+        Log.d("BarcodeScan", "Bắt đầu gọi API OpenFoodFacts cho barcode: $barcode")
         lifecycleScope.launch {
             try {
                 val api = OpenFoodFactsApi.create()
@@ -175,20 +181,20 @@ class MainActivity : AppCompatActivity() {
                     val name = p.product_name ?: p.generic_name ?: "Khong ro ten"
                     val energy = p.nutriments?.energy_kcal_100g ?: p.nutriments?.energy_kcal ?: 0.0
 
-                    Log.i("BarcodeScan", "Tim thay san pham: $name - $energy kcal")
+                    Log.i("BarcodeScan", "Tìm thấy sản phẩm: $name - $energy kcal")
 
                     AlertDialog.Builder(this@MainActivity)
-                        .setTitle("Thong tin san pham")
+                        .setTitle("Thông tin sản phẩm")
                         .setMessage("Ten: $name\nNang luong: $energy kcal/100g")
                         .setPositiveButton("Dong", null)
                         .show()
                 } else {
-                    Log.w("BarcodeScan", "Khong tim thay thong tin tren OpenFoodFacts cho $barcode")
-                    Toast.makeText(this@MainActivity, "Khong tim thay thong tin san pham", Toast.LENGTH_LONG).show()
+                    Log.w("BarcodeScan", "Không tìm thấy thông tin trên OpenFoodFacts cho $barcode")
+                    Toast.makeText(this@MainActivity, "Không tìm thấy thông tin sản phẩm", Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                Log.e("BarcodeScan", "Loi ket noi API lay san pham: ${e.message}", e)
-                Toast.makeText(this@MainActivity, "Loi ket noi: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e("BarcodeScan", "Lỗi kết nối API lấy sản phẩm: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Lỗi kết nối: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -210,7 +216,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupHeader(userName: String?) {
-        tvUserName.text = "Chao ${userName ?: "ban"},"
+        tvUserName.text = "Chào ${userName ?: "ban"},"
         val sdf = SimpleDateFormat("EEEE, dd MMM", Locale("vi", "VN"))
         tvDate.text = sdf.format(Date())
     }

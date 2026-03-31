@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_wao_leaf"
+        android:title="@string/chatbot_nav_home" />
+    <item
+        android:id="@+id/nav_diary"
+        android:icon="@drawable/ic_wao_chart"
+        android:title="@string/chatbot_nav_diary" />
+    <item
+        android:id="@+id/nav_menu"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/chatbot_nav_plan" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person"
+        android:title="@string/chatbot_nav_profile" />
+</menu>

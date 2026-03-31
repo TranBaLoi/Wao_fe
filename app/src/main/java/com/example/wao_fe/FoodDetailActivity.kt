@@ -37,7 +37,7 @@ class FoodDetailActivity : AppCompatActivity() {
     private lateinit var tvServing: TextView
 
     private var foodId: Long = -1L
-    private var fallbackName: String = "Mon an"
+    private var fallbackName: String = "Món ăn"
     private var floatingMenuDialog: android.app.Dialog? = null
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
@@ -124,7 +124,7 @@ class FoodDetailActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_profile -> {
-                    toast("Tab Tai khoan")
+                    toast("Tab Tài khoản")
                     false
                 }
 
@@ -140,7 +140,7 @@ class FoodDetailActivity : AppCompatActivity() {
         tvProtein.text = "0g"
         tvCarbs.text = "0g"
         tvFat.text = "0g"
-        tvServing.text = "Chua cap nhat khau phan"
+        tvServing.text = "Chưa cập nhật khẩu phần"
     }
 
     private fun showFloatingMenu() {
@@ -175,7 +175,7 @@ class FoodDetailActivity : AppCompatActivity() {
             if (result.isSuccess) {
                 bindFood(result.getOrThrow())
             } else {
-                toast("Khong tai duoc chi tiet mon an")
+                toast("Không tải được chi tiết món ăn")
             }
         }
     }
@@ -187,7 +187,7 @@ class FoodDetailActivity : AppCompatActivity() {
         tvProtein.text = "${food.protein.roundToInt()}g"
         tvCarbs.text = "${food.carbs.roundToInt()}g"
         tvFat.text = "${food.fat.roundToInt()}g"
-        tvServing.text = food.servingSize.ifBlank { "Chua cap nhat khau phan" }
+        tvServing.text = food.servingSize.ifBlank { "Chưa câp nhật khẩu phần" }
     }
 
     private fun bindFoodImage(imageUrls: List<String>?) {

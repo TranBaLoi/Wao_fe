@@ -33,6 +33,10 @@ import com.example.wao_fe.network.models.GoogleLoginRequest
 import com.example.wao_fe.network.models.VerifyEmailRequest
 import com.example.wao_fe.network.models.VerifyEmailResponse
 import com.example.wao_fe.network.models.ApplyMealPlanRequest
+import com.example.wao_fe.network.models.ChatbotConversationDetail
+import com.example.wao_fe.network.models.ChatbotConversationSummary
+import com.example.wao_fe.network.models.ChatbotSendMessageRequest
+import com.example.wao_fe.network.models.ChatbotSendMessageResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -46,6 +50,28 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface ApiService {
+
+    // Chatbot
+    @GET("api/users/{userId}/chat/conversations")
+    suspend fun getChatConversations(@Path("userId") userId: Long): List<ChatbotConversationSummary>
+
+    @GET("api/users/{userId}/chat/conversations/{conversationId}")
+    suspend fun getChatConversationDetail(
+        @Path("userId") userId: Long,
+        @Path("conversationId") conversationId: Long
+    ): ChatbotConversationDetail
+
+    @DELETE("api/users/{userId}/chat/conversations/{conversationId}")
+    suspend fun deleteChatConversation(
+        @Path("userId") userId: Long,
+        @Path("conversationId") conversationId: Long
+    )
+
+    @POST("api/users/{userId}/chat/messages")
+    suspend fun sendChatMessage(
+        @Path("userId") userId: Long,
+        @Body request: ChatbotSendMessageRequest
+    ): ChatbotSendMessageResponse
 
     // Users
     @POST("api/users/register")
