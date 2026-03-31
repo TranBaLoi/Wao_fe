@@ -3,6 +3,7 @@ package com.example.wao_fe.namstats
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.wao_fe.R
@@ -44,9 +46,11 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     private val repository = NamStatisticsRepository()
+    @RequiresApi(Build.VERSION_CODES.O)
     private val dayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())
 
     private var selectedPeriod = StatisticsPeriod.DAY
+    @RequiresApi(Build.VERSION_CODES.O)
     private var selectedDate = LocalDate.now()
     private var selectedMetric = ChartMetric.CALORIES
     private var currentRangeSnapshot: RangeSnapshot? = null
@@ -72,6 +76,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     private lateinit var detailContainer: LinearLayout
     private lateinit var bottomNavigationView: BottomNavigationView
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nam_statistics_dashboard)
@@ -101,13 +106,13 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         tvSelectedRangeTitle = findViewById(R.id.tv_selected_range_title)
         tvSelectedRangeSubtitle = findViewById(R.id.tv_selected_range_subtitle)
         chartCard = findViewById(R.id.card_chart)
-        //nam them
         chartHint = findViewById(R.id.tv_chart_hint)
         chartView = findViewById(R.id.chart_trend)
         detailContainer = findViewById(R.id.container_detail_items)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupControls() {
         //nam them
         btnBack.setOnClickListener { finish() }
@@ -141,6 +146,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         metricSpinner.adapter = adapter
         metricSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (isUpdatingMetricSpinner) return
                 selectedMetric = ChartMetric.entries[position]
@@ -154,25 +160,25 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
-                    startActivity(android.content.Intent(this, com.example.wao_fe.MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    startActivity(Intent(this, com.example.wao_fe.MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
                     overridePendingTransition(0, 0)
                     finish()
                     true
                 }
                 R.id.nav_diary -> {
-                    startActivity(android.content.Intent(this, com.example.wao_fe.FoodDiaryActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    startActivity(Intent(this, com.example.wao_fe.FoodDiaryActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
                     overridePendingTransition(0, 0)
                     finish()
                     true
                 }
                 R.id.nav_menu -> {
-                    startActivity(android.content.Intent(this, com.example.wao_fe.MealPlanActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    startActivity(Intent(this, com.example.wao_fe.MealPlanActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
                     overridePendingTransition(0, 0)
                     finish()
                     true
                 }
                 R.id.nav_profile -> {
-                    startActivity(android.content.Intent(this, com.example.wao_fe.SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
+                    startActivity(Intent(this, com.example.wao_fe.SettingsActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NO_ANIMATION })
                     overridePendingTransition(0, 0)
                     finish()
                     true
@@ -182,6 +188,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun loadSelectedContent() {
         updateControlState()
         progressBar.visibility = View.VISIBLE
@@ -202,6 +209,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun renderDaySection() {
         val snapshot = repository.loadDailySnapshot(userId, selectedDate)
         chartCard.visibility = View.GONE
@@ -213,6 +221,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         finishLoading()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun renderRangeSection(range: DateRange) {
         val snapshot = repository.loadRangeSnapshot(userId, range)
         currentRangeSnapshot = snapshot
@@ -230,6 +239,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         finishLoading()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun renderDailySnapshot(snapshot: DailySnapshot) {
         detailContainer.removeAllViews()
         val inflater = LayoutInflater.from(this)
@@ -260,7 +270,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
             "Thay đổi: ${formatWeightChange(snapshot.weightChange)}"
         weightCard.findViewById<TextView>(R.id.tv_metric_four).text =
             if (snapshot.previousWeight == null && snapshot.fallbackWeight != null) {
-                "Fallback từ profile: ${formatWeight(snapshot.fallbackWeight)}"
+                "Fallback từ hồ sơ: ${formatWeight(snapshot.fallbackWeight)}"
             } else {
                 "Dữ liệu từ log cân nặng"
             }
@@ -273,6 +283,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         isUpdatingMetricSpinner = false
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateMetricChart() {
         val snapshot = currentRangeSnapshot ?: return
         updateMetricButtons()
@@ -314,10 +325,15 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun renderRangeDayDetail(snapshot: RangeSnapshot, dateKey: String) {
         val nutrition = snapshot.nutritionPointByDate(dateKey)
         //nam them
-        val resolvedWeight = currentChartValuesByDate[dateKey] ?: snapshot.resolvedWeightByDate(dateKey)
+        val resolvedWeight = if (selectedMetric == ChartMetric.WEIGHT) {
+            currentChartValuesByDate[dateKey] ?: snapshot.resolvedWeightByDate(dateKey)
+        } else {
+            snapshot.resolvedWeightByDate(dateKey)
+        }
         //nam them
         val weightPoint = snapshot.weightPointByDate(dateKey)
         //nam them
@@ -347,6 +363,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.tv_metric_two).text = "Cân nặng hiện tại: ${formatWeight(resolvedWeight)}"
             //nam them
             view.findViewById<TextView>(R.id.tv_metric_three).text = "Thay đổi: ${formatWeightChange(weightChange)}"
+            //nam them
             view.findViewById<TextView>(R.id.tv_metric_four).text = "Số lần log: ${weightPoint?.logCount ?: 0}"
         } else {
             view.findViewById<TextView>(R.id.tv_metric_one).text = "Protein: ${formatGram(nutrition?.totalProtein)}"
@@ -358,6 +375,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         detailContainer.addView(view)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun openDatePicker() {
         val dialog = DatePickerDialog(
             this,
@@ -377,6 +395,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateControlState() {
         setButtonActive(btnPeriodDay, selectedPeriod == StatisticsPeriod.DAY)
         setButtonActive(btnPeriodWeek, selectedPeriod == StatisticsPeriod.WEEK)
@@ -427,13 +446,16 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun finishLoading() {
         progressBar.visibility = View.GONE
         tvStatus.text = "Đã cập nhật lúc ${nowTimeText()}"
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun formatDate(date: LocalDate): String = date.format(dayFormatter)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun formatRawDate(raw: String): String {
         return runCatching { formatDate(LocalDate.parse(raw)) }.getOrDefault(raw)
     }
@@ -458,6 +480,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         return String.format(Locale.getDefault(), "%.1f", value)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun nowTimeText(): String =
         DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()).format(LocalTime.now())
 }

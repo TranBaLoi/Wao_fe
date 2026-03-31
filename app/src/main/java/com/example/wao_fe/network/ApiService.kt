@@ -1,7 +1,10 @@
 package com.example.wao_fe.network
 
 import com.example.wao_fe.namstats.models.DailyNutritionResponse
+import com.example.wao_fe.namstats.models.CreateWeightLogRequest
 import com.example.wao_fe.namstats.models.NutritionSeriesResponse
+import com.example.wao_fe.namstats.models.LatestWeightInfoResponse
+import com.example.wao_fe.namstats.models.WeightLogUpdateResponse
 import com.example.wao_fe.namstats.models.WeightSeriesResponse
 import com.example.wao_fe.network.models.CreateFoodLogRequest
 import com.example.wao_fe.network.models.CreateHealthProfileRequest
@@ -308,4 +311,17 @@ interface ApiService {
         @Query("to") to: String,
         @Query("groupBy") groupBy: String
     ): WeightSeriesResponse
+
+    //namthem
+    @GET("api/users/{userId}/statistics/weight/latest")
+    suspend fun getLatestWeightInfo(
+        @Path("userId") userId: Long
+    ): LatestWeightInfoResponse
+
+    //namthem
+    @POST("api/users/{userId}/statistics/weight/logs")
+    suspend fun createWeightLog(
+        @Path("userId") userId: Long,
+        @Body request: CreateWeightLogRequest
+    ): WeightLogUpdateResponse
 }

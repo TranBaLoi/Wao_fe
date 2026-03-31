@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView">
+        app:layout_constraintBottom_toTopOf="@+id/bottomAppBar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,6 +44,7 @@
                     android:text="Nhật ký thống kê"
                     android:textColor="@color/wao_slate_900"
                     android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -54,7 +55,8 @@
                 android:layout_marginBottom="10dp"
                 android:text="Đang tải dữ liệu..."
                 android:textColor="@color/wao_slate_500"
-                android:textAppearance="?attr/textAppearanceCaption" />
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:textSize="16sp" />
 
             <ProgressBar
                 android:id="@+id/progress_dashboard"
@@ -85,6 +87,7 @@
                         android:text="Chọn khoảng thời gian"
                         android:textColor="@color/wao_slate_900"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -99,9 +102,9 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:text="ngày"
-                            android:textSize="13sp"
-                            android:textAllCaps="false" />
+                            android:text="Ngày"
+                            android:textAllCaps="false"
+                            android:textSize="17sp" />
 
                         <Button
                             android:id="@+id/btn_period_week"
@@ -110,9 +113,9 @@
                             android:layout_height="40dp"
                             android:layout_weight="1"
                             android:layout_marginStart="6dp"
-                            android:text="tuần"
-                            android:textSize="13sp"
-                            android:textAllCaps="false" />
+                            android:text="Tuần"
+                            android:textAllCaps="false"
+                            android:textSize="17sp" />
 
                         <Button
                             android:id="@+id/btn_period_month"
@@ -121,9 +124,9 @@
                             android:layout_height="40dp"
                             android:layout_weight="1"
                             android:layout_marginStart="6dp"
-                            android:text="tháng"
-                            android:textSize="13sp"
-                            android:textAllCaps="false" />
+                            android:text="Tháng"
+                            android:textAllCaps="false"
+                            android:textSize="17sp" />
                     </LinearLayout>
 
                     <Button
@@ -132,9 +135,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
                         android:layout_marginTop="10dp"
-                        android:text="chọn ngày"
-                        android:textSize="13sp"
-                        android:textAllCaps="false" />
+                        android:text="Chọn ngày"
+                        android:textAllCaps="false"
+                        android:textSize="18sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -159,8 +162,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thống kê theo tuần"
-                        android:textColor="@color/wao_slate_900"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textColor="@color/wao_slate_900"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -169,8 +173,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Từ 01/01/2026 đến 07/01/2026"
+                        android:textAppearance="?attr/textAppearanceBody2"
                         android:textColor="@color/wao_slate_500"
-                        android:textAppearance="?attr/textAppearanceBody2" />
+                        android:textSize="16sp" />
 
                     <Spinner
                         android:id="@+id/spinner_metric"
@@ -187,8 +192,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:text="Biểu đồ xu hướng"
-                        android:textColor="@color/wao_slate_900"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textColor="@color/wao_slate_900"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -197,8 +203,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="Chạm vào điểm để xem chi tiết"
+                        android:textAppearance="?attr/textAppearanceCaption"
                         android:textColor="@color/wao_slate_500"
-                        android:textAppearance="?attr/textAppearanceCaption" />
+                        android:textSize="16sp" />
 
                     <com.example.wao_fe.namstats.views.NamTrendChartView
                         android:id="@+id/chart_trend"
@@ -220,7 +227,6 @@
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:backgroundTint="@android:color/white"
         app:fabCradleMargin="8dp"
@@ -240,7 +246,6 @@
             app:menu="@menu/bottom_nav_menu" />
     </com.google.android.material.bottomappbar.BottomAppBar>
 
-    <!-- Plus Floating Action Button in the center -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddFood"
         android:layout_width="wrap_content"
