@@ -94,7 +94,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center"
-                        android:src="@android:drawable/ic_btn_speak_now"
+                        android:src="@android:drawable/ic_menu_gallery"
                         app:tint="@color/black" />
                 </androidx.cardview.widget.CardView>
                 <TextView
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="Ghi bằng giọng\nnói"
+                    android:text="Quét từ\nảnh"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
             </LinearLayout>

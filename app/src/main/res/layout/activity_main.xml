@@ -161,6 +161,7 @@
                                     android:backgroundTint="#33FFFFFF"
                                     android:layout_margin="12dp">
                                     <TextView
+                                        android:id="@+id/tvCalRemainingLabel"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Còn lại"
@@ -175,9 +176,10 @@
                                         android:textSize="28sp"
                                         android:textStyle="bold"/>
                                     <TextView
+                                        android:id="@+id/tvCalUnit"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="kcal"
+                                        android:text="calo"
                                         android:textColor="@android:color/white"
                                         android:textSize="12sp"
                                         android:alpha="0.8"/>
@@ -397,15 +399,41 @@
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/tvWater"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="0 ml"
-                                android:textColor="#0D47A1"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <ImageView
+                                    android:id="@+id/btnMinusWater"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:src="@drawable/ic_minus"
+                                    app:tint="#1976D2" />
+
+                                <TextView
+                                    android:id="@+id/tvWater"
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="0 ml"
+                                    android:textColor="#0D47A1"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/btnPlusWater"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:src="@drawable/ic_add"
+                                    app:tint="#1976D2" />
+
+                            </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -703,47 +731,30 @@
                                 android:paddingHorizontal="16dp"/>
                         </LinearLayout>
 
-                        <!-- Chart Placeholder -->
-                        <RelativeLayout
+                        <com.example.wao_fe.namstats.views.NamTrendChartView
+                            android:id="@+id/chartWeightTrend"
                             android:layout_width="match_parent"
                             android:layout_height="120dp"
                             android:layout_marginTop="16dp"
-                            android:background="#F8F9FA">
+                            android:background="#F8F9FA" />
 
-                            <!-- Simple chart layout placeholder: Y-axis label "60" and "0" -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="60"
-                                android:layout_centerVertical="true"
-                                android:layout_alignParentStart="true"
-                                android:textSize="12sp"
-                                android:textColor="#B0BEC5"/>
+                        <TextView
+                            android:id="@+id/tvWeightStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Đang tải dữ liệu cân nặng..."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:textSize="12sp"
-                                android:textColor="#B0BEC5"/>
-
-                            <!-- Chart grid lines -->
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="24dp"
-                                android:background="@color/green_primary"/>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_marginStart="24dp"
-                                android:background="#E0E0E0"/>
-                        </RelativeLayout>
+                        <TextView
+                            android:id="@+id/tvWeightChangeStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="So với lần trước: --"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -808,7 +819,7 @@
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="82dp"
         android:contentDescription="@string/chatbot_open"
-        android:src="@drawable/chatbot"
+        android:src="@drawable/img_chatbot"
         android:scaleType="fitXY"
         android:background="@null"
         android:padding="0dp"

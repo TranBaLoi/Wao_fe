@@ -3,27 +3,42 @@ package com.example.wao_fe
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.Manifest
+import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.wao_fe.component.FloatingAddMenu
+import com.example.wao_fe.namstats.models.StatisticsGroupBy
+import com.example.wao_fe.namstats.views.NamTrendChartView
 import com.example.wao_fe.network.ApiResult
 import com.example.wao_fe.network.OpenFoodFactsApi
 import com.example.wao_fe.network.UserRepository
+import com.example.wao_fe.network.models.CreateFoodLogRequest
+import com.example.wao_fe.network.models.MealType
+import com.example.wao_fe.utils.NotificationHelper
+import com.example.wao_fe.utils.ReminderManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,14 +55,33 @@ class MainActivity : AppCompatActivity() {
     private lateinit var ivAvatar: ImageView
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var btnUpdateWeight: android.widget.Button
+    private lateinit var chartWeightTrend: NamTrendChartView
+    private lateinit var tvWeightStatus: TextView
+    private lateinit var tvWeightChangeStatus: TextView
+    private lateinit var btnPlusWater: ImageView
+    private lateinit var btnMinusWater: ImageView
 
     private var floatingMenuDialog: android.app.Dialog? = null
     private val userRepository = UserRepository()
     private var userId: Long = -1
+    private var currentWaterMl = 0
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Log.d("Permission", "Quyền thông báo đã được cấp")
+            ReminderManager.setupAllReminders(this)
+        } else {
+            Toast.makeText(this, "Bạn cần cấp quyền để nhận thông báo nhắc nhở", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        NotificationHelper.createNotificationChannels(this)
 
         val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         userId = sharedPref.getLong("USER_ID", -1)
@@ -58,8 +92,32 @@ class MainActivity : AppCompatActivity() {
 
         if (userId != -1L) {
             fetchDashboardData()
+            askNotificationPermission()
         } else {
             Toast.makeText(this, "Không tìm thấy thông tin phiên đăng nhập", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                // Đã cấp quyền
+                ReminderManager.setupAllReminders(this)
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                AlertDialog.Builder(this)
+                    .setTitle("Quyền thông báo")
+                    .setMessage("Ứng dụng cần quyền gửi thông báo để nhắc nhở bạn uống nước và ghi nhật ký bữa ăn.")
+                    .setPositiveButton("Đồng ý") { _, _ ->
+                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    .setNegativeButton("Hủy", null)
+                    .show()
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            // Android thấp hơn 13 mặc định có quyền
+            ReminderManager.setupAllReminders(this)
         }
     }
 
@@ -77,9 +135,31 @@ class MainActivity : AppCompatActivity() {
         ivAvatar = findViewById(R.id.ivAvatar)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         btnUpdateWeight = findViewById(R.id.btnUpdateWeight)
+        chartWeightTrend = findViewById(R.id.chartWeightTrend)
+        tvWeightStatus = findViewById(R.id.tvWeightStatus)
+        tvWeightChangeStatus = findViewById(R.id.tvWeightChangeStatus)
+        btnPlusWater = findViewById(R.id.btnPlusWater)
+        btnMinusWater = findViewById(R.id.btnMinusWater)
+        chartWeightTrend.setAxisUnits("(kg)", "Ngày")
+
+        btnPlusWater.setOnClickListener {
+            currentWaterMl += 200
+            tvWater.text = "$currentWaterMl ml"
+            addWaterLog(200)
+        }
+
+        btnMinusWater.setOnClickListener {
+            if (currentWaterMl > 0) {
+                currentWaterMl = (currentWaterMl - 200).coerceAtLeast(0)
+                tvWater.text = "$currentWaterMl ml"
+                removeLastWaterLog()
+            }
+        }
 
         btnUpdateWeight.setOnClickListener {
-            val bottomSheet = UpdateWeightBottomSheet()
+            val bottomSheet = UpdateWeightBottomSheet.newInstance(userId).apply {
+                onWeightUpdated = { fetchWeightTrendData() }
+            }
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
 
@@ -139,13 +219,50 @@ class MainActivity : AppCompatActivity() {
         if (floatingMenuDialog == null) {
             floatingMenuDialog = FloatingAddMenu.create(
                 activity = this,
-                onScanBarcode = { startBarcodeScanner() }
+                onScanBarcode = { startBarcodeScanner() },
+                onUploadImageScan = { pickImageLauncher.launch("image/*") }
             )
             floatingMenuDialog?.setOnDismissListener {
                 floatingMenuDialog = null
             }
         }
         floatingMenuDialog?.show()
+    }
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            val barcode = decodeBarcodeFromImage(uri)
+            if (barcode != null) {
+                Log.i("BarcodeScan", "Đã đọc mã từ ảnh: $barcode")
+                Toast.makeText(this, "Đang xử lý mã vạch...", Toast.LENGTH_SHORT).show()
+                fetchProductInfo(barcode)
+            } else {
+                Toast.makeText(this, "Không tìm thấy mã vạch trong ảnh", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun decodeBarcodeFromImage(uri: Uri): String? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri)
+            val bitmap = android.graphics.BitmapFactory.decodeStream(inputStream)
+            
+            val width = bitmap.width
+            val height = bitmap.height
+            val pixels = IntArray(width * height)
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+
+            val source = com.google.zxing.RGBLuminanceSource(width, height, pixels)
+            val binaryBitmap = com.google.zxing.BinaryBitmap(com.google.zxing.common.HybridBinarizer(source))
+
+            val reader = com.google.zxing.MultiFormatReader()
+            // optionally configure barcode formats here
+            val result = reader.decode(binaryBitmap)
+            result.text
+        } catch (e: Exception) {
+            Log.e("BarcodeScan", "Lỗi đọc mã vạch từ ảnh", e)
+            null
+        }
     }
 
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
@@ -178,16 +295,28 @@ class MainActivity : AppCompatActivity() {
                 val response = api.getProductInfo(barcode)
                 if (response.status == 1 && response.product != null) {
                     val p = response.product
-                    val name = p.product_name ?: p.generic_name ?: "Khong ro ten"
-                    val energy = p.nutriments?.energy_kcal_100g ?: p.nutriments?.energy_kcal ?: 0.0
+                    val name = p.product_name ?: p.generic_name ?: "Sản phẩm không rõ tên"
+                    // Năng lượng lấy từ energy-kcal_100g, nếu null dò tìm các key khác, nếu vẫn 0.0 hoặc null thì gán mặc định 1.0
+                    val rawEnergyKcal = p.nutriments?.energy_kcal_100g ?: p.nutriments?.energy_kcal
+                    val rawEnergyKj = p.nutriments?.energy_100g ?: p.nutriments?.energy
+                    
+                    var energy = 1.0
+                    if (rawEnergyKcal != null && rawEnergyKcal > 0) {
+                        energy = rawEnergyKcal
+                    } else if (rawEnergyKj != null && rawEnergyKj > 0) {
+                        // kj to kcal approx conversion
+                        energy = rawEnergyKj / 4.184
+                    }
 
+                    val protein = p.nutriments?.proteins_100g ?: 0.0
+                    val carbs = p.nutriments?.carbohydrates_100g ?: 0.0
+                    val fat = p.nutriments?.fat_100g ?: 0.0
+                    val ingredients = p.ingredients_text ?: "Chưa có thông tin thành phần"
+                    val imageUrl = p.image_url
+                    
                     Log.i("BarcodeScan", "Tìm thấy sản phẩm: $name - $energy kcal")
-
-                    AlertDialog.Builder(this@MainActivity)
-                        .setTitle("Thông tin sản phẩm")
-                        .setMessage("Ten: $name\nNang luong: $energy kcal/100g")
-                        .setPositiveButton("Dong", null)
-                        .show()
+                    
+                    checkAndShowFoodDialog(name, energy, protein, carbs, fat, ingredients, imageUrl)
                 } else {
                     Log.w("BarcodeScan", "Không tìm thấy thông tin trên OpenFoodFacts cho $barcode")
                     Toast.makeText(this@MainActivity, "Không tìm thấy thông tin sản phẩm", Toast.LENGTH_LONG).show()
@@ -195,6 +324,176 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e("BarcodeScan", "Lỗi kết nối API lấy sản phẩm: ${e.message}", e)
                 Toast.makeText(this@MainActivity, "Lỗi kết nối: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private suspend fun checkAndShowFoodDialog(
+        name: String, calories: Double, protein: Double, carbs: Double, fat: Double, ingredients: String, imageUrl: String?
+    ) {
+        try {
+            val backendApi = com.example.wao_fe.network.NetworkClient.apiService
+            val searchResult = backendApi.getFoods(name)
+            
+            // Tìm sản phẩm trùng tên nếu có
+            val existingFood = searchResult.firstOrNull { it.name.equals(name, ignoreCase = true) }
+            
+            showFoodBottomSheet(
+                name = name,
+                calories = calories,
+                protein = protein,
+                carbs = carbs,
+                fat = fat,
+                ingredients = ingredients,
+                imageUrl = imageUrl,
+                existingFoodId = existingFood?.id
+            )
+        } catch (e: Exception) {
+            Log.e("BarcodeScan", "Lỗi kiểm tra CSDL API: ${e.message}", e)
+            Toast.makeText(this, "Không thể kiểm tra CSDL", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showFoodBottomSheet(
+        name: String, calories: Double, protein: Double, carbs: Double, fat: Double, ingredients: String, imageUrl: String?, existingFoodId: Long?
+    ) {
+        val bottomSheet = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.layout_dialog_scanned_food, null)
+        bottomSheet.setContentView(view)
+
+        val ivFoodImage = view.findViewById<ImageView>(R.id.ivFoodImage)
+        val tvFoodName = view.findViewById<TextView>(R.id.tvFoodName)
+        val tvFoodDbStatus = view.findViewById<TextView>(R.id.tvFoodDbStatus)
+        val tvFoodIngredients = view.findViewById<TextView>(R.id.tvFoodIngredients)
+        val tvFoodServingSize = view.findViewById<TextView>(R.id.tvFoodServingSize)
+        val tvFoodCalories = view.findViewById<TextView>(R.id.tvFoodCalories)
+        val tvFoodProtein = view.findViewById<TextView>(R.id.tvFoodProtein)
+        val tvFoodCarbs = view.findViewById<TextView>(R.id.tvFoodCarbs)
+        val tvFoodFat = view.findViewById<TextView>(R.id.tvFoodFat)
+        val btnAddFood = view.findViewById<android.widget.Button>(R.id.btnAddFood)
+        val btnAction = view.findViewById<android.widget.Button>(R.id.btnAction)
+        val btnCancel = view.findViewById<android.widget.Button>(R.id.btnCancel)
+
+        tvFoodName.text = name
+        tvFoodIngredients.text = "Thành phần: $ingredients"
+        tvFoodServingSize.text = "Khẩu phần: 100g"
+        
+        tvFoodCalories.text = String.format("%.1f", calories)
+        tvFoodProtein.text = String.format("%.1fg", protein)
+        tvFoodCarbs.text = String.format("%.1fg", carbs)
+        tvFoodFat.text = String.format("%.1fg", fat)
+
+        if (imageUrl != null) {
+            Glide.with(this).load(imageUrl).into(ivFoodImage)
+        }
+
+        if (existingFoodId != null) {
+            tvFoodDbStatus.text = "Sản phẩm ĐÃ CÓ trong hệ thống"
+            tvFoodDbStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50"))
+            btnAddFood.visibility = android.view.View.GONE
+            btnAction.text = "Lưu vào Nhật ký ăn uống"
+            btnAction.visibility = android.view.View.VISIBLE
+        } else {
+            tvFoodDbStatus.text = "Sản phẩm CHƯA CÓ trong hệ thống"
+            tvFoodDbStatus.setTextColor(android.graphics.Color.parseColor("#E53935"))
+            btnAddFood.visibility = android.view.View.VISIBLE
+            btnAction.text = "Thêm mới & Lưu nhật ký"
+            btnAction.visibility = android.view.View.VISIBLE
+        }
+
+        btnCancel.setOnClickListener { bottomSheet.dismiss() }
+
+        btnAddFood.setOnClickListener {
+            bottomSheet.dismiss()
+            addFoodToDatabaseOnly(name, calories, protein, carbs, fat)
+        }
+        
+        btnAction.setOnClickListener {
+            bottomSheet.dismiss()
+            handleFoodAction(name, calories, protein, carbs, fat, existingFoodId)
+        }
+
+        bottomSheet.show()
+    }
+
+    private fun addFoodToDatabaseOnly(name: String, calories: Double, protein: Double, carbs: Double, fat: Double) {
+        lifecycleScope.launch {
+            try {
+                // Ensure calories are > 0 for validation
+                val validCalories = if (calories > 0) calories else 1.0
+
+                val backendApi = com.example.wao_fe.network.NetworkClient.apiService
+                Toast.makeText(this@MainActivity, "Đang thêm món ăn vào CSDL...", Toast.LENGTH_SHORT).show()
+                val foodJson = JSONObject().apply {
+                    put("name", name)
+                    put("servingSize", "100g")
+                    put("calories", validCalories)
+                    put("protein", protein)
+                    put("carbs", carbs)
+                    put("fat", fat)
+                }
+                val requestBody = foodJson.toString().toRequestBody("application/json".toMediaTypeOrNull())
+                backendApi.createFood(food = requestBody, images = null)
+                Toast.makeText(this@MainActivity, "Thêm món ăn thành công!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e("BarcodeScan", "Lỗi thêm đồ ăn: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Gặp lỗi khi thêm món ăn!", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun handleFoodAction(name: String, calories: Double, protein: Double, carbs: Double, fat: Double, existingFoodId: Long?) {
+        lifecycleScope.launch {
+            try {
+                val backendApi = com.example.wao_fe.network.NetworkClient.apiService
+                var foodIdToLog = existingFoodId
+
+                if (foodIdToLog == null) {
+                    Toast.makeText(this@MainActivity, "Đang xử lý...", Toast.LENGTH_SHORT).show()
+                    // Ensure calories are > 0 for validation
+                    val validCalories = if (calories > 0) calories else 1.0
+                    
+                    val foodJson = JSONObject().apply {
+                        put("name", name)
+                        put("servingSize", "100g")
+                        put("calories", validCalories)
+                        put("protein", protein)
+                        put("carbs", carbs)
+                        put("fat", fat)
+                    }
+                    val requestBody = foodJson.toString().toRequestBody("application/json".toMediaTypeOrNull())
+                    val newFood = backendApi.createFood(food = requestBody, images = null)
+                    foodIdToLog = newFood.id
+                }
+
+                if (userId != -1L) {
+                    val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                    val mealType = when (currentHour) {
+                        in 5..10 -> MealType.BREAKFAST
+                        in 11..15 -> MealType.LUNCH
+                        in 16..21 -> MealType.DINNER
+                        else -> MealType.SNACK
+                    }
+                    val logDateStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                    
+                    backendApi.createFoodLog(
+                        userId = userId,
+                        request = CreateFoodLogRequest(
+                            foodId = foodIdToLog,
+                            mealType = mealType,
+                            servingQty = 1.0, 
+                            logDate = logDateStr
+                        )
+                    )
+                    Toast.makeText(this@MainActivity, "Đã lưu vào nhật ký bữa ${mealType.name.lowercase()} thành công!", Toast.LENGTH_LONG).show()
+                    fetchDashboardData()
+                } else {
+                    Toast.makeText(this@MainActivity, "Không tìm thấy user để lưu nhật ký", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: Exception) {
+                Log.e("BarcodeScan", "Lỗi lưu đồ ăn: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Gặp lỗi khi xử lý món ăn!", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -213,6 +512,8 @@ class MainActivity : AppCompatActivity() {
                 .into(ivAvatar)
             ivAvatar.setPadding(0, 0, 0, 0)
         }
+
+        fetchWeightTrendData()
     }
 
     private fun setupHeader(userName: String?) {
@@ -269,20 +570,47 @@ class MainActivity : AppCompatActivity() {
             pbFatMain.progress = ((consumedFat / fatTarget) * 100).toInt().coerceIn(0, 100)
 
             val summaryResult = userRepository.getTodaySummary(userId)
+            val tvCalRemainingLabel = findViewById<TextView>(R.id.tvCalRemainingLabel)
             if (summaryResult is ApiResult.Success) {
                 val summary = summaryResult.data
                 val remaining = targetCalories - summary.netCalories
 
                 tvCalIn.text = summary.totalCalIn.toInt().toString()
                 tvCalOut.text = summary.totalCalOut.toInt().toString()
-                tvCalRemaining.text = remaining.toInt().coerceAtLeast(0).toString()
+
+                val overCalories = summary.totalCalIn - targetCalories
+                if (summary.totalCalIn > targetCalories) {
+                    tvCalRemainingLabel.text = "Vượt quá"
+                    tvCalRemaining.text = overCalories.toInt().toString()
+                    pbCalories.progressTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.RED)
+                    
+                    val todayStr = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+                    val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+                    val lastAlertDate = sharedPref.getString("LAST_CALORIE_ALERT_DATE", "")
+                    
+                    if (lastAlertDate != todayStr) {
+                        // Gửi thông báo khi vượt quá calo
+                        NotificationHelper.showAlertNotification(
+                            context = this@MainActivity,
+                            title = "Cảnh báo vượt mức năng lượng",
+                            message = "Bạn đã vượt quá mục tiêu calo hôm nay ${overCalories.toInt()} kcal. Hãy cẩn thận!",
+                            notificationId = 1001
+                        )
+                        sharedPref.edit().putString("LAST_CALORIE_ALERT_DATE", todayStr).apply()
+                    }
+                } else {
+                    tvCalRemainingLabel.text = "Còn lại"
+                    tvCalRemaining.text = remaining.toInt().coerceAtLeast(0).toString()
+                    pbCalories.progressTintList = null
+                }
 
                 val progress = if (targetCalories > 0) {
                     ((summary.netCalories / targetCalories) * 100).toInt()
                 } else 0
                 pbCalories.progress = progress.coerceIn(0, 100)
 
-                tvWater.text = "${summary.totalWater} ml"
+                currentWaterMl = summary.totalWater
+                tvWater.text = "$currentWaterMl ml"
                 tvSteps.text = "${summary.totalSteps}/10000"
             } else {
                 tvCalRemaining.text = targetCalories.toInt().toString()
@@ -290,7 +618,118 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Khong the tai du lieu hom nay", Toast.LENGTH_SHORT).show()
                 }
             }
+
+            fetchWeightTrendData()
         }
+    }
+
+    private fun fetchWeightTrendData() {
+        if (userId == -1L) return
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val endDate = Date()
+        val startDate = Calendar.getInstance().apply {
+            time = endDate
+            add(Calendar.DAY_OF_YEAR, -13)
+        }.time
+
+        lifecycleScope.launch {
+            val latestResult = userRepository.getLatestWeightInfo(userId)
+            val seriesResult = userRepository.getWeightSeries(
+                userId = userId,
+                from = dateFormat.format(startDate),
+                to = dateFormat.format(endDate),
+                groupBy = StatisticsGroupBy.DAY.name
+            )
+
+            val chartPoints = if (seriesResult is ApiResult.Success) {
+                seriesResult.data.points
+                    .mapNotNull { point ->
+                        val value = point.endWeight ?: return@mapNotNull null
+                        val dateKey = point.bucketDate.take(10)
+                        dateKey to value
+                    }
+                    .sortedBy { it.first }
+            } else {
+                emptyList()
+            }
+
+            val labels = chartPoints.map { formatWeightChartDate(it.first) }
+            chartWeightTrend.submitData(chartPoints.map { it.second.toFloat() }, labels)
+
+            tvWeightStatus.text = when {
+                latestResult is ApiResult.Success && latestResult.data.latestKnownWeight != null -> {
+                    val dateText = latestResult.data.latestKnownDate?.let(::formatWeightChartDate) ?: "không rõ ngày"
+                    "Gần nhất: ${formatWeightValue(latestResult.data.latestKnownWeight)} kg ($dateText)"
+                }
+                chartPoints.isNotEmpty() -> {
+                    val latestPoint = chartPoints.last()
+                    "Gần nhất: ${formatWeightValue(latestPoint.second)} kg (${formatWeightChartDate(latestPoint.first)})"
+                }
+                else -> "Chưa có dữ liệu cân nặng"
+            }
+
+            tvWeightChangeStatus.text = when {
+                chartPoints.size >= 2 -> {
+                    val latestWeight = chartPoints.last().second
+                    val previousWeight = chartPoints[chartPoints.lastIndex - 1].second
+                    val change = latestWeight - previousWeight
+                    val prefix = if (change > 0) "+" else ""
+                    "So với lần trước: $prefix${formatWeightValue(change)} kg"
+                }
+                chartPoints.size == 1 -> "So với lần trước: chưa đủ dữ liệu"
+                else -> "So với lần trước: chưa có dữ liệu"
+            }
+        }
+    }
+
+    private fun addWaterLog(amount: Int) {
+        if (userId == -1L) return
+        lifecycleScope.launch {
+            try {
+                val api = com.example.wao_fe.network.NetworkClient.apiService
+                val nowStr = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).format(Date())
+                val request = com.example.wao_fe.network.models.CreateWaterLogRequest(
+                    amountMl = amount,
+                    logTime = nowStr
+                )
+                api.createWaterLog(userId, request)
+                // Refresh summary in background if necessary, but UI updated immediately
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Failed to add water log", e)
+            }
+        }
+    }
+
+    private fun removeLastWaterLog() {
+        if (userId == -1L) return
+        lifecycleScope.launch {
+            try {
+                val api = com.example.wao_fe.network.NetworkClient.apiService
+                val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                val logs = api.getWaterLogs(userId, todayStr)
+                if (logs.isNotEmpty()) {
+                    // Try to find the most recent 200ml log, or just the last log
+                    val lastLog = logs.maxByOrNull { it.id }
+                    if (lastLog != null) {
+                        api.deleteWaterLog(userId, lastLog.id)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Failed to remove water log", e)
+            }
+        }
+    }
+
+    private fun formatWeightChartDate(raw: String): String {
+        return runCatching {
+            val parsed = SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(raw)
+            SimpleDateFormat("dd/MM", Locale.getDefault()).format(parsed ?: Date())
+        }.getOrDefault(raw)
+    }
+
+    private fun formatWeightValue(value: Double): String {
+        return String.format(Locale.getDefault(), "%.1f", value)
     }
 
     override fun onDestroy() {

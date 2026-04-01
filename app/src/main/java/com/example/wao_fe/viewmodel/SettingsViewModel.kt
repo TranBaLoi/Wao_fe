@@ -20,6 +20,9 @@ class SettingsViewModel(
     private val _healthProfile = MutableLiveData<HealthProfileResponse?>()
     val healthProfile: LiveData<HealthProfileResponse?> = _healthProfile
 
+    private val _oldestHealthProfile = MutableLiveData<HealthProfileResponse?>()
+    val oldestHealthProfile: LiveData<HealthProfileResponse?> = _oldestHealthProfile
+
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
@@ -43,8 +46,20 @@ class SettingsViewModel(
                     _healthProfile.value = hpRes.data
                 }
                 is ApiResult.Error -> {
-                    // It's okay if not found, maybe they haven't set it up
-                    // _error.value = "Lỗi tải health profile: ${hpRes.message}"
+                    // It's okay if not found
+                }
+            }
+
+            // Load Historical Health Profiles for oldest calculation
+            when (val hpHistRes = userRepository.getHealthProfileHistory(userId)) {
+                is ApiResult.Success -> {
+                    if (hpHistRes.data.isNotEmpty()) {
+                        // Assume oldest is the first one or we minimum sort by id or createdAt
+                        val oldest = hpHistRes.data.minByOrNull { it.id }
+                        _oldestHealthProfile.value = oldest
+                    }
+                }
+                is ApiResult.Error -> {
                 }
             }
         }

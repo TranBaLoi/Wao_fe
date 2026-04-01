@@ -84,7 +84,8 @@ data class HealthProfileResponse(
     val dailyCalories: Double,
     val dailyCalorieBreakdown: DailyCalorieBreakdownResponse,
     val allergies: String? = null,
-    val preferenceVector: String? = null
+    val preferenceVector: String? = null,
+    val createdAt: String? = null
 )
 
 // Food

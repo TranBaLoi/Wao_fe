@@ -49,8 +49,12 @@ class CustomScannerActivity : AppCompatActivity() {
         capture.onSaveInstanceState(outState)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        capture.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return barcodeScannerView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
     }
 }
-

@@ -14,6 +14,10 @@ import com.example.wao_fe.network.models.WorkoutProgramResponse
 import com.example.wao_fe.network.models.ApplyMealPlanRequest
 import com.example.wao_fe.network.models.MealPlanRequest
 import com.example.wao_fe.network.models.UpdateUserRequest
+import com.example.wao_fe.namstats.models.CreateWeightLogRequest
+import com.example.wao_fe.namstats.models.LatestWeightInfoResponse
+import com.example.wao_fe.namstats.models.WeightLogUpdateResponse
+import com.example.wao_fe.namstats.models.WeightSeriesResponse
 
 sealed class ApiResult<out T> {
     data class Success<T>(val data: T) : ApiResult<T>()
@@ -70,6 +74,12 @@ class UserRepository(
         }
     }
 
+    suspend fun getHealthProfileHistory(userId: Long): ApiResult<List<HealthProfileResponse>> {
+        return safeApiCall {
+            apiService.getHealthProfileHistory(userId)
+        }
+    }
+
     suspend fun createHealthProfile(userId: Long, request: CreateHealthProfileRequest): ApiResult<HealthProfileResponse> {
         return safeApiCall {
             apiService.createHealthProfile(userId, request)
@@ -113,6 +123,23 @@ class UserRepository(
     // Workout programs
     suspend fun createWorkoutProgram(request: WorkoutProgramRequest): ApiResult<WorkoutProgramResponse> {
         return safeApiCall { apiService.createWorkoutProgram(request) }
+    }
+
+    suspend fun getWeightSeries(
+        userId: Long,
+        from: String,
+        to: String,
+        groupBy: String
+    ): ApiResult<WeightSeriesResponse> {
+        return safeApiCall { apiService.getWeightSeries(userId, from, to, groupBy) }
+    }
+
+    suspend fun getLatestWeightInfo(userId: Long): ApiResult<LatestWeightInfoResponse> {
+        return safeApiCall { apiService.getLatestWeightInfo(userId) }
+    }
+
+    suspend fun createWeightLog(userId: Long, request: CreateWeightLogRequest): ApiResult<WeightLogUpdateResponse> {
+        return safeApiCall { apiService.createWeightLog(userId, request) }
     }
 
     private suspend fun <T> safeApiCall(call: suspend () -> T): ApiResult<T> {

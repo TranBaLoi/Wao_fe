@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.wao_fe.AddFoodActivity
 import com.example.wao_fe.FoodSearchActivity
 import com.example.wao_fe.R
 import com.example.wao_fe.namstats.WeightLogUpdateActivity
@@ -19,6 +20,7 @@ object FloatingAddMenu {
     fun create(
         activity: AppCompatActivity,
         onScanBarcode: (() -> Unit)? = null,
+        onUploadImageScan: (() -> Unit)? = null,
         onCreateFood: (() -> Unit)? = null
     ): Dialog {
         val dialog = Dialog(activity)
@@ -73,7 +75,11 @@ object FloatingAddMenu {
             buttonId = R.id.btnVoiceNote,
             dialog = dialog,
             action = {
-                Toast.makeText(activity, "Ghi bang giong noi", Toast.LENGTH_SHORT).show()
+                if (onUploadImageScan != null) {
+                    onUploadImageScan.invoke()
+                } else {
+                    Toast.makeText(activity, "Chua cau hinh tai anh len", Toast.LENGTH_SHORT).show()
+                }
             }
         )
         bindClick(
@@ -114,11 +120,13 @@ object FloatingAddMenu {
             buttonId = R.id.btnCreateFood,
             dialog = dialog,
             action = {
-                if (onCreateFood != null) {
-                    onCreateFood.invoke()
-                } else {
-                    Toast.makeText(activity, "Tao thuc pham", Toast.LENGTH_SHORT).show()
+                if (activity is AddFoodActivity) {
+                    Toast.makeText(activity, "Ban dang o trang tao thuc pham", Toast.LENGTH_SHORT).show()
+                    return@bindClick
                 }
+
+                val intent = Intent(activity, AddFoodActivity::class.java)
+                activity.startActivity(intent)
             }
         )
 
