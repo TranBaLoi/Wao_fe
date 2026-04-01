@@ -108,9 +108,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
-                                    android:text="0 kcal"
+                                    android:text="@string/placeholder_calorie"
                                     android:textColor="@android:color/white"
-                                    android:textSize="32sp"
+                                    android:textSize="24sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -131,7 +131,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
-                                    android:text="0 kcal"
+                                    android:text="@string/placeholder_calorie"
                                     android:textColor="@android:color/white"
                                     android:textSize="24sp"
                                     android:textStyle="bold" />
@@ -221,7 +221,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Carbs"
+                                android:text="Tinh bột"
                                 android:textColor="#586259"
                                 android:textSize="12sp" />
 
@@ -266,7 +266,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Fat"
+                                android:text="@string/nutrition_fat"
                                 android:textColor="#586259"
                                 android:textSize="12sp" />
 
@@ -314,7 +314,7 @@
                         android:id="@+id/tvBreakfastCalories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 kcal"
+                        android:text="@string/placeholder_calorie"
                         android:textColor="#44554B"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -375,7 +375,7 @@
                         android:id="@+id/tvLunchCalories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 kcal"
+                        android:text="@string/placeholder_calorie"
                         android:textColor="#44554B"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -436,7 +436,7 @@
                         android:id="@+id/tvDinnerCalories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 kcal"
+                        android:text="@string/placeholder_calorie"
                         android:textColor="#44554B"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -497,7 +497,7 @@
                         android:id="@+id/tvSnackCalories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0 kcal"
+                        android:text="@string/placeholder_calorie"
                         android:textColor="#44554B"
                         android:textSize="15sp"
                         android:textStyle="bold" />

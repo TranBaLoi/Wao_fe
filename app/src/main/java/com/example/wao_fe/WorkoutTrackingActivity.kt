@@ -465,7 +465,10 @@ class WorkoutTrackingActivity : AppCompatActivity() {
         tvDistanceMain.text = distanceText
         tvMetricDistanceValue.text = "$distanceText km"
         tvMetricSpeedValue.text = "${formatSpeed(if (sessionState == SessionState.RUNNING) currentSpeedKmh else 0.0)} km/h"
-        tvMetricCaloriesValue.text = "${displayedCaloriesBurned().roundToInt()} kcal"
+        tvMetricCaloriesValue.text = getString(
+            R.string.format_calorie_value,
+            displayedCaloriesBurned().roundToInt()
+        )
         tvMetricFourthValue.text = if (workoutType.usesStepMetric) {
             "${displayedSteps()} bước"
         } else {

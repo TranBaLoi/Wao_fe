@@ -51,7 +51,7 @@
                     android:id="@+id/tvCalories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 kcal"
+                    android:text="@string/placeholder_calorie"
                     android:textColor="#9C5F00"
                     android:textSize="14sp" />
 

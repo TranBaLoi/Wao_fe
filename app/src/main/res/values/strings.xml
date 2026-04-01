@@ -105,7 +105,7 @@
     <string name="chatbot_tagline">Khởi đầu lối sống lành mạnh</string>
     <string name="chatbot_welcome">Chào bạn! Hôm nay tôi có thể giúp gì cho chế độ dinh dưỡng của bạn?</string>
     <string name="chatbot_sample_question">Bữa sáng 2 lát bánh mì đen và 1 quả trứng thì bao nhiêu calo?</string>
-    <string name="chatbot_sample_answer">Tổng cộng khoảng 250-300 kcal. Bạn có muốn thêm một ít quả bơ để bổ sung chất béo tốt không?</string>
+    <string name="chatbot_sample_answer">Tổng cộng khoảng 250-300 calo (cal). Bạn có muốn thêm một ít quả bơ để bổ sung chất béo tốt không?</string>
     <string name="chatbot_time_1">10:02 AM</string>
     <string name="chatbot_time_2">10:03 AM</string>
     <string name="chatbot_time_3">Vừa xong</string>
@@ -118,4 +118,25 @@
     <string name="chatbot_typing">...</string>
     <string name="chatbot_new_chat">Cuộc trò chuyện mới</string>
     <string name="chatbot_open">Mở Wao AI</string>
+
+    <!-- Nutrition display (UI only) -->
+    <string name="nutrition_carb">Tinh bột</string>
+    <string name="nutrition_fat">Chất béo</string>
+    <string name="unit_calo_cal">calo (cal)</string>
+    <string name="placeholder_calorie">0 calo (cal)</string>
+    <string name="placeholder_target_calories">-- calo (cal)</string>
+    <string name="placeholder_daily_calories">-- calo (cal)/ngày</string>
+    <string name="format_calorie_value">%1$d calo (cal)</string>
+    <string name="format_calorie_from_text">%1$s calo (cal)</string>
+    <string name="format_calorie_daily_from_text">%1$s calo (cal)/ngày</string>
+    <string name="format_serving_and_calorie">%1$s phần • %2$d calo (cal)</string>
+    <string name="format_macros_short">Đạm: %1$dg • Tinh bột: %2$dg • Chất béo: %3$dg</string>
+    <string name="macros_short_placeholder">Đạm: 0g • Tinh bột: 0g • Chất béo: 0g</string>
+    <string name="format_meal_plan_nutrition">Dinh dưỡng: %1$d calo (cal) | Đạm %2$dg | Tinh bột %3$dg | Chất béo %4$dg</string>
+    <string name="format_total_calories">Tổng lượng calo: %1$s</string>
+    <string name="format_metric_carb">Tinh bột: %1$s</string>
+    <string name="format_metric_fat">Chất béo: %1$s</string>
+    <string name="chart_label_carbs">Biểu đồ tinh bột</string>
+    <string name="chart_label_fat">Biểu đồ chất béo</string>
+    <string name="chart_unit_cal">(cal)</string>
 </resources>

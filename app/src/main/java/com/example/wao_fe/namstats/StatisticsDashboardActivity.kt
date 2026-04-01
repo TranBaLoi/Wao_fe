@@ -247,13 +247,13 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         val nutritionCard = inflater.inflate(R.layout.item_nam_stat_point, detailContainer, false)
         nutritionCard.findViewById<TextView>(R.id.tv_point_title).text = "Chi tiết ngày ${formatDate(snapshot.date)}"
         nutritionCard.findViewById<TextView>(R.id.tv_point_subtitle).text =
-            "Tổng lượng calo: ${formatCalories(snapshot.nutrition.totalCalories)}"
+            getString(R.string.format_total_calories, formatCalories(snapshot.nutrition.totalCalories))
         nutritionCard.findViewById<TextView>(R.id.tv_metric_one).text =
             "Protein: ${formatGram(snapshot.nutrition.totalProtein)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_two).text =
-            "Carbs: ${formatGram(snapshot.nutrition.totalCarbs)}"
+            getString(R.string.format_metric_carb, formatGram(snapshot.nutrition.totalCarbs))
         nutritionCard.findViewById<TextView>(R.id.tv_metric_three).text =
-            "Fat: ${formatGram(snapshot.nutrition.totalFat)}"
+            getString(R.string.format_metric_fat, formatGram(snapshot.nutrition.totalFat))
         nutritionCard.findViewById<TextView>(R.id.tv_metric_four).text =
             "Cân nặng hiện tại: ${formatWeight(snapshot.currentWeight)}"
         detailContainer.addView(nutritionCard)
@@ -351,9 +351,12 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         view.findViewById<TextView>(R.id.tv_point_subtitle).text = when (selectedMetric) {
             ChartMetric.WEIGHT -> "Cân nặng: ${formatWeight(resolvedWeight)}"
             ChartMetric.PROTEIN -> "Protein: ${formatGram(nutrition?.totalProtein)}"
-            ChartMetric.CARBS -> "Carbs: ${formatGram(nutrition?.totalCarbs)}"
-            ChartMetric.FAT -> "Fat: ${formatGram(nutrition?.totalFat)}"
-            ChartMetric.CALORIES -> "Tổng lượng calo: ${formatCalories(nutrition?.totalCalories)}"
+            ChartMetric.CARBS -> getString(R.string.format_metric_carb, formatGram(nutrition?.totalCarbs))
+            ChartMetric.FAT -> getString(R.string.format_metric_fat, formatGram(nutrition?.totalFat))
+            ChartMetric.CALORIES -> getString(
+                R.string.format_total_calories,
+                formatCalories(nutrition?.totalCalories)
+            )
         }
 
         if (selectedMetric == ChartMetric.WEIGHT) {
@@ -367,8 +370,10 @@ class StatisticsDashboardActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.tv_metric_four).text = "Số lần log: ${weightPoint?.logCount ?: 0}"
         } else {
             view.findViewById<TextView>(R.id.tv_metric_one).text = "Protein: ${formatGram(nutrition?.totalProtein)}"
-            view.findViewById<TextView>(R.id.tv_metric_two).text = "Carbs: ${formatGram(nutrition?.totalCarbs)}"
-            view.findViewById<TextView>(R.id.tv_metric_three).text = "Fat: ${formatGram(nutrition?.totalFat)}"
+            view.findViewById<TextView>(R.id.tv_metric_two).text =
+                getString(R.string.format_metric_carb, formatGram(nutrition?.totalCarbs))
+            view.findViewById<TextView>(R.id.tv_metric_three).text =
+                getString(R.string.format_metric_fat, formatGram(nutrition?.totalFat))
             view.findViewById<TextView>(R.id.tv_metric_four).text =
                 "Cân nặng hiện tại: ${formatWeight(resolvedWeight)}"
         }
@@ -430,8 +435,8 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         return when (metric) {
             ChartMetric.WEIGHT -> "Biểu đồ cân nặng"
             ChartMetric.PROTEIN -> "Biểu đồ protein"
-            ChartMetric.CARBS -> "Biểu đồ carbs"
-            ChartMetric.FAT -> "Biểu đồ fat"
+            ChartMetric.CARBS -> getString(R.string.chart_label_carbs)
+            ChartMetric.FAT -> getString(R.string.chart_label_fat)
             ChartMetric.CALORIES -> "Biểu đồ tổng lượng calo"
         }
     }
@@ -442,7 +447,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
             ChartMetric.PROTEIN -> "(g)"
             ChartMetric.CARBS -> "(g)"
             ChartMetric.FAT -> "(g)"
-            ChartMetric.CALORIES -> "(kcal)"
+            ChartMetric.CALORIES -> getString(R.string.chart_unit_cal)
         }
     }
 
@@ -460,7 +465,8 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         return runCatching { formatDate(LocalDate.parse(raw)) }.getOrDefault(raw)
     }
 
-    private fun formatCalories(value: Double?): String = "${formatNumber(value)} kcal"
+    private fun formatCalories(value: Double?): String =
+        "${formatNumber(value)} ${getString(R.string.unit_calo_cal)}"
 
     private fun formatGram(value: Double?): String = "${formatNumber(value)} g"
 

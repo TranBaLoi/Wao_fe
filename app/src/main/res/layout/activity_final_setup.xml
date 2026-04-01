@@ -339,7 +339,7 @@
                      android:id="@+id/tvTargetCalories"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:text="-- kcal"
+                     android:text="-- cal"
                      android:textColor="@color/wao_background_dark"
                      android:textSize="24sp"
                      android:textStyle="bold" />
@@ -356,7 +356,7 @@
                      android:id="@+id/tvDailyCalories"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:text="-- kcal/ngày"
+                     android:text="-- cal/ngày"
                      android:textColor="@color/wao_background_dark"
                      android:textSize="20sp"
                      android:textStyle="bold" />
