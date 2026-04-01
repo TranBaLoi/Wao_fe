@@ -53,6 +53,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private var selectedDate = LocalDate.now()
     private var selectedMetric = ChartMetric.CALORIES
+    //biến quan trọng,chứa hết cả dinh dưỡng, lẫn cân nặng
     private var currentRangeSnapshot: RangeSnapshot? = null
     private var currentChartDates: List<String> = emptyList()
     //nam them
@@ -223,6 +224,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun renderRangeSection(range: DateRange) {
+        //phần quan trọng dùng để lấy luôn data
         val snapshot = repository.loadRangeSnapshot(userId, range)
         currentRangeSnapshot = snapshot
         chartCard.visibility = View.VISIBLE
@@ -247,13 +249,13 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         val nutritionCard = inflater.inflate(R.layout.item_nam_stat_point, detailContainer, false)
         nutritionCard.findViewById<TextView>(R.id.tv_point_title).text = "Chi tiết ngày ${formatDate(snapshot.date)}"
         nutritionCard.findViewById<TextView>(R.id.tv_point_subtitle).text =
-            getString(R.string.format_total_calories, formatCalories(snapshot.nutrition.totalCalories))
+            "Tổng lượng calo: ${formatCalories(snapshot.nutrition.totalCalories)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_one).text =
             "Protein: ${formatGram(snapshot.nutrition.totalProtein)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_two).text =
-            getString(R.string.format_metric_carb, formatGram(snapshot.nutrition.totalCarbs))
+            "Carbs: ${formatGram(snapshot.nutrition.totalCarbs)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_three).text =
-            getString(R.string.format_metric_fat, formatGram(snapshot.nutrition.totalFat))
+            "Fat: ${formatGram(snapshot.nutrition.totalFat)}"
         nutritionCard.findViewById<TextView>(R.id.tv_metric_four).text =
             "Cân nặng hiện tại: ${formatWeight(snapshot.currentWeight)}"
         detailContainer.addView(nutritionCard)
@@ -292,6 +294,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         val chartPoints: List<Pair<String, Float>> = when (selectedMetric) {
             //nam them
             ChartMetric.WEIGHT -> snapshot.weight.points
+//                phải lấy cân nặng sau khi update
                 .mapNotNull { point ->
                     point.endWeight?.takeIf { it != 0.0 }?.let { point.bucketDate to it.toFloat() }
                 }
@@ -351,12 +354,9 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         view.findViewById<TextView>(R.id.tv_point_subtitle).text = when (selectedMetric) {
             ChartMetric.WEIGHT -> "Cân nặng: ${formatWeight(resolvedWeight)}"
             ChartMetric.PROTEIN -> "Protein: ${formatGram(nutrition?.totalProtein)}"
-            ChartMetric.CARBS -> getString(R.string.format_metric_carb, formatGram(nutrition?.totalCarbs))
-            ChartMetric.FAT -> getString(R.string.format_metric_fat, formatGram(nutrition?.totalFat))
-            ChartMetric.CALORIES -> getString(
-                R.string.format_total_calories,
-                formatCalories(nutrition?.totalCalories)
-            )
+            ChartMetric.CARBS -> "Carbs: ${formatGram(nutrition?.totalCarbs)}"
+            ChartMetric.FAT -> "Fat: ${formatGram(nutrition?.totalFat)}"
+            ChartMetric.CALORIES -> "Tổng lượng calo: ${formatCalories(nutrition?.totalCalories)}"
         }
 
         if (selectedMetric == ChartMetric.WEIGHT) {
@@ -370,10 +370,8 @@ class StatisticsDashboardActivity : AppCompatActivity() {
             view.findViewById<TextView>(R.id.tv_metric_four).text = "Số lần log: ${weightPoint?.logCount ?: 0}"
         } else {
             view.findViewById<TextView>(R.id.tv_metric_one).text = "Protein: ${formatGram(nutrition?.totalProtein)}"
-            view.findViewById<TextView>(R.id.tv_metric_two).text =
-                getString(R.string.format_metric_carb, formatGram(nutrition?.totalCarbs))
-            view.findViewById<TextView>(R.id.tv_metric_three).text =
-                getString(R.string.format_metric_fat, formatGram(nutrition?.totalFat))
+            view.findViewById<TextView>(R.id.tv_metric_two).text = "Carbs: ${formatGram(nutrition?.totalCarbs)}"
+            view.findViewById<TextView>(R.id.tv_metric_three).text = "Fat: ${formatGram(nutrition?.totalFat)}"
             view.findViewById<TextView>(R.id.tv_metric_four).text =
                 "Cân nặng hiện tại: ${formatWeight(resolvedWeight)}"
         }
@@ -435,8 +433,8 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         return when (metric) {
             ChartMetric.WEIGHT -> "Biểu đồ cân nặng"
             ChartMetric.PROTEIN -> "Biểu đồ protein"
-            ChartMetric.CARBS -> getString(R.string.chart_label_carbs)
-            ChartMetric.FAT -> getString(R.string.chart_label_fat)
+            ChartMetric.CARBS -> "Biểu đồ carbs"
+            ChartMetric.FAT -> "Biểu đồ fat"
             ChartMetric.CALORIES -> "Biểu đồ tổng lượng calo"
         }
     }
@@ -447,7 +445,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
             ChartMetric.PROTEIN -> "(g)"
             ChartMetric.CARBS -> "(g)"
             ChartMetric.FAT -> "(g)"
-            ChartMetric.CALORIES -> getString(R.string.chart_unit_cal)
+            ChartMetric.CALORIES -> "(kcal)"
         }
     }
 
@@ -465,19 +463,18 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         return runCatching { formatDate(LocalDate.parse(raw)) }.getOrDefault(raw)
     }
 
-    private fun formatCalories(value: Double?): String =
-        "${formatNumber(value)} ${getString(R.string.unit_calo_cal)}"
+    private fun formatCalories(value: Double?): String = "${formatNumber(value)} kcal"
 
     private fun formatGram(value: Double?): String = "${formatNumber(value)} g"
 
     private fun formatWeight(value: Double?): String {
-        if (value == null) return "--"
+        if (value == null) return "chưa cập nhật"
         return "${formatNumber(value)} kg"
     }
 
     //nam them
     private fun formatWeightChange(value: Double?): String {
-        if (value == null) return "--"
+        if (value == null) return "chưa cập nhật"
         return "${if (value > 0) "+" else ""}${formatNumber(value)} kg"
     }
 

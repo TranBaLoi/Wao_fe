@@ -13,6 +13,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 
 class NamTrendChartView @JvmOverloads constructor(
     context: Context,
@@ -203,18 +204,13 @@ class NamTrendChartView @JvmOverloads constructor(
     }
 
     private fun calculateAxisBounds(minValue: Float, maxValue: Float): Pair<Float, Float> {
-        if (minValue == maxValue) {
-            //nam them
-            val padding = if (minValue == 0f) 0.5f else max(abs(minValue) * 0.03f, 0.1f)
-            return minValue - padding to maxValue + padding
+        return if (minValue == maxValue) {
+            // tránh bị chia 0 khi tất cả điểm giống nhau
+            minValue  to maxValue
+        } else {
+            minValue to maxValue
         }
-
-        val range = maxValue - minValue
-        //nam them
-        val padding = max(range * 0.05f, 0.02f)
-        return minValue - padding to maxValue + padding
     }
-
     private fun formatAxisValue(value: Float): String {
         return BigDecimal(value.toDouble())
             .setScale(2, RoundingMode.HALF_UP)
