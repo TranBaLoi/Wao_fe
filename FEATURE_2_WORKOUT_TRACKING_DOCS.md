@@ -88,11 +88,25 @@ Từ ngày 2026-04-01 trở đi:
   - `pbCalories`
 - Đồng bộ `renderCaloriesSummary()` về cùng công thức hiển thị để tránh bị Health Connect render đè ngược lại giao diện sau khi conflict đã merge.
 
+### 2026-04-01: duplicate property fix in `MainActivity`
+
+- Xóa khai báo trùng `bottomNavigationView` còn sót sau merge, vì Kotlin sẽ báo `Conflicting declarations` và chặn compile.
+
+### 2026-04-01: phase 1 live tracking data upgrade
+
+- Reworked `WorkoutTrackingActivity` so outdoor walking/running/cycling read live distance and speed from device location instead of fake waveform values.
+- Added indoor running support that prefers step-counter sensor data and falls back to Health Connect step deltas to derive distance from stride length.
+- Switched live heart-rate display to real Health Connect data only; when unavailable the UI now shows `-- bpm` instead of synthetic values.
+- Changed calorie rendering to prefer Health Connect active calories and fall back to a local MET-based estimate marked with `~`.
+- Added runtime permission flow for location and activity recognition in `WorkoutTrackingActivity`.
+- Added manifest permissions/features for location, activity recognition, GPS, and step counter support.
+
 ## 4. Current Assumptions
 
 - `exerciseId` là bắt buộc khi save workout log, nên app sẽ tự lookup hoặc create exercise.
 - `categoryId` fallback đang dùng từ exercise đầu tiên lấy được từ backend; nếu backend không có exercise nào thì fallback về `1`.
-- Heart rate fallback hiện là estimate cho mục đích UI/session continuity, không phải dữ liệu đo y tế.
+- Heart rate live card hiện chỉ hiển thị dữ liệu thật từ Health Connect; nếu thiếu dữ liệu thì card sẽ hiển thị `-- bpm`.
+- Indoor distance hiện suy ra từ `heightCm * strideLengthFactor`, nên độ chính xác còn phụ thuộc profile mới nhất của người dùng.
 - Compile đầy đủ trong sandbox hiện chưa verify được vì môi trường đang chỉ có JDK 21, trong khi project yêu cầu `jvmToolchain(17)`.
 
 ## 5. Regression Checklist
@@ -110,6 +124,10 @@ Từ ngày 2026-04-01 trở đi:
 - Session từ 3 phút trở lên gọi save.
 - Chạy bộ trong nhà hiển thị `Số bước`, các môn còn lại hiển thị `Nhịp tim`.
 - Màn tracking giữ dark theme/fullscreen.
+- Outdoor workout xin quyền vị trí khi cần và cập nhật `Tổng số km` / `Tốc độ` từ GPS.
+- Indoor running xin quyền hoạt động khi cần và cập nhật `Số bước` / `Tổng số km` từ step sensor hoặc Health Connect.
+- `Kcal` có dấu `~` khi đang là estimate local, và bỏ dấu `~` khi đã có delta từ Health Connect.
+- `Nhịp tim` hiển thị `-- bpm` nếu thiết bị/chính sách quyền chưa cung cấp được dữ liệu thật.
 
 ## 6. Update Rule For Future Changes
 

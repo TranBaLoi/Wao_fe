@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var ivAvatar: ImageView
     private lateinit var cardSteps: CardView
     private lateinit var cardHeartRate: CardView
-    private lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var btnUpdateWeight: android.widget.Button
 
     private var floatingMenuDialog: android.app.Dialog? = null
