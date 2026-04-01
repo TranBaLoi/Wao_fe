@@ -25,4 +25,12 @@
         <item name="boxCornerRadiusBottomStart">12dp</item>
         <item name="boxCornerRadiusBottomEnd">12dp</item>
     </style>
+
+    <style name="Theme.Wao_fe.WorkoutTracking" parent="Theme.Wao_fe">
+        <item name="android:windowBackground">@color/workout_tracking_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/workout_tracking_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
 </resources>

@@ -1,10 +1,12 @@
 package com.example.wao_fe
 
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.PopupMenu
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -17,6 +19,8 @@ import com.example.wao_fe.namstats.StatisticsDashboardActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.wao_fe.component.FloatingAddMenu
+import com.example.wao_fe.health.HealthConnectManager
+import com.example.wao_fe.health.HealthConnectRepository
 import com.example.wao_fe.network.ApiResult
 import com.example.wao_fe.network.OpenFoodFactsApi
 import com.example.wao_fe.network.UserRepository
@@ -24,8 +28,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import androidx.cardview.widget.CardView
+import androidx.health.connect.client.HealthConnectClient
+import androidx.health.connect.client.PermissionController
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -39,14 +48,40 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pbCalories: ProgressBar
     private lateinit var tvWater: TextView
     private lateinit var tvSteps: TextView
+    private lateinit var tvHealthConnectStatus: TextView
+    private lateinit var tvHeartRate: TextView
+    private lateinit var tvHeartRateMeta: TextView
     private lateinit var fabAddFood: FloatingActionButton
     private lateinit var ivAvatar: ImageView
+    private lateinit var cardSteps: CardView
+    private lateinit var cardHeartRate: CardView
     private lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
     private lateinit var btnUpdateWeight: android.widget.Button
 
     private var floatingMenuDialog: android.app.Dialog? = null
     private val userRepository = UserRepository()
     private var userId: Long = -1
+    private var targetCaloriesGoal = 2000.0
+    private var backendCaloriesIn = 0.0
+    private var backendCaloriesOut = 0.0
+    private var backendStepsToday: Long? = null
+    private var healthConnectStepsToday: Long? = null
+    private var healthConnectActiveCaloriesBurned: Double? = null
+    private var latestHeartRateBpm: Long? = null
+    private var latestHeartRateMeasuredAtText: String? = null
+    private var hasHealthConnectReadAccess = false
+    private val heartRateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.US)
+    // Register once at Activity scope so the system can return the granted Health Connect permissions.
+    private val requestHealthPermissions = registerForActivityResult(
+        PermissionController.createRequestPermissionResultContract()
+    ) { granted ->
+        if (granted.containsAll(HealthConnectManager.readPermissions)) {
+            Toast.makeText(this, "Health Connect connected", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Health Connect permission was not granted", Toast.LENGTH_SHORT).show()
+        }
+        checkHealthConnectAccess(promptIfMissing = false, initiatedByUser = false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupHeader(userName)
+        checkHealthConnectAccess(promptIfMissing = true, initiatedByUser = false)
 
         if (userId != -1L) {
             fetchDashboardData()
@@ -75,8 +111,13 @@ class MainActivity : AppCompatActivity() {
         pbCalories = findViewById(R.id.pbCalories)
         tvWater = findViewById(R.id.tvWater)
         tvSteps = findViewById(R.id.tvSteps)
+        tvHealthConnectStatus = findViewById(R.id.tvHealthConnectStatus)
+        tvHeartRate = findViewById(R.id.tvHeartRate)
+        tvHeartRateMeta = findViewById(R.id.tvHeartRateMeta)
         fabAddFood = findViewById(R.id.fabAddFood)
         ivAvatar = findViewById(R.id.ivAvatar)
+        cardSteps = findViewById(R.id.cardSteps)
+        cardHeartRate = findViewById(R.id.cardHeartRate)
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         btnUpdateWeight = findViewById(R.id.btnUpdateWeight)
 
@@ -85,9 +126,21 @@ class MainActivity : AppCompatActivity() {
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
 
+        setupWorkoutShortcuts()
+
         ivAvatar.setOnClickListener {
             startActivity(android.content.Intent(this, EditProfileActivity::class.java))
         }
+
+        cardSteps.setOnClickListener {
+            checkHealthConnectAccess(promptIfMissing = true, initiatedByUser = true)
+        }
+
+        cardHeartRate.setOnClickListener {
+            checkHealthConnectAccess(promptIfMissing = true, initiatedByUser = true)
+        }
+
+        renderHealthConnectMetrics()
 
         bottomNavigationView.selectedItemId = R.id.nav_home
         bottomNavigationView.setOnItemSelectedListener { item ->
@@ -138,6 +191,29 @@ class MainActivity : AppCompatActivity() {
                 showFloatingMenu()
             }
         }
+    }
+
+    // Keep the home shortcuts centralized so feature 2 always exposes the same 4 sports.
+    private fun setupWorkoutShortcuts() {
+        findViewById<View>(R.id.cardWorkoutWalking)?.setOnClickListener {
+            openWorkoutTracking(WorkoutType.WALKING)
+        }
+        findViewById<View>(R.id.cardWorkoutOutdoorRun)?.setOnClickListener {
+            openWorkoutTracking(WorkoutType.OUTDOOR_RUNNING)
+        }
+        findViewById<View>(R.id.cardWorkoutIndoorRun)?.setOnClickListener {
+            openWorkoutTracking(WorkoutType.INDOOR_RUNNING)
+        }
+        findViewById<View>(R.id.cardWorkoutCycling)?.setOnClickListener {
+            openWorkoutTracking(WorkoutType.CYCLING)
+        }
+    }
+
+    private fun openWorkoutTracking(workoutType: WorkoutType) {
+        startActivity(
+            Intent(this, WorkoutTrackingActivity::class.java)
+                .putExtra(WorkoutType.EXTRA_WORKOUT_TYPE, workoutType.key)
+        )
     }
 
     private fun showFloatingMenu() {
@@ -220,6 +296,8 @@ class MainActivity : AppCompatActivity() {
                 .into(ivAvatar)
             ivAvatar.setPadding(0, 0, 0, 0)
         }
+
+        checkHealthConnectAccess(promptIfMissing = false, initiatedByUser = false)
     }
 
     private fun setupHeader(userName: String?) {
@@ -236,6 +314,7 @@ class MainActivity : AppCompatActivity() {
             if (profileResult is ApiResult.Success) {
                 targetCalories = profileResult.data.targetCalories
             }
+            targetCaloriesGoal = targetCalories
 
             // Fetch logs for macro tracking
             var consumedProtein = 0.0
@@ -281,29 +360,199 @@ class MainActivity : AppCompatActivity() {
             val summaryResult = userRepository.getTodaySummary(userId)
             if (summaryResult is ApiResult.Success) {
                 val summary = summaryResult.data
-                val remaining = targetCalories - summary.netCalories
-
-                tvCalIn.text = summary.totalCalIn.toInt().toString()
-                tvCalOut.text = summary.totalCalOut.toInt().toString()
-                tvCalRemaining.text = remaining.toInt().coerceAtLeast(0).toString()
-
-                val progress = if (targetCalories > 0) {
-                    ((summary.netCalories / targetCalories) * 100).toInt()
-                } else {
-                    0
-                }
-                pbCalories.progress = progress.coerceIn(0, 100)
+                backendCaloriesIn = summary.totalCalIn
+                backendCaloriesOut = summary.totalCalOut
+                renderCaloriesSummary()
 
                 tvWater.text = "${summary.totalWater} ml"
-                tvSteps.text = "${summary.totalSteps}/10000"
+                backendStepsToday = summary.totalSteps.toLong()
+                renderStepsCard()
             } else {
                 // If no summary exist for today yet, just show 0
-                tvCalRemaining.text = targetCalories.toInt().toString()
+                backendCaloriesIn = 0.0
+                backendCaloriesOut = 0.0
+                renderCaloriesSummary()
+                backendStepsToday = 0L
+                renderStepsCard()
                 if (summaryResult is ApiResult.Error && summaryResult.status != 404) {
                     // Ignore 404 since it just means no logs today yet
                     Toast.makeText(this@MainActivity, "Không thể tải dữ liệu hôm nay", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    // This is the single place that decides whether the device supports Health Connect,
+    // whether the provider must be installed, and whether our read permissions are already granted.
+    private fun checkHealthConnectAccess(promptIfMissing: Boolean, initiatedByUser: Boolean) {
+        lifecycleScope.launch {
+            when (HealthConnectManager.getSdkStatus(this@MainActivity)) {
+                HealthConnectClient.SDK_UNAVAILABLE -> {
+                    hasHealthConnectReadAccess = false
+                    clearHealthConnectSnapshot()
+                    updateHealthConnectStatus("Health Connect is not supported on this device")
+                    if (initiatedByUser) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Health Connect is not supported on this device",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                }
+
+                HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> {
+                    hasHealthConnectReadAccess = false
+                    clearHealthConnectSnapshot()
+                    updateHealthConnectStatus("Install or update Health Connect")
+                    if (promptIfMissing) {
+                        showHealthConnectInstallDialog()
+                    }
+                }
+
+                HealthConnectClient.SDK_AVAILABLE -> {
+                    val healthConnectClient = HealthConnectClient.getOrCreate(this@MainActivity)
+                    val grantedPermissions =
+                        healthConnectClient.permissionController.getGrantedPermissions()
+
+                    if (grantedPermissions.containsAll(HealthConnectManager.readPermissions)) {
+                        hasHealthConnectReadAccess = true
+                        updateHealthConnectStatus("")
+                        showHealthConnectLoadingState()
+                        loadHealthConnectMetrics(healthConnectClient)
+                        if (initiatedByUser) {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Health Connect is ready",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                    } else {
+                        hasHealthConnectReadAccess = false
+                        clearHealthConnectSnapshot()
+                        updateHealthConnectStatus("Tap to grant Health Connect access")
+                        if (promptIfMissing) {
+                            showHealthConnectPermissionDialog()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateHealthConnectStatus(statusText: String) {
+        tvHealthConnectStatus.text = statusText
+        tvHealthConnectStatus.visibility = if (statusText.isBlank()) View.GONE else View.VISIBLE
+    }
+
+    private fun loadHealthConnectMetrics(healthConnectClient: HealthConnectClient) {
+        lifecycleScope.launch {
+            runCatching {
+                HealthConnectRepository(healthConnectClient).readTodaySnapshot()
+            }.onSuccess { snapshot ->
+                healthConnectStepsToday = snapshot.stepsToday
+                healthConnectActiveCaloriesBurned = snapshot.activeCaloriesBurnedToday
+                latestHeartRateBpm = snapshot.latestHeartRateBpm
+                latestHeartRateMeasuredAtText = snapshot.latestHeartRateTime?.atZone(ZoneId.systemDefault())
+                    ?.format(heartRateTimeFormatter)
+                renderHealthConnectMetrics()
+            }.onFailure { error ->
+                Log.e("MainActivity", "Failed to read Health Connect data", error)
+                healthConnectStepsToday = null
+                healthConnectActiveCaloriesBurned = null
+                latestHeartRateBpm = null
+                latestHeartRateMeasuredAtText = null
+                renderHealthConnectMetrics()
+                updateHealthConnectStatus("Connected, but couldn't read today's data")
+            }
+        }
+    }
+
+    private fun clearHealthConnectSnapshot() {
+        healthConnectStepsToday = null
+        healthConnectActiveCaloriesBurned = null
+        latestHeartRateBpm = null
+        latestHeartRateMeasuredAtText = null
+        renderHealthConnectMetrics()
+    }
+
+    private fun showHealthConnectLoadingState() {
+        tvHeartRate.text = "-- bpm"
+        tvHeartRateMeta.text = "Reading data from Health Connect"
+    }
+
+    private fun renderHealthConnectMetrics() {
+        renderCaloriesSummary()
+        renderStepsCard()
+        renderHeartRateCard()
+    }
+
+    private fun renderCaloriesSummary() {
+        val caloriesOut = healthConnectActiveCaloriesBurned ?: backendCaloriesOut
+        val netCalories = backendCaloriesIn - caloriesOut
+        val remaining = targetCaloriesGoal - netCalories
+        val progress = if (targetCaloriesGoal > 0) {
+            ((netCalories / targetCaloriesGoal) * 100).toInt()
+        } else {
+            0
+        }
+
+        tvCalIn.text = backendCaloriesIn.toInt().toString()
+        tvCalOut.text = caloriesOut.toInt().toString()
+        tvCalRemaining.text = remaining.toInt().coerceAtLeast(0).toString()
+        pbCalories.progress = progress.coerceIn(0, 100)
+    }
+
+    private fun renderStepsCard() {
+        val stepsToday = healthConnectStepsToday ?: backendStepsToday ?: 0L
+        tvSteps.text = "$stepsToday/10000"
+    }
+
+    private fun renderHeartRateCard() {
+        if (latestHeartRateBpm != null) {
+            tvHeartRate.text = "${latestHeartRateBpm} bpm"
+            tvHeartRateMeta.text = "Updated at ${latestHeartRateMeasuredAtText ?: "--:--"}"
+            return
+        }
+
+        tvHeartRate.text = "-- bpm"
+        tvHeartRateMeta.text = if (hasHealthConnectReadAccess) {
+            "No heart rate data today in Health Connect"
+        } else {
+            "Connect Health Connect to view data"
+        }
+    }
+
+    private fun showHealthConnectPermissionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Connect Health Connect")
+            .setMessage(
+                "Wao needs read access to your step count, active calories burned, and heart rate so we can connect the app to Health Connect.",
+            )
+            .setNegativeButton("Later", null)
+            .setPositiveButton("Grant access") { _, _ ->
+                requestHealthPermissions.launch(HealthConnectManager.readPermissions)
+            }
+            .show()
+    }
+
+    private fun showHealthConnectInstallDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Install Health Connect")
+            .setMessage(
+                "Health Connect is required before Wao can ask for step count and heart rate permissions.",
+            )
+            .setNegativeButton("Later", null)
+            .setPositiveButton("Open Play Store") { _, _ ->
+                openHealthConnectStorePage()
+            }
+            .show()
+    }
+
+    private fun openHealthConnectStorePage() {
+        try {
+            startActivity(HealthConnectManager.buildInstallIntent(this))
+        } catch (_: ActivityNotFoundException) {
+            startActivity(HealthConnectManager.buildBrowserFallbackIntent())
         }
     }
 
