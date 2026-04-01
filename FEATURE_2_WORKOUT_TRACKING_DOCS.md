@@ -2,58 +2,80 @@
 
 ## 1. Scope
 
-File này dùng để note toàn bộ thay đổi liên quan tới tính năng 2: khu vực `Hoạt động tập luyện` ở home và màn `WorkoutTrackingActivity`.
+File nay dung de note toan bo thay doi lien quan toi feature 2:
 
-Từ ngày 2026-04-01 trở đi:
+- khu vuc `Hoat dong tap luyen` o Home
+- man `WorkoutTrackingActivity`
+- cac man profile lien quan den workout journal va step chart
 
-- Mỗi lần sửa code cho feature 2, phải cập nhật file này.
-- Mỗi thay đổi logic khó đọc phải có comment ngắn, rõ nghĩa ngay tại chỗ code.
-- Nếu có thay đổi business rule, phải cập nhật cả phần `Change Log` và `Regression Checklist`.
+Rule tu 2026-04-01:
 
-## 2. Files đang thuộc feature 2
+- Moi lan sua code cho feature 2 phai cap nhat file nay.
+- Moi logic kho doc phai co comment ngan, ro nghia ngay tai cho code.
+- Neu business rule thay doi, phai cap nhat ca `Change Log` va `Regression Checklist`.
 
-- `app/src/main/res/layout/activity_main.xml`
-  - Grid 4 môn ở home.
+## 2. Files Thuoc Feature 2
+
 - `app/src/main/java/com/example/wao_fe/MainActivity.kt`
-  - Điều hướng từ home sang màn tracking.
+  - Dieu huong tu home sang tracking.
+- `app/src/main/java/com/example/wao_fe/SettingsActivity.kt`
+  - Entry point tu man `Tai khoan` sang `Nhat ki tap luyen` va `Bieu do so buoc`.
 - `app/src/main/java/com/example/wao_fe/WorkoutType.kt`
-  - Mapping môn tập, icon, tốc độ mặc định, calories, heart-rate range.
+  - Mapping mon tap, icon, GPS/step rules, MET config.
 - `app/src/main/java/com/example/wao_fe/WorkoutTrackingActivity.kt`
-  - UI tracking, state machine, hold-to-finish, rule save, Health Connect fallback.
+  - UI tracking, state machine, permission flow, save workout.
+- `app/src/main/java/com/example/wao_fe/WorkoutJournalActivity.kt`
+  - Danh sach cac mon da tap tu profile.
+- `app/src/main/java/com/example/wao_fe/WorkoutHistoryActivity.kt`
+  - Lich su buoi tap theo mon.
+- `app/src/main/java/com/example/wao_fe/WorkoutJournalRepository.kt`
+  - Tong hop history tu API workout-log hien tai va parse metadata tam trong `note`.
+- `app/src/main/java/com/example/wao_fe/StepsTrendActivity.kt`
+  - Bieu do so buoc Hom nay / Hom qua tu Health Connect.
+- `app/src/main/java/com/example/wao_fe/health/HealthConnectRepository.kt`
+  - Snapshot today va timeline so buoc theo gio.
+- `app/src/main/java/com/example/wao_fe/health/HealthConnectManager.kt`
+  - Health Connect permission sets.
+- `app/src/main/res/layout/activity_main.xml`
+  - Grid 4 mon o home.
 - `app/src/main/res/layout/activity_workout_tracking.xml`
-  - Layout dark/fullscreen của màn tracking.
-- `app/src/main/res/drawable/ic_walk.xml`
-  - Icon đi bộ.
-- `app/src/main/res/drawable/bg_workout_shortcut.xml`
-  - Background shortcut card ở home.
+  - Layout dark/fullscreen cua tracking.
+- `app/src/main/res/layout/activity_workout_journal.xml`
+  - Layout journal workout.
+- `app/src/main/res/layout/activity_workout_history.xml`
+  - Layout history theo mon.
+- `app/src/main/res/layout/activity_steps_trend.xml`
+  - Layout step chart.
+- `app/src/main/res/layout/item_workout_sport_summary.xml`
+  - Card item cho tung mon tap trong journal.
 - `app/src/main/AndroidManifest.xml`
-  - Register activity mới cho feature 2.
+  - Dang ky activities, permissions, hardware features.
 - `app/src/main/res/values/themes.xml`
 - `app/src/main/res/values-night/themes.xml`
 - `app/src/main/res/values/colors.xml`
-  - Theme và màu riêng cho màn tracking.
+  - Theme va mau cho tracking/profile workout screens.
 
 ## 3. Change Log
 
 ### 2026-03-31 to 2026-04-01: initial implementation
 
-- Rút gọn khu vực `Hoạt động tập luyện` ở home còn đúng 4 môn:
-  - Đi bộ
-  - Chạy bộ ngoài trời
-  - Chạy bộ trong nhà
-  - Đạp xe
-- Mỗi ô ở home mở sang `WorkoutTrackingActivity` với `WorkoutType` tương ứng.
-- Tạo màn tracking dark/fullscreen, tối giản:
-  - Header trái là tên môn.
-  - Header phải là icon more.
-  - Main metric ở giữa là tổng số km.
-  - 4 thông số phụ dạng grid 2 cột.
-- Mapping metric theo môn:
-  - Đi bộ: tổng số km, tốc độ, kcal, nhịp tim.
-  - Chạy bộ ngoài trời: tổng số km, tốc độ, kcal, nhịp tim.
-  - Đạp xe: tổng số km, tốc độ, kcal, nhịp tim.
-  - Chạy bộ trong nhà: tổng số km, tốc độ, kcal, số bước.
-- Thêm state machine cho session:
+- Rut gon khu vuc `Hoat dong tap luyen` o home con 4 mon:
+  - Di bo
+  - Chay bo ngoai troi
+  - Chay bo trong nha
+  - Dap xe
+- Moi o o home mo sang `WorkoutTrackingActivity` voi `WorkoutType` tuong ung.
+- Tao man tracking dark/fullscreen:
+  - Header trai la ten mon
+  - Header phai la icon more
+  - Main metric o giua la tong so km
+  - 4 thong so phu dang grid 2 cot
+- Mapping metric:
+  - Di bo: tong km, toc do, kcal, nhip tim
+  - Chay bo ngoai troi: tong km, toc do, kcal, nhip tim
+  - Dap xe: tong km, toc do, kcal, nhip tim
+  - Chay bo trong nha: tong km, toc do, kcal, so buoc
+- Them state machine:
   - `IDLE`
   - `RUNNING`
   - `PAUSED`
@@ -62,85 +84,161 @@ Từ ngày 2026-04-01 trở đi:
   - Idle: `Start`
   - Running: `Pause`
   - Paused: `Resume`
-- Kết thúc buổi tập bằng cách nhấn giữ 3 giây:
-  - Có progress ring.
-  - Thả tay sớm thì hủy.
-- Business rule khi kết thúc:
-  - Nếu `< 3 phút`: popup `Buổi tập quá ngắn`
-  - Nếu `>= 3 phút`: cho phép save workout log.
+- Them hold 3 giay de ket thuc buoi tap:
+  - co progress ring
+  - tha tay som thi huy
+- Rule ket thuc:
+  - `< 3 phut`: popup `Buoi tap qua ngan`
+  - `>= 3 phut`: cho phep save
 - Save flow:
-  - Tìm `exercise` theo tên.
-  - Nếu chưa có thì tự tạo `exercise`.
-  - Sau đó gọi `createWorkoutLog`.
-- Health Connect integration trong tracking:
-  - Ưu tiên heart rate thật nếu app đã có quyền.
-  - Với treadmill, ưu tiên steps delta từ Health Connect nếu có.
-  - Nếu không có dữ liệu Health Connect thì fallback sang estimate nội bộ để session vẫn chạy.
+  - lookup `exercise`
+  - neu chua co thi tao moi
+  - goi `createWorkoutLog`
 
 ### 2026-04-01: merge conflict resolution in `MainActivity`
 
 - Resolve conflict trong `fetchDashboardData()` sau khi pull git.
-- Giữ backend state update của nhánh hiện tại để không làm vỡ helper/state trong `MainActivity`.
-- Chọn cách hiển thị calories summary giống nhánh teammate:
+- Giu backend state update de khong vo helper/state cu.
+- Chon cach hien thi calories summary giong nhanh teammate:
   - `tvCalIn`
   - `tvCalOut`
   - `tvCalRemaining`
   - `pbCalories`
-- Đồng bộ `renderCaloriesSummary()` về cùng công thức hiển thị để tránh bị Health Connect render đè ngược lại giao diện sau khi conflict đã merge.
+- Dong bo `renderCaloriesSummary()` ve cung cong thuc hien thi.
 
 ### 2026-04-01: duplicate property fix in `MainActivity`
 
-- Xóa khai báo trùng `bottomNavigationView` còn sót sau merge, vì Kotlin sẽ báo `Conflicting declarations` và chặn compile.
+- Xoa khai bao trung `bottomNavigationView` con sot sau merge.
 
 ### 2026-04-01: phase 1 live tracking data upgrade
 
-- Reworked `WorkoutTrackingActivity` so outdoor walking/running/cycling read live distance and speed from device location instead of fake waveform values.
-- Added indoor running support that prefers step-counter sensor data and falls back to Health Connect step deltas to derive distance from stride length.
-- Switched live heart-rate display to real Health Connect data only; when unavailable the UI now shows `-- bpm` instead of synthetic values.
-- Changed calorie rendering to prefer Health Connect active calories and fall back to a local MET-based estimate marked with `~`.
-- Added runtime permission flow for location and activity recognition in `WorkoutTrackingActivity`.
-- Added manifest permissions/features for location, activity recognition, GPS, and step counter support.
+- Outdoor walking/running/cycling lay distance va speed that hon tu GPS thay vi waveform fake.
+- Indoor running uu tien step-counter sensor, fallback sang Health Connect step delta.
+- Heart rate live chi hien thi du lieu that tu Health Connect; neu khong co thi hien `-- bpm`.
+- Calories uu tien Active Calories tu Health Connect; neu khong co thi fallback local MET-based estimate co dau `~`.
+- Them runtime permission flow cho location va activity recognition trong `WorkoutTrackingActivity`.
+- Them manifest permissions/features cho location, activity recognition, GPS va step counter.
 
 ### 2026-04-01: manifest sync after pull
 
-- Re-added workout tracking permissions and hardware features in `AndroidManifest.xml` after a pull removed the location and activity-recognition declarations required by `WorkoutTrackingActivity`.
+- Re-add permissions va hardware features cua workout tracking trong `AndroidManifest.xml` sau khi pull lam mat location/activity-recognition declarations.
+
+### 2026-04-01: walking business refinement
+
+- Giu `Di bo` la outdoor workout, van dung GPS cho `Tong so km` va `Toc do`.
+- UI walking doi metric thu 4 tu `Nhip tim` sang `So buoc`.
+- Walking step data la signal phu tu step sensor hoac Health Connect, khong block flow outdoor neu thieu quyen step.
+- Chua them Google Maps route vi project hien chua co Maps SDK dependency va API key.
+
+### 2026-04-01: profile workout journal and step chart
+
+- `SettingsActivity`:
+  - `Tap luyen` mo sang `WorkoutJournalActivity`
+  - `So buoc` mo sang `StepsTrendActivity`
+- Them `WorkoutJournalActivity`:
+  - hien cac mon da tap trong cua so gan day
+  - tong hop so buoi, quang duong, thoi gian, calories theo mon
+- Them `WorkoutHistoryActivity`:
+  - bam vao 1 mon de xem lich su cac buoi tap
+  - hien date, time neu co, distance, duration, calories, step/speed
+- Them `StepsTrendActivity`:
+  - show bieu do so buoc theo gio cho `Hom nay` va `Hom qua`
+  - data lay truc tiep tu Health Connect
+- Them `WorkoutJournalRepository`:
+  - do backend hien chi co API workout log theo tung ngay, FE tam assemble journal trong cua so 30 ngay
+  - parse metadata tam tu `note`
+- Update `WorkoutTrackingActivity` save flow:
+  - tam ghi metadata co cau truc vao `note`:
+    - `typeKey`
+    - `distanceKm`
+    - `avgSpeedKmh`
+    - `steps`
+    - `startedAt`
+    - `endedAt`
+  - muc dich la de FE journal/history co the render tot hon truoc khi BE mo field rieng
+- Update `HealthConnectRepository`:
+  - them reader timeline so buoc theo gio
+- Update `HealthConnectManager`:
+  - tach `stepReadPermissions` de man step chart chi xin `READ_STEPS`
+
+### 2026-04-01: direct workout-log save contract for mobile tracking
+
+- Bo flow FE tu lookup/create `exercise` truoc khi save workout.
+- `WorkoutTrackingActivity` gio save truc tiep vao:
+  - `POST /api/users/{userId}/workout-logs`
+- Payload FE map theo `workoutType` backend:
+  - `Di bo` -> `OUTDOOR_WALKING`
+  - `Chay bo ngoai troi` -> `OUTDOOR_RUNNING`
+  - `Chay bo trong nha` -> `INDOOR_RUNNING`
+  - `Dap xe` -> `CYCLING`
+- Payload save moi uu tien cac field tracking that:
+  - `workoutType`
+  - `startedAt`
+  - `endedAt`
+  - `distanceMeters`
+  - `durationMin`
+  - `caloriesBurned`
+  - `stepCount`
+  - `avgSpeedKmh`
+  - `note`
+- FE log ro khi save:
+  - HTTP method
+  - full URL
+  - request body
+  - response code
+  - response body
+- Dialog save fail gio parse `response.message` tu backend neu co, thay vi chi hien `HTTP 404`.
+- `WorkoutJournalRepository` uu tien doc field first-class tu `WorkoutLogResponse` truoc, sau do moi fallback sang metadata trong `note`.
 
 ## 4. Current Assumptions
 
-- `exerciseId` là bắt buộc khi save workout log, nên app sẽ tự lookup hoặc create exercise.
-- `categoryId` fallback đang dùng từ exercise đầu tiên lấy được từ backend; nếu backend không có exercise nào thì fallback về `1`.
-- Heart rate live card hiện chỉ hiển thị dữ liệu thật từ Health Connect; nếu thiếu dữ liệu thì card sẽ hiển thị `-- bpm`.
-- Indoor distance hiện suy ra từ `heightCm * strideLengthFactor`, nên độ chính xác còn phụ thuộc profile mới nhất của người dùng.
-- Compile đầy đủ trong sandbox hiện chưa verify được vì môi trường đang chỉ có JDK 21, trong khi project yêu cầu `jvmToolchain(17)`.
+- Mobile tracking save workout truc tiep bang `workoutType`, khong con tu tao `exercise` hay fallback `categoryId`.
+- Backend `createWorkoutLog` can support contract moi voi cac field optional/null thay vi bat FE phai gui `exerciseId`/`programId`.
+- Heart rate live card chi hien thi du lieu that tu Health Connect; neu thieu du lieu thi hien `-- bpm`.
+- Indoor distance suy ra tu `heightCm * strideLengthFactor`, nen do chinh xac con phu thuoc vao profile moi nhat.
+- Workout journal FE hien chi tai `30 ngay gan nhat` vi backend chua co range endpoint rieng cho workout history.
+- Cac field nhu `distance`, `steps`, `startedAt`, `endedAt` trong history hien dang duoc FE tam parse tu `note` cho cac log moi.
+- Man `So buoc` la FE-only flow, phu thuoc Health Connect co san sang va duoc cap `READ_STEPS`.
+- Full compile trong sandbox chua verify duoc vi moi truong hien tai chi co JDK 21 trong khi project yeu cau `jvmToolchain(17)`.
 
 ## 5. Regression Checklist
 
-- Home chỉ còn đúng 4 shortcut môn tập.
-- Bấm từng shortcut mở đúng tên môn ở header tracking.
-- Start chuyển sang running state.
-- Pause chuyển sang paused state.
-- Resume tiếp tục session trước đó.
-- Giữ 3 giây để kết thúc có progress ring.
-- Thả tay trước 3 giây thì không kết thúc.
-- Session dưới 3 phút hiện đúng popup:
-  - `Thoát không lưu`
-  - `Tiếp tục tập`
-- Session từ 3 phút trở lên gọi save.
-- Chạy bộ trong nhà hiển thị `Số bước`, các môn còn lại hiển thị `Nhịp tim`.
-- Màn tracking giữ dark theme/fullscreen.
-- Outdoor workout xin quyền vị trí khi cần và cập nhật `Tổng số km` / `Tốc độ` từ GPS.
-- Indoor running xin quyền hoạt động khi cần và cập nhật `Số bước` / `Tổng số km` từ step sensor hoặc Health Connect.
-- `Kcal` có dấu `~` khi đang là estimate local, và bỏ dấu `~` khi đã có delta từ Health Connect.
-- `Nhịp tim` hiển thị `-- bpm` nếu thiết bị/chính sách quyền chưa cung cấp được dữ liệu thật.
+- Home chi con dung 4 shortcut mon tap.
+- Bam tung shortcut mo dung ten mon o header tracking.
+- Start chuyen sang running state.
+- Pause chuyen sang paused state.
+- Resume tiep tuc session truoc do.
+- Giu 3 giay de ket thuc co progress ring.
+- Tha tay truoc 3 giay thi khong ket thuc.
+- Session duoi 3 phut hien dung popup:
+  - `Thoat khong luu`
+  - `Tiep tuc tap`
+- Session tu 3 phut tro len goi save.
+- Khi save workout khong con goi `/api/exercises`.
+- Save workout goi dung `POST /api/users/{userId}/workout-logs`.
+- Neu backend tra JSON loi co `message`, dialog save fail hien dung message do.
+- Chay bo trong nha hien `So buoc`, cac mon con lai hien `Nhip tim`.
+- Man tracking giu dark theme/fullscreen.
+- Outdoor workout xin quyen vi tri khi can va cap nhat `Tong so km` / `Toc do` tu GPS.
+- `Di bo` van la outdoor workout va hien `So buoc` o metric thu 4.
+- Indoor running xin quyen hoat dong khi can va cap nhat `So buoc` / `Tong so km` tu step sensor hoac Health Connect.
+- `Kcal` co dau `~` khi dang la estimate local, va bo dau `~` khi da co delta tu Health Connect.
+- `Nhip tim` hien `-- bpm` neu thiet bi/chinh sach quyen chua cung cap duoc du lieu that.
+- `Tai khoan` > `Tap luyen` mo man journal.
+- Journal chi hien cac mon co log trong cua so FE hien tai.
+- Bam vao 1 mon trong journal mo dung man history cua mon do.
+- `Tai khoan` > `So buoc` mo man step chart.
+- Step chart chuyen duoc giua `Hom nay` va `Hom qua`.
+- Neu chua co Health Connect hoac chua cap `READ_STEPS`, man step chart hien CTA dung thay vi crash.
 
 ## 6. Update Rule For Future Changes
 
-Khi sửa feature 2 trong các lần sau, phải làm đủ 3 việc:
+Moi lan sua feature 2 trong cac lan sau, phai lam du 3 viec:
 
-1. Sửa code.
-2. Thêm hoặc cập nhật comment ở đoạn logic mới / logic khó.
-3. Cập nhật file `FEATURE_2_WORKOUT_TRACKING_DOCS.md`:
-   - thêm ngày sửa
-   - mô tả file bị chạm
-   - mô tả thay đổi business/UI/API
-   - cập nhật checklist nếu behavior thay đổi
+1. Sua code.
+2. Them hoac cap nhat comment o doan logic moi / logic kho.
+3. Cap nhat file `FEATURE_2_WORKOUT_TRACKING_DOCS.md`:
+   - them ngay sua
+   - mo ta file bi cham
+   - mo ta thay doi business/UI/API
+   - cap nhat checklist neu behavior thay doi

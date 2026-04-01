@@ -82,6 +82,21 @@
             android:theme="@style/Theme.Wao_fe.WorkoutTracking" />
 
         <activity
+            android:name=".WorkoutJournalActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".WorkoutHistoryActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".StepsTrendActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".PermissionsRationaleActivity"
             android:exported="true"
             android:screenOrientation="portrait">

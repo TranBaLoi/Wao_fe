@@ -14,6 +14,10 @@ object HealthConnectManager {
 
     const val providerPackageName = "com.google.android.apps.healthdata"
 
+    val stepReadPermissions = setOf(
+        HealthPermission.getReadPermission(StepsRecord::class),
+    )
+
     // Keep the requested permissions in one place so checks and request dialogs stay consistent.
     val readPermissions = setOf(
         HealthPermission.getReadPermission(StepsRecord::class),

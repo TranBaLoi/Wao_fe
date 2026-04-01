@@ -137,8 +137,12 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent(this, com.example.wao_fe.namstats.StatisticsDashboardActivity::class.java))
         }
 
+        findViewById<LinearLayout>(R.id.btnStatWorkout).setOnClickListener {
+            startActivity(Intent(this, WorkoutJournalActivity::class.java))
+        }
+
         findViewById<LinearLayout>(R.id.btnStatSteps).setOnClickListener {
-            startActivity(Intent(this, com.example.wao_fe.namstats.StatisticsDashboardActivity::class.java))
+            startActivity(Intent(this, StepsTrendActivity::class.java))
         }
 
         findViewById<LinearLayout>(R.id.btnStatWeight).setOnClickListener {

@@ -5,8 +5,10 @@ import androidx.annotation.DrawableRes
 // These presets are the single source of truth for feature 2 labels and live-tracking rules.
 enum class WorkoutType(
     val key: String,
+    val backendWorkoutType: String,
     val title: String,
     @DrawableRes val iconRes: Int,
+    val showsStepMetric: Boolean,
     val usesStepMetric: Boolean,
     val usesGpsDistance: Boolean,
     val strideLengthFactor: Double,
@@ -17,8 +19,10 @@ enum class WorkoutType(
 ) {
     WALKING(
         key = "walking",
+        backendWorkoutType = "OUTDOOR_WALKING",
         title = "Đi bộ",
         iconRes = R.drawable.ic_walk,
+        showsStepMetric = true,
         usesStepMetric = false,
         usesGpsDistance = true,
         strideLengthFactor = 0.415,
@@ -29,8 +33,10 @@ enum class WorkoutType(
     ),
     OUTDOOR_RUNNING(
         key = "outdoor_running",
+        backendWorkoutType = "OUTDOOR_RUNNING",
         title = "Chạy bộ ngoài trời",
         iconRes = R.drawable.ic_run,
+        showsStepMetric = false,
         usesStepMetric = false,
         usesGpsDistance = true,
         strideLengthFactor = 0.65,
@@ -41,8 +47,10 @@ enum class WorkoutType(
     ),
     INDOOR_RUNNING(
         key = "indoor_running",
+        backendWorkoutType = "INDOOR_RUNNING",
         title = "Chạy bộ trong nhà",
         iconRes = R.drawable.ic_run,
+        showsStepMetric = true,
         usesStepMetric = true,
         usesGpsDistance = false,
         strideLengthFactor = 0.65,
@@ -53,8 +61,10 @@ enum class WorkoutType(
     ),
     CYCLING(
         key = "cycling",
+        backendWorkoutType = "CYCLING",
         title = "Đạp xe",
         iconRes = R.drawable.ic_bike,
+        showsStepMetric = false,
         usesStepMetric = false,
         usesGpsDistance = true,
         strideLengthFactor = 0.0,
@@ -69,6 +79,10 @@ enum class WorkoutType(
 
         fun fromKey(key: String?): WorkoutType {
             return values().firstOrNull { it.key == key } ?: WALKING
+        }
+
+        fun fromBackendWorkoutType(value: String?): WorkoutType? {
+            return values().firstOrNull { it.backendWorkoutType.equals(value, ignoreCase = true) }
         }
     }
 }

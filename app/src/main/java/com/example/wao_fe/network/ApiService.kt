@@ -48,6 +48,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 
 interface ApiService {
 
@@ -233,7 +234,7 @@ interface ApiService {
     suspend fun createWorkoutLog(
         @Path("userId") userId: Long,
         @Body request: CreateWorkoutLogRequest
-    ): WorkoutLogResponse
+    ): Response<WorkoutLogResponse>
 
     @GET("api/users/{userId}/workout-logs")
     suspend fun getWorkoutLogs(

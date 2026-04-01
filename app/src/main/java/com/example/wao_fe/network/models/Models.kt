@@ -251,21 +251,33 @@ data class ApplyMealPlanRequest(
 
 // Workout logs
 data class CreateWorkoutLogRequest(
-    val exerciseId: Long? = null,
-    val programId: Long? = null,
+    val workoutType: String? = null,
+    val startedAt: String? = null,
+    val endedAt: String? = null,
+    val distanceMeters: Double? = null,
     val durationMin: Int,
     val caloriesBurned: Double? = null,
-    val logDate: String,
-    val note: String? = null
+    val stepCount: Int? = null,
+    val avgSpeedKmh: Double? = null,
+    val note: String? = null,
+    val exerciseId: Long? = null,
+    val programId: Long? = null,
+    val logDate: String? = null
 )
 
 data class WorkoutLogResponse(
     val id: Long,
     val userId: Long,
+    val workoutType: String? = null,
+    val startedAt: String? = null,
+    val endedAt: String? = null,
+    val distanceMeters: Double? = null,
     val exerciseId: Long? = null,
     val programId: Long? = null,
     val durationMin: Int,
     val caloriesBurned: Double,
+    val stepCount: Int? = null,
+    val avgSpeedKmh: Double? = null,
     val logDate: String,
     val note: String? = null
 )

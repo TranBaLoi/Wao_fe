@@ -19,6 +19,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -43,8 +44,9 @@ import com.example.wao_fe.health.HealthConnectRepository
 import com.example.wao_fe.network.ApiResult
 import com.example.wao_fe.network.NetworkClient
 import com.example.wao_fe.network.UserRepository
+import com.example.wao_fe.network.models.ApiErrorResponse
 import com.example.wao_fe.network.models.CreateWorkoutLogRequest
-import com.example.wao_fe.network.models.ExerciseRequest
+import com.example.wao_fe.network.models.WorkoutLogResponse
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import kotlinx.coroutines.Job
@@ -53,6 +55,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Locale
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -104,6 +107,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     private var userId = -1L
     private var sessionState = SessionState.IDLE
     private var pendingTrackingAction = PendingTrackingAction.NONE
+    private var sessionStartedAt: LocalDateTime? = null
     private var sessionDurationSeconds = 0L
     private var distanceKm = 0.0
     private var estimatedCaloriesBurned = 0.0
@@ -142,13 +146,13 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     ) { granted ->
         if (granted.containsAll(HealthConnectManager.readPermissions)) {
             hasHealthConnectReadAccess = true
-            toast("Đã kết nối Health Connect")
+            toast("Da ket noi Health Connect")
             lifecycleScope.launch {
                 refreshHealthSnapshot(seedRunningSegment = sessionState == SessionState.RUNNING)
             }
             startHealthSnapshotLoop()
         } else {
-            toast("Chưa cấp quyền Health Connect")
+            toast("Chua cap quyen Health Connect")
         }
     }
 
@@ -156,6 +160,13 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
         registerStepSensorIfNeeded()
+        if (pendingTrackingAction == PendingTrackingAction.NONE) {
+            if (sessionState == SessionState.RUNNING && wantsStepData() && sensorStepsSegmentBaseline == null) {
+                sensorStepsSegmentBaseline = latestStepCounterValue
+            }
+            renderMetrics()
+            return@registerForActivityResult
+        }
         val canProceed = when {
             workoutType.usesGpsDistance -> hasLocationPermission()
             workoutType.usesStepMetric -> hasAvailableIndoorTrackingSource()
@@ -210,8 +221,10 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type != Sensor.TYPE_STEP_COUNTER) return
         latestStepCounterValue = event.values.firstOrNull()
-        if (workoutType.usesStepMetric && sessionState == SessionState.RUNNING) {
-            distanceKm = stepsToDistanceKm(displayedSteps())
+        if (wantsStepData() && sessionState == SessionState.RUNNING) {
+            if (workoutType.usesStepMetric) {
+                distanceKm = stepsToDistanceKm(displayedSteps())
+            }
             renderMetrics()
         }
     }
@@ -250,7 +263,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
 
     private fun bindContent() {
         tvWorkoutTitle.text = workoutType.title
-        tvMetricFourthLabel.text = if (workoutType.usesStepMetric) "Số bước" else "Nhịp tim"
+        tvMetricFourthLabel.text = if (workoutType.showsStepMetric) "Số bước" else "Nhịp tim"
     }
 
     private fun bindActions() {
@@ -299,13 +312,18 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
+    // Walking keeps GPS as the primary outdoor signal, but can still surface step data when Health Connect or the step sensor is available.
+    private fun wantsStepData(): Boolean {
+        return workoutType.showsStepMetric || workoutType.usesStepMetric
+    }
+
     private fun showMoreMenu() {
         val popupMenu = PopupMenu(this, btnWorkoutMore)
         var order = 0
         if (workoutType.usesGpsDistance && !hasLocationPermission()) {
             popupMenu.menu.add(0, 3, order++, "Cấp quyền vị trí")
         }
-        if (workoutType.usesStepMetric && shouldRequestActivityRecognitionPermission() && !hasHealthConnectReadAccess) {
+        if (wantsStepData() && shouldRequestActivityRecognitionPermission() && !hasHealthConnectReadAccess) {
             popupMenu.menu.add(0, 4, order++, "Cấp quyền hoạt động")
         }
         if (!hasHealthConnectReadAccess) {
@@ -344,6 +362,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     private fun startSessionInternal() {
         if (sessionState != SessionState.IDLE) return
         sessionState = SessionState.RUNNING
+        sessionStartedAt = LocalDateTime.now()
         currentSpeedKmh = 0.0
         beginLiveSegment()
         startTickLoop()
@@ -390,15 +409,15 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun requiredTrackingPermissions(): List<String> {
-        return when {
-            workoutType.usesGpsDistance && !hasLocationPermission() -> listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            )
-            workoutType.usesStepMetric && shouldRequestActivityRecognitionPermission() && !hasHealthConnectReadAccess ->
-                listOf(Manifest.permission.ACTIVITY_RECOGNITION)
-            else -> emptyList()
+        val permissions = mutableListOf<String>()
+        if (workoutType.usesGpsDistance && !hasLocationPermission()) {
+            permissions += Manifest.permission.ACCESS_FINE_LOCATION
+            permissions += Manifest.permission.ACCESS_COARSE_LOCATION
         }
+        if (workoutType.usesStepMetric && shouldRequestActivityRecognitionPermission() && !hasHealthConnectReadAccess) {
+            permissions += Manifest.permission.ACTIVITY_RECOGNITION
+        }
+        return permissions
     }
 
     private fun missingTrackingPermissionMessage(): String {
@@ -419,7 +438,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun requestIndoorTrackingPermission() {
-        if (!workoutType.usesStepMetric || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (!wantsStepData() || Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         requestTrackingPermissions.launch(arrayOf(Manifest.permission.ACTIVITY_RECOGNITION))
     }
 
@@ -428,7 +447,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
             resetOutdoorAnchor()
             startLocationUpdatesIfPossible()
         }
-        if (workoutType.usesStepMetric) {
+        if (wantsStepData()) {
             sensorStepsSegmentBaseline = latestStepCounterValue
         }
         seedHealthConnectSegment()
@@ -439,7 +458,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
 
     // Session metrics use per-segment baselines so steps and calories taken while paused never leak into the workout.
     private fun commitLiveSegment() {
-        if (workoutType.usesStepMetric) {
+        if (wantsStepData()) {
             sensorStepsAccumulated = currentSensorStepsTotal()
             sensorStepsSegmentBaseline = null
             healthStepsAccumulated = currentHealthStepsTotal()
@@ -514,7 +533,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
 
     private fun seedHealthConnectSegment() {
         if (sessionState != SessionState.RUNNING || !hasHealthConnectReadAccess) return
-        if (workoutType.usesStepMetric && healthStepsSegmentBaseline == null && latestStepsToday != null) {
+        if (wantsStepData() && healthStepsSegmentBaseline == null && latestStepsToday != null) {
             healthStepsSegmentBaseline = latestStepsToday
         }
         if (healthCaloriesSegmentBaseline == null && latestActiveCaloriesToday != null) {
@@ -659,7 +678,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun canReadStepSensor(): Boolean {
-        if (!workoutType.usesStepMetric) return false
+        if (!wantsStepData()) return false
         if (stepCounterSensor == null) return false
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
             hasPermission(Manifest.permission.ACTIVITY_RECOGNITION)
@@ -670,7 +689,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun shouldRequestActivityRecognitionPermission(): Boolean {
-        return workoutType.usesStepMetric &&
+        return wantsStepData() &&
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             !hasPermission(Manifest.permission.ACTIVITY_RECOGNITION)
     }
@@ -753,26 +772,30 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
 
     private fun saveWorkout() {
         if (userId == -1L) {
-            toast("Không tìm thấy phiên đăng nhập")
+            toast("Khong tim thay phien dang nhap")
             return
         }
         sessionState = SessionState.SAVING
         renderMetrics()
         lifecycleScope.launch {
             runCatching {
-                val exerciseId = findOrCreateExerciseId()
-                apiService.createWorkoutLog(
+                val sessionEndedAt = LocalDateTime.now()
+                val request = buildCreateWorkoutLogRequest(sessionEndedAt)
+                logWorkoutSaveRequest(request)
+
+                // Mobile tracking hits workout-logs directly; it should never try to bootstrap exercise records.
+                val response = apiService.createWorkoutLog(
                     userId = userId,
-                    request = CreateWorkoutLogRequest(
-                        exerciseId = exerciseId,
-                        durationMin = (sessionDurationSeconds / 60L).toInt(),
-                        caloriesBurned = displayedCaloriesBurned(),
-                        logDate = LocalDate.now().toString(),
-                        note = "${workoutType.title} - ${formatDistance(distanceKm)} km - ${formatDuration(sessionDurationSeconds)}",
-                    )
+                    request = request,
                 )
+                val rawResponseBody = response.errorBody()?.string()
+                logWorkoutSaveResponse(response.code(), response.body(), rawResponseBody)
+                if (!response.isSuccessful) {
+                    throw WorkoutSaveRequestException(response.code(), rawResponseBody)
+                }
+                response.body() ?: error("Workout log response body is empty")
             }.onSuccess {
-                toast("Đã lưu buổi tập")
+                toast("Da luu buoi tap")
                 finish()
             }.onFailure { error ->
                 sessionState = SessionState.PAUSED
@@ -782,37 +805,92 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-    // Workout log requires an exerciseId, so we reuse an existing record or create one on demand.
-    private suspend fun findOrCreateExerciseId(): Long {
-        val existing = runCatching { apiService.getExercises(workoutType.exerciseName) }
-            .getOrDefault(emptyList())
-            .firstOrNull { it.name.equals(workoutType.exerciseName, ignoreCase = true) }
-        if (existing != null) return existing.id
+    private fun buildCreateWorkoutLogRequest(sessionEndedAt: LocalDateTime): CreateWorkoutLogRequest {
+        return CreateWorkoutLogRequest(
+            workoutType = workoutType.backendWorkoutType,
+            startedAt = (sessionStartedAt ?: sessionEndedAt).toString(),
+            endedAt = sessionEndedAt.toString(),
+            distanceMeters = distanceKm.takeIf { it > 0.0 }?.times(1_000.0),
+            durationMin = (sessionDurationSeconds / 60L).toInt(),
+            caloriesBurned = displayedCaloriesBurned().takeIf { it > 0.0 },
+            stepCount = displayedStepCountOrNull(),
+            avgSpeedKmh = averageSpeedKmh()?.takeIf { distanceKm > 0.0 },
+            note = buildWorkoutMetadataNote(sessionEndedAt),
+            logDate = LocalDate.now().toString(),
+        )
+    }
 
-        val categoryId = runCatching { apiService.getExercises().firstOrNull()?.categoryId }.getOrNull() ?: 1L
-        return apiService.createExercise(
-            ExerciseRequest(
-                name = workoutType.exerciseName,
-                categoryId = categoryId,
-                caloriesPerMin = workoutType.defaultCaloriesPerMinute,
-                description = "Bài tập được tạo từ màn hình tracking của Wao",
-            )
-        ).id
+    private fun displayedStepCountOrNull(): Int? {
+        if (!wantsStepData()) return null
+        val steps = displayedSteps()
+        val hasReadableSource = latestStepCounterValue != null ||
+            latestStepsToday != null ||
+            sensorStepsAccumulated > 0 ||
+            healthStepsAccumulated > 0 ||
+            steps > 0
+        return if (hasReadableSource) steps else null
+    }
+
+    private fun logWorkoutSaveRequest(request: CreateWorkoutLogRequest) {
+        val url = "${NetworkClient.baseUrl}api/users/$userId/workout-logs"
+        Log.i("WorkoutTrackingSave", "method=POST")
+        Log.i("WorkoutTrackingSave", "url=$url")
+        Log.i("WorkoutTrackingSave", "requestBody=${NetworkClient.gson.toJson(request)}")
+    }
+
+    private fun logWorkoutSaveResponse(
+        responseCode: Int,
+        responseBody: WorkoutLogResponse?,
+        rawResponseBody: String?,
+    ) {
+        Log.i("WorkoutTrackingSave", "responseCode=$responseCode")
+        val renderedBody = rawResponseBody ?: responseBody?.let(NetworkClient.gson::toJson) ?: "<empty>"
+        Log.i("WorkoutTrackingSave", "responseBody=$renderedBody")
     }
 
     private fun showSaveFailedDialog(error: Throwable) {
-        val message = if (error is HttpException) {
-            "Không thể lưu buổi tập (HTTP ${error.code()})."
-        } else {
-            "Không thể lưu buổi tập. Kiểm tra backend rồi thử lại."
-        }
+        val message = buildSaveErrorMessage(error)
         AlertDialog.Builder(this)
-            .setTitle("Lưu thất bại")
+            .setTitle("Luu that bai")
             .setMessage(message)
-            .setNegativeButton("Thoát không lưu") { _, _ -> finish() }
-            .setPositiveButton("Thử lại") { _, _ -> saveWorkout() }
+            .setNegativeButton("Thoat khong luu") { _, _ -> finish() }
+            .setPositiveButton("Thu lai") { _, _ -> saveWorkout() }
             .show()
     }
+
+    private fun buildSaveErrorMessage(error: Throwable): String {
+        return when (error) {
+            is WorkoutSaveRequestException -> {
+                // Surface backend messages so integration issues are diagnosable from the app.
+                val parsedBackendMessage = error.rawResponseBody
+                    ?.let(::parseBackendErrorMessage)
+                    ?.takeIf { it.isNotBlank() }
+                parsedBackendMessage ?: "Khong the luu buoi tap (HTTP ${error.code})."
+            }
+            is HttpException -> {
+                val rawResponseBody = runCatching { error.response()?.errorBody()?.string() }.getOrNull()
+                val parsedBackendMessage = rawResponseBody
+                    ?.let(::parseBackendErrorMessage)
+                    ?.takeIf { it.isNotBlank() }
+                parsedBackendMessage ?: "Khong the luu buoi tap (HTTP ${error.code()})."
+            }
+            else -> {
+                Log.e("WorkoutTrackingSave", "saveWorkout failed", error)
+                "Khong the luu buoi tap. Kiem tra backend roi thu lai."
+            }
+        }
+    }
+
+    private fun parseBackendErrorMessage(rawResponseBody: String): String? {
+        return runCatching {
+            NetworkClient.gson.fromJson(rawResponseBody, ApiErrorResponse::class.java)?.message
+        }.getOrNull()
+    }
+
+    private class WorkoutSaveRequestException(
+        val code: Int,
+        val rawResponseBody: String?,
+    ) : RuntimeException("HTTP $code")
 
     private fun handleExitRequest() {
         when (sessionState) {
@@ -845,8 +923,8 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
             CaloriesDisplaySource.HEALTH_CONNECT -> getString(R.string.format_calorie_value, caloriesValue)
             CaloriesDisplaySource.ESTIMATED -> getString(R.string.format_calorie_from_text, "~$caloriesValue")
         }
-        tvMetricFourthValue.text = if (workoutType.usesStepMetric) {
-            "${displayedSteps()} bước"
+        tvMetricFourthValue.text = if (workoutType.showsStepMetric) {
+            "${displayedSteps()} buoc"
         } else {
             displayedHeartRate()
         }
@@ -978,6 +1056,26 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
         return (steps * strideLengthMeters()) / 1_000.0
     }
 
+    private fun averageSpeedKmh(): Double? {
+        if (sessionDurationSeconds <= 0L) return null
+        return distanceKm / (sessionDurationSeconds / 3600.0)
+    }
+
+    private fun buildWorkoutMetadataNote(sessionEndedAt: LocalDateTime): String {
+        val tokens = mutableListOf(
+            workoutType.title,
+            "typeKey=${workoutType.key}",
+            "distanceKm=${formatDistance(distanceKm)}",
+            "avgSpeedKmh=${formatSpeed(averageSpeedKmh() ?: 0.0)}",
+            "startedAt=${(sessionStartedAt ?: sessionEndedAt).toString()}",
+            "endedAt=${sessionEndedAt.toString()}",
+        )
+        if (workoutType.showsStepMetric) {
+            tokens += "steps=${displayedSteps()}"
+        }
+        return tokens.joinToString(" | ")
+    }
+
     private fun formatDistance(distance: Double): String = String.format(Locale.US, "%.2f", distance)
 
     private fun formatSpeed(speed: Double): String = String.format(Locale.US, "%.1f", speed)
@@ -997,3 +1095,7 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
+
+
+
+

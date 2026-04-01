@@ -11,8 +11,11 @@ import java.util.concurrent.TimeUnit
 object NetworkClient {
 
     // Emulator should use 10.0.2.2 to reach localhost on host machine.
-    private const val BASE_URL = "http://172.20.10.3:8080/"
+    private const val BASE_URL = "http://172.20.10.6:8080/"
 //    172.20.10.2
+
+    val baseUrl: String
+        get() = BASE_URL
 
     val gson: Gson = GsonBuilder().create()
 
