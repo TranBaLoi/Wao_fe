@@ -7,7 +7,7 @@ Phần này chưa đọc dữ liệu Health Connect thật sự.
 Mục tiêu hiện tại là:
 
 - Làm cho Wao xuất hiện như một app hợp lệ trong Health Connect.
-- Cho Wao xin quyền đọc `Steps`, `Active calories burned`, và `Heart rate`.
+- Cho Wao xin quyền đọc `Steps`, `Calories burned`, và `Heart rate`.
 - Cho user một chỗ rõ ràng trong màn Home để kết nối lại nếu chưa cấp quyền.
 - Chuẩn bị sẵn nền để bước tiếp theo chỉ cần đọc data và đổ ra UI.
 
@@ -611,7 +611,7 @@ Sau bước permission, mình đã làm thêm bước đọc dữ liệu thật 
 Hiện tại Home đọc:
 
 - `Steps` của hôm nay từ Health Connect
-- `Active calories burned` của hôm nay từ Health Connect
+- `Calories burned` của hôm nay từ Health Connect
 - `Nhịp tim gần nhất` của hôm nay từ Health Connect
 
 ---
@@ -623,7 +623,7 @@ File: `app/src/main/java/com/example/wao_fe/health/HealthConnectRepository.kt`
 File này có 2 nhiệm vụ:
 
 - đọc bước chân hôm nay
-- đọc active calories burned hôm nay
+- đọc calories burned hôm nay
 - đọc nhịp tim gần nhất hôm nay
 
 Mình tạo thêm data class:
@@ -631,7 +631,8 @@ Mình tạo thêm data class:
 ```kotlin
 data class HealthConnectSnapshot(
     val stepsToday: Long,
-    val activeCaloriesBurnedToday: Double,
+    val activeCaloriesBurnedToday: Double?,
+    val totalCaloriesBurnedToday: Double?,
     val latestHeartRateBpm: Long?,
     val latestHeartRateTime: Instant?,
 )
@@ -645,7 +646,7 @@ Thay vì `MainActivity` phải tự xử lý nhiều biến rời:
 
 - steps
 - bpm
-- active calories burned
+- calories burned
 - thời gian đo
 
 thì activity chỉ cần nhận một object duy nhất.
@@ -673,19 +674,16 @@ Nếu dùng `readRecords()` rồi tự cộng tay:
 
 `aggregate()` là cách đúng hơn cho loại dữ liệu cumulative.
 
-### Vì sao active calories burned cũng dùng `aggregate`
+### Vì sao calories burned cũng dùng `aggregate`
 
 Vì đây cũng là dữ liệu cộng dồn theo ngày.
 
-Mình lấy metric:
+Home screen hiện đọc cả:
 
 - `ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL`
+- `TotalCaloriesBurnedRecord.ENERGY_TOTAL`
 
-Sau đó đổi về kcal bằng:
-
-```kotlin
-?.inKilocalories
-```
+Sau đó ưu tiên `total calories` nếu nguồn dữ liệu có ghi, còn không thì fallback sang `active calories`.
 
 ### Vì sao nhịp tim dùng `readRecords`
 
@@ -740,6 +738,7 @@ Mình thêm một số state trong `MainActivity`:
 - `latestHeartRateMeasuredAtText`
 - `hasHealthConnectReadAccess`
 - `healthConnectActiveCaloriesBurned`
+- `healthConnectTotalCaloriesBurned`
 
 ### Vì sao cần tách state backend và Health Connect
 
@@ -763,7 +762,7 @@ Nên mình đổi cách làm:
 Logic:
 
 - `totalCalIn` vẫn lấy từ backend
-- `totalCalOut` ưu tiên `Active calories burned` từ Health Connect
+- `totalCalOut` ưu tiên `Total calories burned` từ Health Connect, nếu không có thì fallback sang `Active calories burned`
 - nếu Health Connect chưa có dữ liệu thì fallback backend
 - `remaining` và progress được tính lại từ giá trị `caloriesOut` đã chọn
 

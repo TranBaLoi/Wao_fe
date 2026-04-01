@@ -22,6 +22,11 @@ import com.example.wao_fe.network.NetworkClient
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.Locale
+import kotlin.math.abs
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -31,6 +36,15 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var tvUserName: TextView
     private lateinit var tvUserEmail: TextView
     private lateinit var ivAvatar: ImageView
+
+    private lateinit var cardWeightGoal: com.google.android.material.card.MaterialCardView
+    private lateinit var tvGoalType: TextView
+    private lateinit var tvCurrentWeightGoal: TextView
+    private lateinit var tvTargetWeight: TextView
+    private lateinit var tvWeeklyGoal: TextView
+    private lateinit var tvActivityLevel: TextView
+    private lateinit var tvTargetCalories: TextView
+    private lateinit var tvCompletionDate: TextView
 
     private lateinit var btnLogout: Button
 
@@ -63,6 +77,15 @@ class SettingsActivity : AppCompatActivity() {
         tvUserName = findViewById(R.id.tvUserName)
         tvUserEmail = findViewById(R.id.tvUserEmail)
         ivAvatar = findViewById(R.id.ivAvatar)
+
+        cardWeightGoal = findViewById(R.id.cardWeightGoal)
+        tvGoalType = findViewById(R.id.tvGoalType)
+        tvCurrentWeightGoal = findViewById(R.id.tvCurrentWeightGoal)
+        tvTargetWeight = findViewById(R.id.tvTargetWeight)
+        tvWeeklyGoal = findViewById(R.id.tvWeeklyGoal)
+        tvActivityLevel = findViewById(R.id.tvActivityLevel)
+        tvTargetCalories = findViewById(R.id.tvTargetCalories)
+        tvCompletionDate = findViewById(R.id.tvCompletionDate)
 
         btnLogout = findViewById(R.id.btnLogout)
 
@@ -157,13 +180,91 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         viewModel.healthProfile.observe(this) { profile ->
-            // Deprecated view logic removed for new UI
+            if (profile != null) {
+                cardWeightGoal.visibility = android.view.View.VISIBLE
+
+                // Goal type
+                tvGoalType.text = when (profile.goalType) {
+                    GoalType.LOSE_WEIGHT -> "Giảm cân"
+                    GoalType.GAIN_WEIGHT -> "Tăng cân"
+                    GoalType.MAINTAIN -> "Giữ cân"
+                }
+
+                // Current & Target weight
+                tvCurrentWeightGoal.text = "${profile.weightKg.toInt()} kg"
+                tvTargetWeight.text = "${profile.desiredWeightKg.toInt()} kg"
+
+                // Weekly goal
+                val diff = profile.desiredWeightKg - profile.weightKg
+                if (profile.targetDays > 0) {
+                    val weeklyRaw = (diff / profile.targetDays) * 7
+                    val weeklyAbs = String.format(Locale.US, "%.1f", abs(weeklyRaw))
+                    tvWeeklyGoal.text = if (weeklyRaw < 0) {
+                        "Giảm $weeklyAbs kg/tuần"
+                    } else if (weeklyRaw > 0) {
+                        "Tăng $weeklyAbs kg/tuần"
+                    } else {
+                        "Duy trì cân nặng"
+                    }
+                } else {
+                    tvWeeklyGoal.text = "Không xác định"
+                }
+
+                // Activity level
+                tvActivityLevel.text = when (profile.activityLevel) {
+                    com.example.wao_fe.network.models.ActivityLevel.SEDENTARY -> "Không tập luyện"
+                    com.example.wao_fe.network.models.ActivityLevel.LIGHTLY_ACTIVE -> "Vận động nhẹ"
+                    com.example.wao_fe.network.models.ActivityLevel.MODERATELY_ACTIVE -> "Vận động vừa"
+                    com.example.wao_fe.network.models.ActivityLevel.VERY_ACTIVE -> "Vận động nhiều"
+                    com.example.wao_fe.network.models.ActivityLevel.EXTRA_ACTIVE -> "Vận động cường độ cao"
+                }
+
+                // Target calories
+                tvTargetCalories.text = "${profile.targetCalories.toInt()} calo"
+
+                updateCompletionDate()
+            } else {
+                cardWeightGoal.visibility = android.view.View.GONE
+            }
+        }
+
+        viewModel.oldestHealthProfile.observe(this) { oldestProfile ->
+            updateCompletionDate()
         }
 
         viewModel.error.observe(this) { msg ->
             if (msg.isNotEmpty()) {
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun updateCompletionDate() {
+        val profile = viewModel.healthProfile.value
+        val oldestProfile = viewModel.oldestHealthProfile.value
+
+        if (profile != null && profile.targetDays > 0) {
+            var baseDate = LocalDate.now()
+            if (oldestProfile?.createdAt != null) {
+                try {
+                    baseDate = LocalDate.parse(oldestProfile.createdAt.substring(0, 10))
+                } catch (e: DateTimeParseException) {
+                    // ignore and use fallback
+                }
+            } else if (oldestProfile == null && profile.createdAt != null) {
+                // If oldest profile isn't loaded yet but current profile has a date
+                try {
+                    baseDate = LocalDate.parse(profile.createdAt.substring(0, 10))
+                } catch (e: DateTimeParseException) {
+                    // ignore
+                }
+            }
+
+            val completionDate = baseDate.plusDays(profile.targetDays.toLong())
+            val formatter = DateTimeFormatter.ofPattern("dd 'thg' MM, yyyy", Locale("vi", "VN"))
+            tvCompletionDate.text = completionDate.format(formatter)
+        } else {
+            tvCompletionDate.text = "Không xác định"
         }
     }
 

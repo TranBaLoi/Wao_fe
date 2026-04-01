@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Wao reads step count, active calories burned, and heart rate from Health Connect so we can show your daily overview inside the app."
+            android:text="Wao reads step count, calories burned, and heart rate from Health Connect so we can show your daily overview inside the app."
             android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 

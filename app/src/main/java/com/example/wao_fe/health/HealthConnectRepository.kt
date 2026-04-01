@@ -4,6 +4,7 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.StepsRecord
+import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
 import androidx.health.connect.client.request.AggregateRequest
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
@@ -13,7 +14,8 @@ import java.time.ZoneId
 
 data class HealthConnectSnapshot(
     val stepsToday: Long,
-    val activeCaloriesBurnedToday: Double,
+    val activeCaloriesBurnedToday: Double?,
+    val totalCaloriesBurnedToday: Double?,
     val latestHeartRateBpm: Long?,
     val latestHeartRateTime: Instant?,
 )
@@ -33,6 +35,7 @@ class HealthConnectRepository(
                 metrics = setOf(
                     StepsRecord.COUNT_TOTAL,
                     ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL,
+                    TotalCaloriesBurnedRecord.ENERGY_TOTAL,
                 ),
                 timeRangeFilter = TimeRangeFilter.between(startOfDay, now),
             ),
@@ -56,8 +59,9 @@ class HealthConnectRepository(
         return HealthConnectSnapshot(
             stepsToday = aggregateResult[StepsRecord.COUNT_TOTAL] ?: 0L,
             activeCaloriesBurnedToday = aggregateResult[ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL]
-                ?.inKilocalories
-                ?: 0.0,
+                ?.inKilocalories,
+            totalCaloriesBurnedToday = aggregateResult[TotalCaloriesBurnedRecord.ENERGY_TOTAL]
+                ?.inKilocalories,
             latestHeartRateBpm = latestHeartRateSample?.beatsPerMinute,
             latestHeartRateTime = latestHeartRateSample?.time,
         )

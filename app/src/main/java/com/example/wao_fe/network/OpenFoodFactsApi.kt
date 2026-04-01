@@ -19,10 +19,13 @@ data class ProductData(
     val image_url: String?,
     val image_front_url: String?,
     val image_nutrition_url: String?,
+    val ingredients_text: String?,
     val nutriments: Nutriments?
 )
 
 data class Nutriments(
+    val energy: Double?,
+    val energy_100g: Double?,
     val energy_kcal: Double?,
     val energy_kcal_100g: Double?,
     val carbohydrates_100g: Double?,
@@ -46,4 +49,3 @@ interface OpenFoodFactsApi {
         }
     }
 }
-

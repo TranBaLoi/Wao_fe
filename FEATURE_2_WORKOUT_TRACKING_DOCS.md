@@ -101,6 +101,10 @@ Từ ngày 2026-04-01 trở đi:
 - Added runtime permission flow for location and activity recognition in `WorkoutTrackingActivity`.
 - Added manifest permissions/features for location, activity recognition, GPS, and step counter support.
 
+### 2026-04-01: manifest sync after pull
+
+- Re-added workout tracking permissions and hardware features in `AndroidManifest.xml` after a pull removed the location and activity-recognition declarations required by `WorkoutTrackingActivity`.
+
 ## 4. Current Assumptions
 
 - `exerciseId` là bắt buộc khi save workout log, nên app sẽ tự lookup hoặc create exercise.
