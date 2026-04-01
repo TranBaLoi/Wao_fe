@@ -439,13 +439,17 @@
 
                     <!-- Steps -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/cardSteps"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="#FFF3E0"
-                        android:layout_marginStart="8dp">
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -477,19 +481,83 @@
                                 android:textColor="#E65100"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvHealthConnectStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="Tap to connect Health Connect"
+                                android:textColor="#BF6D1D"
+                                android:textSize="12sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
                 <!-- Quick Add Actions -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardHeartRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="@android:color/white">
+                    app:cardBackgroundColor="#FDECEF">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/circle_primary_alpha"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_health_heart"
+                            app:backgroundTint="#F9C4D1"
+                            app:tint="#C63A5D" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Latest heart rate"
+                                android:textColor="#C63A5D"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvHeartRate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="-- bpm"
+                                android:textColor="#8C2741"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvHeartRateMeta"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Connect Health Connect to view data"
+                                android:textColor="#AD5F73"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Hoạt động tập luyện section -->
@@ -505,10 +573,10 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
+                    android:layout_marginBottom="20dp"
                     app:cardBackgroundColor="@color/green_dark"
-                    android:layout_marginBottom="20dp">
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -519,162 +587,150 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:baselineAligned="false"
                             android:orientation="horizontal"
-                            android:weightSum="3"
-                            android:layout_marginBottom="16dp">
+                            android:weightSum="2">
 
-                            <!-- Chạy bộ -->
                             <LinearLayout
+                                android:id="@+id/cardWorkoutWalking"
                                 android:layout_width="0dp"
-                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_workout_shortcut"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackgroundBorderless"
+                                android:gravity="center"
                                 android:orientation="vertical"
-                                android:gravity="center">
+                                android:paddingVertical="18dp">
+
                                 <ImageView
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_walk"
+                                    app:backgroundTint="#33FFFFFF"
+                                    app:tint="@android:color/white" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:text="Đi bộ"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cardWorkoutOutdoorRun"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_workout_shortcut"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackgroundBorderless"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:paddingVertical="18dp">
+
+                                <ImageView
+                                    android:layout_width="48dp"
+                                    android:layout_height="48dp"
+                                    android:background="@drawable/circle_primary_alpha"
+                                    android:padding="12dp"
                                     android:src="@drawable/ic_run"
-                                    android:padding="12dp"
-                                    android:background="@drawable/circle_primary_alpha"
                                     app:backgroundTint="#33FFFFFF"
-                                    app:tint="@android:color/white"/>
+                                    app:tint="@android:color/white" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Chạy bộ"
+                                    android:layout_marginTop="10dp"
+                                    android:text="Chạy bộ ngoài trời"
+                                    android:textAlignment="center"
                                     android:textColor="@android:color/white"
                                     android:textSize="14sp"
-                                    android:layout_marginTop="8dp"/>
+                                    android:textStyle="bold" />
                             </LinearLayout>
-
-                            <!-- Đạp xe -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center">
-                                <ImageView
-                                    android:layout_width="48dp"
-                                    android:layout_height="48dp"
-                                    android:src="@drawable/ic_bike"
-                                    android:padding="12dp"
-                                    android:background="@drawable/circle_primary_alpha"
-                                    app:backgroundTint="#33FFFFFF"
-                                    app:tint="@android:color/white"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Đạp xe"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="14sp"
-                                    android:layout_marginTop="8dp"/>
-                            </LinearLayout>
-
-                            <!-- Cầu lông -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center">
-                                <ImageView
-                                    android:layout_width="48dp"
-                                    android:layout_height="48dp"
-                                    android:src="@drawable/ic_tennis"
-                                    android:padding="12dp"
-                                    android:background="@drawable/circle_primary_alpha"
-                                    app:backgroundTint="#33FFFFFF"
-                                    app:tint="@android:color/white"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Cầu lông"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="14sp"
-                                    android:layout_marginTop="8dp"/>
-                            </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:baselineAligned="false"
                             android:orientation="horizontal"
-                            android:weightSum="3">
+                            android:weightSum="2">
 
-                            <!-- Pickleball -->
                             <LinearLayout
+                                android:id="@+id/cardWorkoutIndoorRun"
                                 android:layout_width="0dp"
-                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_workout_shortcut"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackgroundBorderless"
+                                android:gravity="center"
                                 android:orientation="vertical"
-                                android:gravity="center">
+                                android:paddingVertical="18dp">
+
                                 <ImageView
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
-                                    android:src="@drawable/ic_fitness_center"
-                                    android:padding="12dp"
                                     android:background="@drawable/circle_primary_alpha"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_run"
                                     app:backgroundTint="#33FFFFFF"
-                                    app:tint="@android:color/white"/>
+                                    app:tint="@android:color/white" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Pickleball"
+                                    android:layout_marginTop="10dp"
+                                    android:text="Chạy bộ trong nhà"
+                                    android:textAlignment="center"
                                     android:textColor="@android:color/white"
                                     android:textSize="14sp"
-                                    android:layout_marginTop="8dp"/>
+                                    android:textStyle="bold" />
                             </LinearLayout>
 
-                            <!-- Yoga -->
                             <LinearLayout
+                                android:id="@+id/cardWorkoutCycling"
                                 android:layout_width="0dp"
-                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_workout_shortcut"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackgroundBorderless"
+                                android:gravity="center"
                                 android:orientation="vertical"
-                                android:gravity="center">
+                                android:paddingVertical="18dp">
+
                                 <ImageView
                                     android:layout_width="48dp"
                                     android:layout_height="48dp"
-                                    android:src="@drawable/ic_yoga_new"
-                                    android:padding="12dp"
                                     android:background="@drawable/circle_primary_alpha"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_bike"
                                     app:backgroundTint="#33FFFFFF"
-                                    app:tint="@android:color/white"/>
+                                    app:tint="@android:color/white" />
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Yoga"
+                                    android:layout_marginTop="10dp"
+                                    android:text="Đạp xe"
                                     android:textColor="@android:color/white"
                                     android:textSize="14sp"
-                                    android:layout_marginTop="8dp"/>
+                                    android:textStyle="bold" />
                             </LinearLayout>
-
-                            <!-- Khác -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:gravity="center">
-                                <ImageView
-                                    android:layout_width="48dp"
-                                    android:layout_height="48dp"
-                                    android:src="@drawable/ic_more_horiz"
-                                    android:padding="12dp"
-                                    android:background="@drawable/circle_primary_alpha"
-                                    app:backgroundTint="#33FFFFFF"
-                                    app:tint="@android:color/white"/>
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Khác"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="14sp"
-                                    android:layout_marginTop="8dp"/>
-                            </LinearLayout>
-
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

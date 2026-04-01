@@ -42,4 +42,12 @@
     <color name="icon_bg_pink">#FFE2E6</color>
     <color name="icon_bg_green">#E2F7DF</color>
     <color name="icon_bg_blue">#E2EFFF</color>
+
+    <color name="workout_tracking_bg">#090C12</color>
+    <color name="workout_tracking_surface">#121722</color>
+    <color name="workout_tracking_surface_alt">#171D29</color>
+    <color name="workout_tracking_border">#243043</color>
+    <color name="workout_tracking_accent">#34D399</color>
+    <color name="workout_tracking_warning">#F59E0B</color>
+    <color name="workout_tracking_text_secondary">#94A3B8</color>
 </resources>

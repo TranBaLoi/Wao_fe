@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.wao_fe"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -71,6 +71,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.airbnb.android:lottie:6.3.0")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("androidx.health.connect:connect-client:1.1.0")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
