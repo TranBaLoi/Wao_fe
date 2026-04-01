@@ -98,4 +98,24 @@
     <string name="edit_profile_user_error">Lỗi thông tin người dùng: %1$s</string>
     <string name="edit_profile_health_error">Lỗi hồ sơ sức khỏe: %1$s</string>
     <string name="edit_profile_save_success">Đã lưu toàn bộ thông tin!</string>
+
+    <!-- Chatbot UI -->
+    <string name="chatbot_title">Wao AI</string>
+    <string name="chatbot_subtitle">Trợ lý dinh dưỡng</string>
+    <string name="chatbot_tagline">Khởi đầu lối sống lành mạnh</string>
+    <string name="chatbot_welcome">Chào bạn! Hôm nay tôi có thể giúp gì cho chế độ dinh dưỡng của bạn?</string>
+    <string name="chatbot_sample_question">Bữa sáng 2 lát bánh mì đen và 1 quả trứng thì bao nhiêu calo?</string>
+    <string name="chatbot_sample_answer">Tổng cộng khoảng 250-300 kcal. Bạn có muốn thêm một ít quả bơ để bổ sung chất béo tốt không?</string>
+    <string name="chatbot_time_1">10:02 AM</string>
+    <string name="chatbot_time_2">10:03 AM</string>
+    <string name="chatbot_time_3">Vừa xong</string>
+    <string name="chatbot_input_hint">Hỏi Wao về dinh dưỡng...</string>
+    <string name="chatbot_nav_home">Trang chủ</string>
+    <string name="chatbot_nav_diary">Nhật ký</string>
+    <string name="chatbot_nav_plan">Thực đơn</string>
+    <string name="chatbot_nav_profile">Tài khoản</string>
+    <string name="chatbot_history_title">Lịch sử trò chuyện</string>
+    <string name="chatbot_typing">...</string>
+    <string name="chatbot_new_chat">Cuộc trò chuyện mới</string>
+    <string name="chatbot_open">Mở Wao AI</string>
 </resources>

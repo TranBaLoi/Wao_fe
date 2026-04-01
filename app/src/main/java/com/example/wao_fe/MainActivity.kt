@@ -7,17 +7,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.PopupMenu
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.wao_fe.namstats.StatisticsDashboardActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.wao_fe.component.FloatingAddMenu
 import com.example.wao_fe.health.HealthConnectManager
 import com.example.wao_fe.health.HealthConnectRepository
@@ -52,10 +48,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvHeartRate: TextView
     private lateinit var tvHeartRateMeta: TextView
     private lateinit var fabAddFood: FloatingActionButton
+    private lateinit var fabChatbot: ImageView
     private lateinit var ivAvatar: ImageView
     private lateinit var cardSteps: CardView
     private lateinit var cardHeartRate: CardView
-    private lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView
+    private lateinit var bottomNavigationView: com.google.android.material.bottomnavigation.BottomNavigationView    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var btnUpdateWeight: android.widget.Button
 
     private var floatingMenuDialog: android.app.Dialog? = null
@@ -89,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         userId = sharedPref.getLong("USER_ID", -1)
-        val userName = sharedPref.getString("USER_NAME", "Bạn")
+        val userName = sharedPref.getString("USER_NAME", "Ban")
 
         initViews()
         setupHeader(userName)
@@ -115,6 +112,7 @@ class MainActivity : AppCompatActivity() {
         tvHeartRate = findViewById(R.id.tvHeartRate)
         tvHeartRateMeta = findViewById(R.id.tvHeartRateMeta)
         fabAddFood = findViewById(R.id.fabAddFood)
+        fabChatbot = findViewById(R.id.fabChatbot)
         ivAvatar = findViewById(R.id.ivAvatar)
         cardSteps = findViewById(R.id.cardSteps)
         cardHeartRate = findViewById(R.id.cardHeartRate)
@@ -129,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         setupWorkoutShortcuts()
 
         ivAvatar.setOnClickListener {
-            startActivity(android.content.Intent(this, EditProfileActivity::class.java))
+            startActivity(Intent(this, EditProfileActivity::class.java))
         }
 
         cardSteps.setOnClickListener {
@@ -170,17 +168,10 @@ class MainActivity : AppCompatActivity() {
 
         /*
         findViewById<TextView>(R.id.btnLogFood)?.setOnClickListener {
-            Toast.makeText(this, "Tính năng Thêm món ăn đang phát triển", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Tinh nang Them mon an dang phat trien", Toast.LENGTH_SHORT).show()
         }
         findViewById<TextView>(R.id.btnLogWorkout)?.setOnClickListener {
-            Toast.makeText(this, "Tính năng Ghi nhận tập luyện đang phát triển", Toast.LENGTH_SHORT).show()
-        }
-
-        val btnOpenStatistics = findViewById<TextView>(R.id.btnOpenStatistics)
-        if (btnOpenStatistics != null) {
-            btnOpenStatistics.setOnClickListener {
-                startActivity(Intent(this, StatisticsDashboardActivity::class.java))
-            }
+            Toast.makeText(this, "Tinh nang Ghi nhan tap luyen dang phat trien", Toast.LENGTH_SHORT).show()
         }
         */
 
@@ -190,6 +181,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 showFloatingMenu()
             }
+        }
+
+        fabChatbot.setOnClickListener {
+            startActivity(Intent(this, ChatbotActivity::class.java))
         }
     }
 
@@ -232,7 +227,7 @@ class MainActivity : AppCompatActivity() {
     private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
         if (result.contents == null) {
             Log.w("BarcodeScan", "Người dùng đã hủy quá trình quét")
-            Toast.makeText(this, "Đã hủy quét", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Da huy quet", Toast.LENGTH_LONG).show()
         } else {
             val barcode = result.contents
             Log.i("BarcodeScan", "Quét thành công mã vạch: $barcode")
@@ -259,15 +254,15 @@ class MainActivity : AppCompatActivity() {
                 val response = api.getProductInfo(barcode)
                 if (response.status == 1 && response.product != null) {
                     val p = response.product
-                    val name = p.product_name ?: p.generic_name ?: "Không rõ tên"
+                    val name = p.product_name ?: p.generic_name ?: "Khong ro ten"
                     val energy = p.nutriments?.energy_kcal_100g ?: p.nutriments?.energy_kcal ?: 0.0
 
                     Log.i("BarcodeScan", "Tìm thấy sản phẩm: $name - $energy kcal")
 
                     AlertDialog.Builder(this@MainActivity)
                         .setTitle("Thông tin sản phẩm")
-                        .setMessage("Tên: $name\nNăng lượng: $energy kcal/100g")
-                        .setPositiveButton("Đóng", null)
+                        .setMessage("Ten: $name\nNang luong: $energy kcal/100g")
+                        .setPositiveButton("Dong", null)
                         .show()
                 } else {
                     Log.w("BarcodeScan", "Không tìm thấy thông tin trên OpenFoodFacts cho $barcode")
@@ -282,9 +277,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Reload user info when returning to app (e.g. from EditProfileActivity)
         val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
-        val userName = sharedPref.getString("USER_NAME", "Bạn")
+        val userName = sharedPref.getString("USER_NAME", "Ban")
         val currentAvatar = sharedPref.getString("USER_AVATAR", null)
 
         setupHeader(userName)
@@ -292,7 +286,6 @@ class MainActivity : AppCompatActivity() {
         if (currentAvatar != null) {
             Glide.with(this)
                 .load(Uri.parse(currentAvatar))
-                .apply(com.bumptech.glide.request.RequestOptions.circleCropTransform())
                 .into(ivAvatar)
             ivAvatar.setPadding(0, 0, 0, 0)
         }
@@ -301,14 +294,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupHeader(userName: String?) {
-        tvUserName.text = "Chào ${userName ?: "bạn"},"
+        tvUserName.text = "Chào ${userName ?: "ban"},"
         val sdf = SimpleDateFormat("EEEE, dd MMM", Locale("vi", "VN"))
         tvDate.text = sdf.format(Date())
     }
 
     private fun fetchDashboardData() {
         lifecycleScope.launch {
-            // First fetch latest profile to get targetCalories
             var targetCalories = 2000.0
             val profileResult = userRepository.getLatestHealthProfile(userId)
             if (profileResult is ApiResult.Success) {
@@ -316,7 +308,6 @@ class MainActivity : AppCompatActivity() {
             }
             targetCaloriesGoal = targetCalories
 
-            // Fetch logs for macro tracking
             var consumedProtein = 0.0
             var consumedCarbs = 0.0
             var consumedFat = 0.0
@@ -356,27 +347,38 @@ class MainActivity : AppCompatActivity() {
             val fatTarget = (targetCalories * 0.3 / 9.0).coerceAtLeast(1.0)
             pbFatMain.progress = ((consumedFat / fatTarget) * 100).toInt().coerceIn(0, 100)
 
-            // Then fetch daily summary
             val summaryResult = userRepository.getTodaySummary(userId)
             if (summaryResult is ApiResult.Success) {
                 val summary = summaryResult.data
+                // Keep backend state in sync, but render the summary card using the teammate's UI formula.
                 backendCaloriesIn = summary.totalCalIn
                 backendCaloriesOut = summary.totalCalOut
-                renderCaloriesSummary()
+                val remaining = targetCalories - summary.netCalories
+
+                tvCalIn.text = summary.totalCalIn.toInt().toString()
+                tvCalOut.text = summary.totalCalOut.toInt().toString()
+                tvCalRemaining.text = remaining.toInt().coerceAtLeast(0).toString()
+
+                val progress = if (targetCalories > 0) {
+                    ((summary.netCalories / targetCalories) * 100).toInt()
+                } else 0
+                pbCalories.progress = progress.coerceIn(0, 100)
 
                 tvWater.text = "${summary.totalWater} ml"
                 backendStepsToday = summary.totalSteps.toLong()
                 renderStepsCard()
             } else {
-                // If no summary exist for today yet, just show 0
+                // Reset to a clean empty state so the summary card never keeps stale values after a failed fetch.
                 backendCaloriesIn = 0.0
                 backendCaloriesOut = 0.0
-                renderCaloriesSummary()
+                tvCalIn.text = "0"
+                tvCalOut.text = "0"
+                tvCalRemaining.text = targetCalories.toInt().toString()
+                pbCalories.progress = 0
                 backendStepsToday = 0L
                 renderStepsCard()
                 if (summaryResult is ApiResult.Error && summaryResult.status != 404) {
-                    // Ignore 404 since it just means no logs today yet
-                    Toast.makeText(this@MainActivity, "Không thể tải dữ liệu hôm nay", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Khong the tai du lieu hom nay", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -486,9 +488,10 @@ class MainActivity : AppCompatActivity() {
         renderHeartRateCard()
     }
 
+    // Match the teammate's calories card display so Health Connect refreshes do not overwrite the merged UI.
     private fun renderCaloriesSummary() {
-        val caloriesOut = healthConnectActiveCaloriesBurned ?: backendCaloriesOut
-        val netCalories = backendCaloriesIn - caloriesOut
+        val caloriesOut = backendCaloriesOut
+        val netCalories = backendCaloriesIn - backendCaloriesOut
         val remaining = targetCaloriesGoal - netCalories
         val progress = if (targetCaloriesGoal > 0) {
             ((netCalories / targetCaloriesGoal) * 100).toInt()

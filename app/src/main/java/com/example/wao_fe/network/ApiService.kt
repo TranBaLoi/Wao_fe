@@ -1,7 +1,10 @@
 package com.example.wao_fe.network
 
 import com.example.wao_fe.namstats.models.DailyNutritionResponse
+import com.example.wao_fe.namstats.models.CreateWeightLogRequest
 import com.example.wao_fe.namstats.models.NutritionSeriesResponse
+import com.example.wao_fe.namstats.models.LatestWeightInfoResponse
+import com.example.wao_fe.namstats.models.WeightLogUpdateResponse
 import com.example.wao_fe.namstats.models.WeightSeriesResponse
 import com.example.wao_fe.network.models.CreateFoodLogRequest
 import com.example.wao_fe.network.models.CreateHealthProfileRequest
@@ -30,6 +33,10 @@ import com.example.wao_fe.network.models.GoogleLoginRequest
 import com.example.wao_fe.network.models.VerifyEmailRequest
 import com.example.wao_fe.network.models.VerifyEmailResponse
 import com.example.wao_fe.network.models.ApplyMealPlanRequest
+import com.example.wao_fe.network.models.ChatbotConversationDetail
+import com.example.wao_fe.network.models.ChatbotConversationSummary
+import com.example.wao_fe.network.models.ChatbotSendMessageRequest
+import com.example.wao_fe.network.models.ChatbotSendMessageResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -43,6 +50,28 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface ApiService {
+
+    // Chatbot
+    @GET("api/users/{userId}/chat/conversations")
+    suspend fun getChatConversations(@Path("userId") userId: Long): List<ChatbotConversationSummary>
+
+    @GET("api/users/{userId}/chat/conversations/{conversationId}")
+    suspend fun getChatConversationDetail(
+        @Path("userId") userId: Long,
+        @Path("conversationId") conversationId: Long
+    ): ChatbotConversationDetail
+
+    @DELETE("api/users/{userId}/chat/conversations/{conversationId}")
+    suspend fun deleteChatConversation(
+        @Path("userId") userId: Long,
+        @Path("conversationId") conversationId: Long
+    )
+
+    @POST("api/users/{userId}/chat/messages")
+    suspend fun sendChatMessage(
+        @Path("userId") userId: Long,
+        @Body request: ChatbotSendMessageRequest
+    ): ChatbotSendMessageResponse
 
     // Users
     @POST("api/users/register")
@@ -308,4 +337,17 @@ interface ApiService {
         @Query("to") to: String,
         @Query("groupBy") groupBy: String
     ): WeightSeriesResponse
+
+    //namthem
+    @GET("api/users/{userId}/statistics/weight/latest")
+    suspend fun getLatestWeightInfo(
+        @Path("userId") userId: Long
+    ): LatestWeightInfoResponse
+
+    //namthem
+    @POST("api/users/{userId}/statistics/weight/logs")
+    suspend fun createWeightLog(
+        @Path("userId") userId: Long,
+        @Body request: CreateWeightLogRequest
+    ): WeightLogUpdateResponse
 }

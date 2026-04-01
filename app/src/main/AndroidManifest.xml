@@ -160,6 +160,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Wao_fe" />
 
+
         <!-- Meal Plan Screen -->
         <activity
             android:name=".MealPlanActivity"
@@ -182,11 +183,26 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- Chatbot Screen -->
+        <activity
+            android:name=".ChatbotActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
         <!-- Edit Profile Screen -->
         <activity
             android:name=".EditProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+        <!-- namthem -->
+        <activity
+            android:name=".namstats.WeightLogUpdateActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Wao_fe" />
+
     </application>
 
 </manifest>

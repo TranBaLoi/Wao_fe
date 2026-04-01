@@ -25,6 +25,7 @@
             tools:text="24/03/2026"
             android:textColor="@color/wao_slate_900"
             android:textAppearance="?attr/textAppearanceSubtitle1"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
@@ -35,6 +36,7 @@
             tools:text="Calories 0 kcal"
             android:textColor="@color/wao_primary"
             android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -44,7 +46,8 @@
             android:layout_marginTop="10dp"
             tools:text="Metric one"
             android:textColor="@color/wao_slate_600"
-            android:textAppearance="?attr/textAppearanceBody2" />
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/tv_metric_two"
@@ -53,7 +56,8 @@
             android:layout_marginTop="4dp"
             tools:text="Metric two"
             android:textColor="@color/wao_slate_600"
-            android:textAppearance="?attr/textAppearanceBody2" />
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/tv_metric_three"
@@ -62,7 +66,8 @@
             android:layout_marginTop="4dp"
             tools:text="Metric three"
             android:textColor="@color/wao_slate_600"
-            android:textAppearance="?attr/textAppearanceBody2" />
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/tv_metric_four"
@@ -71,6 +76,7 @@
             android:layout_marginTop="4dp"
             tools:text="Metric four"
             android:textColor="@color/wao_slate_600"
-            android:textAppearance="?attr/textAppearanceBody2" />
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textSize="17sp" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

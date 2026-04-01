@@ -307,3 +307,39 @@ data class DailySummaryResponse(
     val totalSteps: Int,
     val isGoalAchieved: Boolean
 )
+
+// Chatbot
+data class ChatbotSendMessageRequest(
+    val conversationId: Long? = null,
+    val message: String
+)
+
+data class ChatbotSendMessageResponse(
+    val conversationId: Long,
+    val assistantMessageId: Long,
+    val answer: String,
+    val createdAt: String
+)
+
+data class ChatbotConversationSummary(
+    val id: Long,
+    val title: String,
+    val model: String,
+    val createdAt: String,
+    val updatedAt: String
+)
+
+data class ChatbotMessageItem(
+    val id: Long,
+    val role: String,
+    val content: String,
+    val totalTokens: Int? = null,
+    val createdAt: String? = null
+)
+
+data class ChatbotConversationDetail(
+    val conversationId: Long,
+    val title: String,
+    val model: String,
+    val messages: List<ChatbotMessageItem> = emptyList()
+)

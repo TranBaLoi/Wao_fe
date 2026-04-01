@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.wao_fe.FoodSearchActivity
 import com.example.wao_fe.R
+import com.example.wao_fe.namstats.WeightLogUpdateActivity
 import com.example.wao_fe.network.models.MealType
 
 object FloatingAddMenu {
@@ -38,7 +39,7 @@ object FloatingAddMenu {
             dialog = dialog,
             action = {
                 if (activity is FoodSearchActivity) {
-                    Toast.makeText(activity, "Bạn đang ở trang tìm món", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Ban dang o trang tim mon", Toast.LENGTH_SHORT).show()
                     return@bindClick
                 }
 
@@ -63,7 +64,7 @@ object FloatingAddMenu {
                 if (onScanBarcode != null) {
                     onScanBarcode.invoke()
                 } else {
-                    Toast.makeText(activity, "Chưa cấu hình quét mã vạch", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Chua cau hinh quet ma vach", Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -72,7 +73,7 @@ object FloatingAddMenu {
             buttonId = R.id.btnVoiceNote,
             dialog = dialog,
             action = {
-                Toast.makeText(activity, "Ghi bằng giọng nói", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Ghi bang giong noi", Toast.LENGTH_SHORT).show()
             }
         )
         bindClick(
@@ -80,7 +81,7 @@ object FloatingAddMenu {
             buttonId = R.id.btnLogWater,
             dialog = dialog,
             action = {
-                Toast.makeText(activity, "Uống nước", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Uong nuoc", Toast.LENGTH_SHORT).show()
             }
         )
         bindClick(
@@ -88,7 +89,7 @@ object FloatingAddMenu {
             buttonId = R.id.btnLogActivity,
             dialog = dialog,
             action = {
-                Toast.makeText(activity, "Ghi lại hoạt động", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Ghi lai hoat dong", Toast.LENGTH_SHORT).show()
             }
         )
         bindClick(
@@ -96,7 +97,8 @@ object FloatingAddMenu {
             buttonId = R.id.btnLogWeight,
             dialog = dialog,
             action = {
-                Toast.makeText(activity, "Cân nặng", Toast.LENGTH_SHORT).show()
+                //namthem
+                activity.startActivity(WeightLogUpdateActivity.createIntent(activity))
             }
         )
         bindClick(
@@ -104,7 +106,7 @@ object FloatingAddMenu {
             buttonId = R.id.btnCreateRecipe,
             dialog = dialog,
             action = {
-                Toast.makeText(activity, "Tạo công thức", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Tao cong thuc", Toast.LENGTH_SHORT).show()
             }
         )
         bindClick(
@@ -115,7 +117,7 @@ object FloatingAddMenu {
                 if (onCreateFood != null) {
                     onCreateFood.invoke()
                 } else {
-                    Toast.makeText(activity, "Tạo thực phẩm", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Tao thuc pham", Toast.LENGTH_SHORT).show()
                 }
             }
         )

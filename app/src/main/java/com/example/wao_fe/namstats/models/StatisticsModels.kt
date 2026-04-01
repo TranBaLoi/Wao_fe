@@ -62,3 +62,32 @@ data class WeightSeriesResponse(
     val overallChange: Double? = null,
     val points: List<WeightPoint>
 )
+
+//namthem
+data class CreateWeightLogRequest(
+    val date: String,
+    val newWeight: Double,
+    val note: String? = null
+)
+
+//namthem
+data class WeightLogUpdateResponse(
+    val logId: Long,
+    val userId: Long,
+    val date: String,
+    val oldWeight: Double?,
+    val newWeight: Double,
+    val changeAmount: Double?,
+    val currentProfileWeight: Double?,
+    val note: String?,
+    val latestKnownWeight: Double? = null,
+    val latestKnownDate: String? = null
+)
+
+//namthem
+data class LatestWeightInfoResponse(
+    val userId: Long,
+    val latestKnownWeight: Double?,
+    val latestKnownDate: String?,
+    val source: String?
+)

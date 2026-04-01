@@ -77,6 +77,17 @@ Từ ngày 2026-04-01 trở đi:
   - Với treadmill, ưu tiên steps delta từ Health Connect nếu có.
   - Nếu không có dữ liệu Health Connect thì fallback sang estimate nội bộ để session vẫn chạy.
 
+### 2026-04-01: merge conflict resolution in `MainActivity`
+
+- Resolve conflict trong `fetchDashboardData()` sau khi pull git.
+- Giữ backend state update của nhánh hiện tại để không làm vỡ helper/state trong `MainActivity`.
+- Chọn cách hiển thị calories summary giống nhánh teammate:
+  - `tvCalIn`
+  - `tvCalOut`
+  - `tvCalRemaining`
+  - `pbCalories`
+- Đồng bộ `renderCaloriesSummary()` về cùng công thức hiển thị để tránh bị Health Connect render đè ngược lại giao diện sau khi conflict đã merge.
+
 ## 4. Current Assumptions
 
 - `exerciseId` là bắt buộc khi save workout log, nên app sẽ tự lookup hoặc create exercise.

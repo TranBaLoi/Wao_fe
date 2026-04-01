@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thong ke dinh duong theo ngay"
+                android:text="Thống kê dinh dưỡng theo ngày"
                 android:textColor="@color/wao_slate_900"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Theo ngay"
+                android:text="Theo ngày"
                 android:textColor="@color/wao_primary"
                 android:textStyle="bold" />
 
@@ -274,7 +274,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Daily summaries 7 ngay"
+                android:text="Thống kê trong 7 ngày"
                 android:textColor="@color/wao_slate_900"
                 android:textSize="18sp"
                 android:textStyle="bold" />
