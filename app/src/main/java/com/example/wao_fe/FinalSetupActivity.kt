@@ -198,8 +198,8 @@ class FinalSetupActivity : AppCompatActivity() {
         canNavigateMain = false
         latestProfile = null
         tvCaloriesStatus.text = "Nhấn Tiếp tục để tính target calories theo dữ liệu mới."
-        tvTargetCalories.text = "-- kcal"
-        tvDailyCalories.text = "-- kcal/ngày"
+        tvTargetCalories.text = getString(R.string.placeholder_target_calories)
+        tvDailyCalories.text = getString(R.string.placeholder_daily_calories)
         tvDifficultyLevel.text = "--"
         tvDifficultyNote.text = "--"
         updateButtonState()
@@ -298,8 +298,14 @@ class FinalSetupActivity : AppCompatActivity() {
 
     private fun showCalories(profile: HealthProfileResponse) {
         tvCaloriesStatus.text = "Mục tiêu ${selectedDurationWeeks} tuần (${profile.targetDays} ngày)"
-        tvTargetCalories.text = "${formatCalories(profile.targetCalories)} kcal"
-        tvDailyCalories.text = "${formatCalories(profile.dailyCalories)} kcal/ngày"
+        tvTargetCalories.text = getString(
+            R.string.format_calorie_from_text,
+            formatCalories(profile.targetCalories)
+        )
+        tvDailyCalories.text = getString(
+            R.string.format_calorie_daily_from_text,
+            formatCalories(profile.dailyCalories)
+        )
 
         tvDifficultyLevel.text = profile.dailyCalorieBreakdown.difficultyLevel
         val levelColor = when (profile.dailyCalorieBreakdown.difficultyLevel.uppercase(Locale.ROOT)) {

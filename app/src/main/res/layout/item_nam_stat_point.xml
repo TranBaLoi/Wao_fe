@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            tools:text="Calories 0 kcal"
+            tools:text="Calo 0 calo (cal)"
             android:textColor="@color/wao_primary"
             android:textAppearance="?attr/textAppearanceSubtitle2"
             android:textSize="18sp"

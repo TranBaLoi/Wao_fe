@@ -53,6 +53,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private var selectedDate = LocalDate.now()
     private var selectedMetric = ChartMetric.CALORIES
+    //biến quan trọng,chứa hết cả dinh dưỡng, lẫn cân nặng
     private var currentRangeSnapshot: RangeSnapshot? = null
     private var currentChartDates: List<String> = emptyList()
     //nam them
@@ -223,6 +224,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun renderRangeSection(range: DateRange) {
+        //phần quan trọng dùng để lấy luôn data
         val snapshot = repository.loadRangeSnapshot(userId, range)
         currentRangeSnapshot = snapshot
         chartCard.visibility = View.VISIBLE
@@ -292,6 +294,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         val chartPoints: List<Pair<String, Float>> = when (selectedMetric) {
             //nam them
             ChartMetric.WEIGHT -> snapshot.weight.points
+//                phải lấy cân nặng sau khi update
                 .mapNotNull { point ->
                     point.endWeight?.takeIf { it != 0.0 }?.let { point.bucketDate to it.toFloat() }
                 }
@@ -465,13 +468,13 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     private fun formatGram(value: Double?): String = "${formatNumber(value)} g"
 
     private fun formatWeight(value: Double?): String {
-        if (value == null) return "--"
+        if (value == null) return "chưa cập nhật"
         return "${formatNumber(value)} kg"
     }
 
     //nam them
     private fun formatWeightChange(value: Double?): String {
-        if (value == null) return "--"
+        if (value == null) return "chưa cập nhật"
         return "${if (value > 0) "+" else ""}${formatNumber(value)} kg"
     }
 

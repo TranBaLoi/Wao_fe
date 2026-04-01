@@ -338,13 +338,13 @@ class MealPlanActivity : AppCompatActivity() {
         tvServing.text = "${food.servingQty} phần"
 
         food.calories?.let {
-            tvCalories.text = "${it.toInt()} kcal"
+            tvCalories.text = getString(R.string.format_calorie_value, it.toInt())
         }
 
         val p = food.protein?.toInt() ?: 0
         val c = food.carbs?.toInt() ?: 0
         val f = food.fat?.toInt() ?: 0
-        tvMacros.text = "P: ${p}g • C: ${c}g • F: ${f}g"
+        tvMacros.text = getString(R.string.format_macros_short, p, c, f)
 
         if (!food.containsAllergens.isNullOrEmpty()) {
             ivAllergenWarning.visibility = View.VISIBLE

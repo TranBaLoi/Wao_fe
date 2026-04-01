@@ -842,8 +842,8 @@ class WorkoutTrackingActivity : AppCompatActivity(), SensorEventListener {
         tvMetricSpeedValue.text = "${formatSpeed(if (sessionState == SessionState.RUNNING) currentSpeedKmh else 0.0)} km/h"
         val caloriesValue = displayedCaloriesBurned().roundToInt()
         tvMetricCaloriesValue.text = when (caloriesDisplaySource()) {
-            CaloriesDisplaySource.HEALTH_CONNECT -> "$caloriesValue kcal"
-            CaloriesDisplaySource.ESTIMATED -> "~$caloriesValue kcal"
+            CaloriesDisplaySource.HEALTH_CONNECT -> getString(R.string.format_calorie_value, caloriesValue)
+            CaloriesDisplaySource.ESTIMATED -> getString(R.string.format_calorie_from_text, "~$caloriesValue")
         }
         tvMetricFourthValue.text = if (workoutType.usesStepMetric) {
             "${displayedSteps()} bước"

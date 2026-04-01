@@ -227,7 +227,7 @@
                         android:id="@+id/tvMetricCaloriesLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Kcal"
+                        android:text="Calo"
                         android:textColor="@color/workout_tracking_text_secondary"
                         android:textSize="13sp" />
 
@@ -236,7 +236,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="0 kcal"
+                        android:text="@string/placeholder_calorie"
                         android:textColor="@android:color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />

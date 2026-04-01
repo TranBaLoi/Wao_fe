@@ -244,7 +244,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Carbs"
+                                android:text="Tinh bột"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                             <TextView
@@ -326,7 +326,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Fat"
+                                android:text="@string/nutrition_fat"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                             <TextView

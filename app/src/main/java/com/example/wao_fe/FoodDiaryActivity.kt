@@ -260,8 +260,8 @@ class FoodDiaryActivity : AppCompatActivity() {
     }
 
     private fun updateTopCard(consumedCalories: Double) {
-        tvConsumedCalories.text = "${consumedCalories.roundToInt()} kcal"
-        tvTargetCalories.text = "${targetCalories.roundToInt()} kcal"
+        tvConsumedCalories.text = getString(R.string.format_calorie_value, consumedCalories.roundToInt())
+        tvTargetCalories.text = getString(R.string.format_calorie_value, targetCalories.roundToInt())
 
         val progress = if (targetCalories > 0) {
             ((consumedCalories / targetCalories) * 100).roundToInt().coerceIn(0, 100)
@@ -277,7 +277,7 @@ class FoodDiaryActivity : AppCompatActivity() {
         mealSections.forEach { (mealType, section) ->
             val mealLogs = grouped[mealType].orEmpty()
             val mealCalories = mealLogs.sumOf { it.totalCalories }.roundToInt()
-            section.calories.text = "$mealCalories kcal"
+            section.calories.text = getString(R.string.format_calorie_value, mealCalories)
             renderMealItems(section.logContainer, mealLogs)
         }
     }
@@ -306,7 +306,11 @@ class FoodDiaryActivity : AppCompatActivity() {
             val btnDelete = itemView.findViewById<ImageButton>(R.id.btnDelete)
 
             tvFoodName.text = log.foodName
-            tvFoodInfo.text = "${formatServing(log.servingQty)} phần • ${log.totalCalories.roundToInt()} kcal"
+            tvFoodInfo.text = getString(
+                R.string.format_serving_and_calorie,
+                formatServing(log.servingQty),
+                log.totalCalories.roundToInt()
+            )
             bindFoodImage(ivFood, foodById[log.foodId]?.imageUrls)
 
             btnDelete.setOnClickListener {

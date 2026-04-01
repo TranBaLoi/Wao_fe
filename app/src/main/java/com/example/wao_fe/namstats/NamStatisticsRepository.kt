@@ -45,7 +45,7 @@ class NamStatisticsRepository(
         val weightDeferred = async {
             apiService.getWeightSeries(
                 userId = userId,
-                //nam them
+                // chỉ dùng để log ra cân nặng hôm đấy
                 from = date.toString(),
                 to = date.toString(),
                 groupBy = StatisticsGroupBy.DAY.name
@@ -77,22 +77,27 @@ class NamStatisticsRepository(
         )
     }
 
+
+    //hàm chính để load snapShot....
     suspend fun loadRangeSnapshot(userId: Long, range: DateRange): RangeSnapshot = supervisorScope {
         val safeRange = range.clampToToday()
-
+         // lấy cân nặng cuôi
         val profileDeferred = async { apiService.getLatestHealthProfile(userId) }
+//        lấy các dinh dưỡng
         val nutritionDeferred = async {
             runCatching {
                 apiService.getNutritionSeries(
                     userId = userId,
                     from = safeRange.start.toString(),
                     to = safeRange.end.toString(),
+//                    mặc định
                     groupBy = StatisticsGroupBy.DAY.name
                 )
             }.getOrElse {
                 emptyNutritionSeries(userId, safeRange)
             }
         }
+//        lấy cân nặng
         val weightDeferred = async {
             runCatching {
                 loadWeightSeriesForRange(userId, safeRange)
@@ -102,7 +107,7 @@ class NamStatisticsRepository(
         }
 
         val fallbackWeight = runCatching { profileDeferred.await().weightKg }.getOrNull()
-
+//tập hợp
         RangeSnapshot(
             range = safeRange,
             nutrition = nutritionDeferred.await(),
@@ -114,6 +119,7 @@ class NamStatisticsRepository(
     fun buildWeekRange(anchorDate: LocalDate): DateRange {
         //nam them
         val safeAnchor = anchorDate.coerceAtMost(LocalDate.now())
+        // ép về ngày đầu tuần
         val start = safeAnchor.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
         val end = safeAnchor.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
         return DateRange(start, end).clampToToday()
@@ -122,6 +128,7 @@ class NamStatisticsRepository(
     fun buildMonthRange(anchorDate: LocalDate): DateRange {
         //nam them
         val safeAnchor = anchorDate.coerceAtMost(LocalDate.now())
+        //ép về ngày mùng 1
         val start = safeAnchor.withDayOfMonth(1)
         val end = safeAnchor.withDayOfMonth(safeAnchor.lengthOfMonth())
         return DateRange(start, end).clampToToday()
@@ -159,32 +166,12 @@ class NamStatisticsRepository(
         userId: Long,
         range: DateRange
     ): WeightSeriesResponse {
-        val fetchRange = if (range.daysSpan() <= 7) {
-            range.expandToMonthBounds()
-        } else {
-            range
-        }
 
-        val response = apiService.getWeightSeries(
+        return apiService.getWeightSeries(
             userId = userId,
-            from = fetchRange.start.toString(),
-            to = fetchRange.end.toString(),
-            groupBy = StatisticsGroupBy.DAY.name
-        )
-
-        val filteredPoints = response.points.filter { point ->
-            point.normalizedBucketDate().toLocalDateOrNull()
-                ?.let { !it.isBefore(range.start) && !it.isAfter(range.end) }
-                ?: false
-        }
-
-        return response.copy(
             from = range.start.toString(),
             to = range.end.toString(),
-            points = filteredPoints,
-            overallChange = filteredPoints.firstOrNull()?.endWeight?.let { first ->
-                filteredPoints.lastOrNull()?.endWeight?.minus(first)
-            }
+            groupBy = StatisticsGroupBy.DAY.name
         )
     }
 }
@@ -200,7 +187,7 @@ data class DateRange(
     val start: LocalDate,
     val end: LocalDate
 ) {
-    //nam them
+    //tránh kéo ngày quá tay
     fun clampToToday(today: LocalDate = LocalDate.now()): DateRange {
         val clampedStart = start.coerceAtMost(today)
         val clampedEnd = end.coerceAtMost(today)
@@ -211,13 +198,13 @@ data class DateRange(
         }
     }
 
-    //nam them
+    // trả về dang sách date cho dễ xử lý
     fun dates(): List<LocalDate> {
         val days = java.time.temporal.ChronoUnit.DAYS.between(start, end).toInt()
         return (0..days).map { start.plusDays(it.toLong()) }
     }
 
-    //nam them
+    //đếm xem có bao nhiêu ngày
     fun daysSpan(): Long = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1
 
     //nam them

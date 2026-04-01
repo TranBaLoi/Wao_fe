@@ -688,7 +688,7 @@ class MainActivity : AppCompatActivity() {
                         NotificationHelper.showAlertNotification(
                             context = this@MainActivity,
                             title = "Cảnh báo vượt mức năng lượng",
-                            message = "Bạn đã vượt quá mục tiêu calo hôm nay ${overCalories.toInt()} kcal. Hãy cẩn thận!",
+                            message = "Bạn đã vượt quá mục tiêu calo hôm nay ${overCalories.toInt()} calo (cal). Hãy cẩn thận!",
                             notificationId = 1001
                         )
                         sharedPref.edit().putString("LAST_CALORIE_ALERT_DATE", todayStr).apply()

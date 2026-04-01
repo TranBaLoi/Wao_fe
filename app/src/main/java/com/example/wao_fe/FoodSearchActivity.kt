@@ -269,7 +269,7 @@ class FoodSearchActivity : AppCompatActivity() {
             val ivFoodImage = item.findViewById<ImageView>(R.id.ivFoodImage)
 
             tvName.text = food.name
-            tvCalories.text = "${food.calories.roundToInt()} kcal"
+            tvCalories.text = getString(R.string.format_calorie_value, food.calories.roundToInt())
             tvServing.text = food.servingSize
             tvMeta.text = buildMeta(food)
             bindFoodImage(ivFoodImage, food.imageUrls)

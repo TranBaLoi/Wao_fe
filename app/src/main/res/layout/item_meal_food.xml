@@ -79,7 +79,7 @@
                     android:id="@+id/tvCalories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 kcal"
+                    android:text="@string/placeholder_calorie"
                     android:textColor="@color/green_dark"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -94,7 +94,7 @@
                     android:id="@+id/tvMacros"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="P: 0g • C: 0g • F: 0g"
+                    android:text="@string/macros_short_placeholder"
                     android:textColor="@color/wao_slate_500"
                     android:textSize="12sp" />
             </LinearLayout>

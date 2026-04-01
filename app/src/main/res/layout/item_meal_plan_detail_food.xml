@@ -62,7 +62,7 @@
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/ic_fitness_center"
             app:drawableTint="#166534"
-            tools:text="350 kcal | P: 25g" />
+            tools:text="350 calo (cal) | P: 25g" />
     </LinearLayout>
 
     <!-- Đường kẻ ngang phân cách nhẹ nhàng -->

@@ -182,7 +182,13 @@ class MealPlanDetailActivity : AppCompatActivity() {
 
             tvFoodName.text = food.foodName ?: detail?.name ?: "Món ăn"
             tvServing.text = "Khẩu phần: ${food.servingQty} • ${detail?.servingSize ?: "N/A"}"
-            tvNutrition.text = "Dinh dưỡng: ${calories} kcal | P ${protein}g | C ${carbs}g | F ${fat}g"
+            tvNutrition.text = getString(
+                R.string.format_meal_plan_nutrition,
+                calories,
+                protein,
+                carbs,
+                fat
+            )
             tvIngredients.text = "Nguyên liệu: ${detail?.ingredients ?: "Chưa có dữ liệu"}"
             tvGuide.text = "Cách làm: Xem hướng dẫn chi tiết trong mục công thức."
 

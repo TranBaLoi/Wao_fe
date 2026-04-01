@@ -309,7 +309,7 @@
                             android:id="@+id/btnIncreaseWeight"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@drawable/ic_minus"
+                            android:src="@drawable/ic_add"
                             android:padding="8dp"
                             android:background="@drawable/circle_primary_alpha"
                             app:tint="@color/green_dark"
