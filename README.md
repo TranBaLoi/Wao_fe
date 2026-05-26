@@ -1,4 +1,4 @@
-# 🌿 WAO — Ứng dụng Theo dõi Sức khỏe
+﻿# 🌿 WAO — Ứng dụng Theo dõi Sức khỏe
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white"/>
@@ -13,6 +13,25 @@
 ---
 
 ## 📱 Màn hình hiện tại
+
+### Hình ảnh giao diện
+
+<details>
+  <summary>Xem thêm hình ảnh</summary>
+  <p float="left">
+    <img src="Anh/37faf0bf6f97eec9b7869.jpg" width="30%" alt="37faf0bf6f97eec9b7869" />
+    <img src="Anh/b20412408d680c3655796.jpg" width="30%" alt="b20412408d680c3655796" />
+    <img src="Anh/c31206519979182741687.jpg" width="30%" alt="c31206519979182741687" />
+    <img src="Anh/ca409a06052e8470dd3f4.jpg" width="30%" alt="ca409a06052e8470dd3f4" />
+    <img src="Anh/d178853e1a169b48c2072.jpg" width="30%" alt="d178853e1a169b48c2072" />
+    <img src="Anh/Dashboard.jpg" width="30%" alt="Dashboard" />
+    <img src="Anh/dd5d151e8a360b6852275.jpg" width="30%" alt="dd5d151e8a360b6852275" />
+    <img src="Anh/LenThucDonAI.jpg" width="30%" alt="LenThucDonAI" />
+    <img src="Anh/ThuThapThongTIn.jpg" width="30%" alt="ThuThapThongTIn" />
+    <img src="Anh/Trangchu.jpg" width="30%" alt="Trangchu" />
+    <img src="Anh/TrangChu2.jpg" width="30%" alt="TrangChu2" />
+  </p>
+</details>
 
 | Splash Screen | Đăng nhập | Đăng ký |
 |:---:|:---:|:---:|
@@ -222,4 +241,5 @@ Dự án này được phát triển cho mục đích học tập.
 ---
 
 <p align="center">Made with 💚 by Trần Bá Lợi</p>
+
 
