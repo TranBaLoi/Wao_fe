@@ -1,3 +1,7 @@
+/*
+ * Bài làm của Nguyễn Hải Nam-B22DCCN558
+ * Màn hình dashboard thống kê dinh dưỡng, cân nặng và biểu đồ xu hướng.
+ */
 //nam them
 package com.example.wao_fe.namstats
 
@@ -29,14 +33,19 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+/**
+ * Activity chính của phần thống kê: quản lý chọn ngày/tuần/tháng, gọi repository và render dữ liệu lên UI.
+ */
 class StatisticsDashboardActivity : AppCompatActivity() {
 
+    /** Các chế độ xem dữ liệu thống kê trên màn hình. */
     private enum class StatisticsPeriod {
         DAY,
         WEEK,
         MONTH
     }
 
+    /** Các chỉ số người dùng có thể chọn để vẽ biểu đồ. */
     private enum class ChartMetric {
         WEIGHT,
         PROTEIN,
@@ -78,6 +87,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Khởi tạo màn hình, lấy userId đã đăng nhập, bind view và tải dữ liệu lần đầu. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nam_statistics_dashboard)
@@ -95,6 +105,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         loadSelectedContent()
     }
 
+    /** Ánh xạ các view trong layout để Activity điều khiển trạng thái và dữ liệu hiển thị. */
     private fun bindViews() {
         btnBack = findViewById(R.id.btn_back_statistics)
         progressBar = findViewById(R.id.progress_dashboard)
@@ -114,6 +125,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Gắn sự kiện cho nút chọn kỳ, chọn ngày, spinner metric, chart và bottom navigation. */
     private fun setupControls() {
         //nam them
         btnBack.setOnClickListener { finish() }
@@ -141,6 +153,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
         }
     }
 
+    /** Chuẩn bị danh sách metric cho spinner và xử lý khi người dùng đổi chỉ số biểu đồ. */
     private fun setupMetricSpinner() {
         val items = ChartMetric.entries.map(::metricLabel)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, items)
@@ -190,6 +203,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Tải lại nội dung theo kỳ đang chọn: ngày thì render snapshot, tuần/tháng thì render chart. */
     private fun loadSelectedContent() {
         updateControlState()
         progressBar.visibility = View.VISIBLE
@@ -211,6 +225,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Render phần thống kê của một ngày, gồm dinh dưỡng và cân nặng hiện tại. */
     private suspend fun renderDaySection() {
         val snapshot = repository.loadDailySnapshot(userId, selectedDate)
         chartCard.visibility = View.GONE
@@ -223,6 +238,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Render phần thống kê theo khoảng ngày và cập nhật dữ liệu cho biểu đồ. */
     private suspend fun renderRangeSection(range: DateRange) {
         //phần quan trọng dùng để lấy luôn data
         val snapshot = repository.loadRangeSnapshot(userId, range)
@@ -286,6 +302,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Đổi dữ liệu chart theo metric đang chọn: calories/macros hoặc cân nặng. */
     private fun updateMetricChart() {
         val snapshot = currentRangeSnapshot ?: return
         updateMetricButtons()
@@ -329,6 +346,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Khi chạm vào một điểm chart, hiển thị chi tiết dữ liệu của ngày tương ứng. */
     private fun renderRangeDayDetail(snapshot: RangeSnapshot, dateKey: String) {
         val nutrition = snapshot.nutritionPointByDate(dateKey)
         //nam them
@@ -379,6 +397,7 @@ class StatisticsDashboardActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Mở DatePicker và giới hạn ngày chọn không vượt quá ngày hiện tại. */
     private fun openDatePicker() {
         val dialog = DatePickerDialog(
             this,

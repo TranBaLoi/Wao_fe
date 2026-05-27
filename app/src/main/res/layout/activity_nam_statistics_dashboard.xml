@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Bài làm của Nguyễn Hải Nam-B22DCCN558
+    Layout dashboard thống kê: chọn kỳ, chọn ngày, chọn metric, chart và vùng chi tiết.
+-->
 <!-- nam them -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,6 +24,7 @@
             android:padding="20dp">
 
             <!-- nam them -->
+            <!-- Header màn hình thống kê, gồm nút quay lại và tiêu đề dashboard. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,6 +146,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Card biểu đồ xu hướng, chỉ hiển thị khi xem theo tuần hoặc tháng. -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_chart"
                 android:layout_width="match_parent"
@@ -207,6 +213,7 @@
                         android:textColor="@color/wao_slate_500"
                         android:textSize="16sp" />
 
+                    <!-- Custom chart do phần Nam xử lý, nhận dữ liệu từ StatisticsDashboardActivity. -->
                     <com.example.wao_fe.namstats.views.NamTrendChartView
                         android:id="@+id/chart_trend"
                         android:layout_width="match_parent"
@@ -215,6 +222,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Vùng render động các dòng chi tiết calories/macros/cân nặng theo ngày được chọn. -->
             <LinearLayout
                 android:id="@+id/container_detail_items"
                 android:layout_width="match_parent"

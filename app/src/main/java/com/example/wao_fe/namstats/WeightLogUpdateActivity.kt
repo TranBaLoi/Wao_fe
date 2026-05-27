@@ -1,3 +1,7 @@
+/*
+ * Bài làm của Nguyễn Hải Nam-B22DCCN558
+ * Màn hình cập nhật cân nặng và gửi log cân nặng mới lên backend.
+ */
 //namthem
 package com.example.wao_fe.namstats
 
@@ -26,6 +30,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 //namthem
+/**
+ * Activity cho phép người dùng nhập cân nặng hiện tại, ghi chú và lưu log qua API statistics/weight/logs.
+ */
 class WeightLogUpdateActivity : AppCompatActivity() {
 
     private val apiService = NetworkClient.apiService
@@ -45,6 +52,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     private lateinit var tvStatus: TextView
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Khởi tạo màn hình, lấy userId, bind view và tải cân nặng gần nhất để hiển thị. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weight_log_update)
@@ -62,6 +70,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
         loadLatestWeightInfo()
     }
 
+    /** Ánh xạ các input, nút và trạng thái trong layout cập nhật cân nặng. */
     private fun bindViews() {
         btnBack = findViewById(R.id.btn_back_weight_log)
         btnChooseDate = findViewById(R.id.btn_choose_weight_date)
@@ -73,6 +82,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Gắn sự kiện quay lại, thông báo chỉ cập nhật ngày hiện tại và lưu cân nặng. */
     private fun setupControls() {
         btnBack.setOnClickListener { finish() }
         btnChooseDate.setOnClickListener {
@@ -83,6 +93,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Luôn đặt ngày ghi log là ngày hiện tại để khớp rule validate của backend. */
     private fun updateDateButton() {
         //namthem
         selectedDate = LocalDate.now()
@@ -90,6 +101,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    /** Validate cân nặng nhập vào, gọi API tạo log và cập nhật trạng thái UI theo kết quả. */
     private fun submitWeightLog() {
         val newWeight = etNewWeight.text.toString().trim().toDoubleOrNull()
         if (newWeight == null || newWeight <= 0.0) {
@@ -132,6 +144,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     }
 
     //namthem
+    /** Gọi API lấy cân nặng gần nhất để người dùng biết mốc hiện tại trước khi nhập log mới. */
     private fun loadLatestWeightInfo() {
         tvStatus.text = "Đang tải cân nặng gần nhất"
         lifecycleScope.launch {
@@ -146,6 +159,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     }
 
     //namthem
+    /** Format response latest weight thành chuỗi dễ đọc cho TextView trạng thái. */
     private fun buildLatestWeightText(response: LatestWeightInfoResponse): String {
         return buildLatestWeightText(
             latestWeight = response.latestKnownWeight,
@@ -167,6 +181,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
     }
 
     //namthem
+    /** Đọc lỗi từ backend để hiển thị đúng message nghiệp vụ như trùng log hoặc vượt ngưỡng cân nặng. */
     private fun extractErrorMessage(error: Throwable): String {
         if (error is HttpException) {
             val rawBody = error.response()?.errorBody()?.string()
@@ -190,6 +205,7 @@ class WeightLogUpdateActivity : AppCompatActivity() {
 
     companion object {
         //namthem
+        /** Factory intent để màn hình khác mở WeightLogUpdateActivity thống nhất. */
         fun createIntent(context: Context): Intent {
             return Intent(context, WeightLogUpdateActivity::class.java)
         }

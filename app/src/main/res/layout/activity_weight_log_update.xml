@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Bài làm của Nguyễn Hải Nam-B22DCCN558
+    Layout cập nhật cân nặng: chọn ngày hiện tại, nhập cân nặng mới, ghi chú và lưu.
+-->
 <!-- namthem -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -46,6 +50,7 @@
             android:textColor="@color/wao_slate_600"
             android:textSize="18sp" />
 
+        <!-- Nút ngày ghi log; UI hiển thị ngày hiện tại để khớp validate backend. -->
         <Button
             android:id="@+id/btn_choose_weight_date"
             android:layout_width="match_parent"
@@ -63,6 +68,7 @@
             android:textColor="@color/wao_slate_600"
             android:textSize="18sp" />
 
+        <!-- Ô nhập cân nặng mới, Activity sẽ validate > 0 trước khi gọi API. -->
         <EditText
             android:id="@+id/et_new_weight"
             android:layout_width="match_parent"
@@ -94,6 +100,7 @@
             android:padding="12dp"
             android:textSize="18sp" />
 
+        <!-- TextView hiển thị cân nặng gần nhất hoặc lỗi nghiệp vụ backend trả về. -->
         <TextView
             android:id="@+id/tv_weight_log_status"
             android:layout_width="wrap_content"
@@ -109,6 +116,7 @@
             android:layout_marginTop="12dp"
             android:visibility="gone" />
 
+        <!-- Nút gửi CreateWeightLogRequest lên backend. -->
         <Button
             android:id="@+id/btn_save_weight_log"
             android:layout_width="match_parent"

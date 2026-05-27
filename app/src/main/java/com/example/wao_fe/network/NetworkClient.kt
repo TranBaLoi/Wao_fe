@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit
 object NetworkClient {
 
     // Khi chạy trên Android Emulator, 10.0.2.2 được dùng để truy cập localhost của máy tính chạy backend.
+    // Bài làm của Nguyễn Hải Nam-B22DCCN558: module thống kê dùng base URL này để gọi các API /statistics.
     private const val BASE_URL = "http://10.0.2.2:8080/"
 //    172.20.10.2
 

@@ -327,12 +327,17 @@ interface ApiService {
     ): DailySummaryResponse
 
     //nam them
+    /**
+     * Bài làm của Nguyễn Hải Nam-B22DCCN558.
+     * Nhóm API statistics dùng cho dashboard dinh dưỡng, biểu đồ cân nặng và ghi log cân nặng.
+     */
     @GET("api/users/{userId}/statistics/nutrition/daily")
     suspend fun getDailyNutrition(
         @Path("userId") userId: Long,
         @Query("date") date: String
     ): DailyNutritionResponse
 
+    /** Lấy chuỗi calories/protein/carbs/fat theo khoảng ngày. */
     @GET("api/users/{userId}/statistics/nutrition")
     suspend fun getNutritionSeries(
         @Path("userId") userId: Long,
@@ -341,6 +346,7 @@ interface ApiService {
         @Query("groupBy") groupBy: String
     ): NutritionSeriesResponse
 
+    /** Lấy chuỗi cân nặng theo khoảng ngày để vẽ biểu đồ. */
     @GET("api/users/{userId}/statistics/weight")
     suspend fun getWeightSeries(
         @Path("userId") userId: Long,
@@ -350,12 +356,14 @@ interface ApiService {
     ): WeightSeriesResponse
 
     //namthem
+    /** Lấy cân nặng gần nhất trước khi người dùng nhập log mới. */
     @GET("api/users/{userId}/statistics/weight/latest")
     suspend fun getLatestWeightInfo(
         @Path("userId") userId: Long
     ): LatestWeightInfoResponse
 
     //namthem
+    /** Tạo log cân nặng mới cho ngày hiện tại. */
     @POST("api/users/{userId}/statistics/weight/logs")
     suspend fun createWeightLog(
         @Path("userId") userId: Long,

@@ -1,3 +1,7 @@
+/*
+ * Bài làm của Nguyễn Hải Nam-B22DCCN558
+ * Custom View vẽ biểu đồ xu hướng cho calories, macros và cân nặng.
+ */
 //nam them
 package com.example.wao_fe.namstats.views
 
@@ -15,6 +19,9 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * View tự vẽ chart bằng Canvas, lưu tọa độ điểm và phát callback khi người dùng chạm vào điểm dữ liệu.
+ */
 class NamTrendChartView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
@@ -71,6 +78,7 @@ class NamTrendChartView @JvmOverloads constructor(
     private var yAxisUnit: String = ""
     private var xAxisUnit: String = ""
 
+    /** Nhận dữ liệu mới từ Activity và chọn mặc định điểm đầu tiên nếu có dữ liệu. */
     fun submitData(newValues: List<Float>, chartLabels: List<String>) {
         values = newValues
         labels = chartLabels
@@ -78,12 +86,14 @@ class NamTrendChartView @JvmOverloads constructor(
         invalidate()
     }
 
+    /** Cấu hình đơn vị hiển thị trên trục Y và X của biểu đồ. */
     fun setAxisUnits(yUnit: String, xUnit: String) {
         yAxisUnit = yUnit
         xAxisUnit = xUnit
         invalidate()
     }
 
+    /** Đăng ký callback để Activity render chi tiết ngày khi user chọn điểm trên chart. */
     fun setOnPointSelectedListener(listener: (Int) -> Unit) {
         pointClickListener = listener
     }
@@ -95,6 +105,7 @@ class NamTrendChartView @JvmOverloads constructor(
         }
     }
 
+    /** Vẽ grid, nhãn trục, đường biểu đồ, điểm dữ liệu và nhãn ngày đầu/cuối. */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -156,6 +167,7 @@ class NamTrendChartView @JvmOverloads constructor(
         drawXAxisLabels(canvas, left, right, bottom)
     }
 
+    /** Tìm điểm gần vị trí chạm nhất, cập nhật selectedIndex và gọi callback về Activity. */
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP && pointPositions.isNotEmpty()) {
             val tappedIndex = pointPositions.indices.minByOrNull { index ->
@@ -203,6 +215,7 @@ class NamTrendChartView @JvmOverloads constructor(
         }
     }
 
+    /** Tính min/max trục Y để tránh chia cho 0 khi dữ liệu chỉ có một giá trị. */
     private fun calculateAxisBounds(minValue: Float, maxValue: Float): Pair<Float, Float> {
         return if (minValue == maxValue) {
             // tránh bị chia 0 khi tất cả điểm giống nhau

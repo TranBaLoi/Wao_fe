@@ -1,3 +1,7 @@
+/*
+ * Bài làm của Nguyễn Hải Nam-B22DCCN558
+ * Repository phía Android gom các API thống kê và chuẩn hóa dữ liệu cho màn hình.
+ */
 //nam them
 package com.example.wao_fe.namstats
 
@@ -19,10 +23,14 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
+/**
+ * Lớp trung gian giữa Activity và Retrofit API, chịu trách nhiệm lấy dữ liệu và dựng snapshot cho UI.
+ */
 class NamStatisticsRepository(
     private val apiService: ApiService = NetworkClient.apiService
 ) {
 
+    /** Tải nhanh dữ liệu tổng quan bằng các request chạy song song. */
     suspend fun loadOverviewData(userId: Long): OverviewData = coroutineScope {
         val today = LocalDate.now()
 
@@ -39,6 +47,7 @@ class NamStatisticsRepository(
         )
     }
 
+    /** Lấy dữ liệu của một ngày: dinh dưỡng, profile mới nhất và cân nặng trong ngày. */
     suspend fun loadDailySnapshot(userId: Long, date: LocalDate): DailySnapshot = coroutineScope {
         val nutritionDeferred = async { apiService.getDailyNutrition(userId, date.toString()) }
         val profileDeferred = async { apiService.getLatestHealthProfile(userId) }
@@ -79,6 +88,7 @@ class NamStatisticsRepository(
 
 
     //hàm chính để load snapShot....
+    /** Lấy dữ liệu theo khoảng ngày; nếu một nguồn lỗi thì dùng dữ liệu rỗng để màn hình vẫn hiển thị được. */
     suspend fun loadRangeSnapshot(userId: Long, range: DateRange): RangeSnapshot = supervisorScope {
         val safeRange = range.clampToToday()
          // lấy cân nặng cuôi
@@ -116,6 +126,7 @@ class NamStatisticsRepository(
         )
     }
 
+    /** Tính khoảng thứ Hai đến Chủ nhật của tuần chứa ngày đang chọn. */
     fun buildWeekRange(anchorDate: LocalDate): DateRange {
         //nam them
         val safeAnchor = anchorDate.coerceAtMost(LocalDate.now())
@@ -125,6 +136,7 @@ class NamStatisticsRepository(
         return DateRange(start, end).clampToToday()
     }
 
+    /** Tính khoảng ngày đầu tháng đến cuối tháng của ngày đang chọn. */
     fun buildMonthRange(anchorDate: LocalDate): DateRange {
         //nam them
         val safeAnchor = anchorDate.coerceAtMost(LocalDate.now())
@@ -135,6 +147,7 @@ class NamStatisticsRepository(
     }
 
     //nam them
+    /** Response fallback khi API dinh dưỡng lỗi hoặc chưa có dữ liệu. */
     private fun emptyNutritionSeries(userId: Long, range: DateRange): NutritionSeriesResponse {
         return NutritionSeriesResponse(
             userId = userId,
@@ -150,6 +163,7 @@ class NamStatisticsRepository(
     }
 
     //nam them
+    /** Response fallback khi API cân nặng lỗi hoặc chưa có log cân nặng. */
     private fun emptyWeightSeries(userId: Long, range: DateRange): WeightSeriesResponse {
         return WeightSeriesResponse(
             userId = userId,
@@ -162,6 +176,7 @@ class NamStatisticsRepository(
     }
 
     //nam them
+    /** Gọi API chuỗi cân nặng theo đúng khoảng ngày hiển thị trên dashboard. */
     private suspend fun loadWeightSeriesForRange(
         userId: Long,
         range: DateRange
@@ -176,6 +191,7 @@ class NamStatisticsRepository(
     }
 }
 
+/** Dữ liệu tổng quan dùng cho phần thống kê hiện tại của người dùng. */
 data class OverviewData(
     val user: UserResponse,
     val latestProfile: HealthProfileResponse,
@@ -183,6 +199,7 @@ data class OverviewData(
     val todayNutrition: DailyNutritionResponse
 )
 
+/** Khoảng ngày đang được dashboard dùng để truy vấn và render biểu đồ. */
 data class DateRange(
     val start: LocalDate,
     val end: LocalDate
@@ -215,6 +232,7 @@ data class DateRange(
     }
 }
 
+/** Snapshot dữ liệu của một ngày, dùng cho chế độ xem DAY. */
 data class DailySnapshot(
     val date: LocalDate,
     val nutrition: DailyNutritionResponse,
@@ -224,6 +242,7 @@ data class DailySnapshot(
     val fallbackWeight: Double?
 )
 
+/** Snapshot dữ liệu của một khoảng ngày, dùng cho chế độ WEEK/MONTH. */
 data class RangeSnapshot(
     val range: DateRange,
     val nutrition: NutritionSeriesResponse,

@@ -1,8 +1,13 @@
+/*
+ * Bài làm của Nguyễn Hải Nam-B22DCCN558
+ * Model request/response khớp với DTO backend cho module thống kê.
+ */
 //nam them
 package com.example.wao_fe.namstats.models
 
 import com.google.gson.annotations.SerializedName
 
+/** Tổng dinh dưỡng backend trả về cho một ngày. */
 data class DailyNutritionResponse(
     val userId: Long,
     val date: String,
@@ -12,12 +17,14 @@ data class DailyNutritionResponse(
     val totalFat: Double
 )
 
+/** Kiểu group dữ liệu gửi lên backend khi lấy series thống kê. */
 enum class StatisticsGroupBy {
     DAY,
     WEEK,
     MONTH
 }
 
+/** Một điểm dữ liệu dinh dưỡng trong chuỗi biểu đồ. */
 data class NutritionPoint(
     val bucketDate: String,
     val totalCalories: Double,
@@ -26,6 +33,7 @@ data class NutritionPoint(
     val totalFat: Double
 )
 
+/** Chuỗi dinh dưỡng trong khoảng ngày, dùng để vẽ calories/protein/carbs/fat. */
 data class NutritionSeriesResponse(
     val userId: Long,
     val from: String,
@@ -38,6 +46,7 @@ data class NutritionSeriesResponse(
     val points: List<NutritionPoint>
 )
 
+/** Một điểm dữ liệu cân nặng; SerializedName giúp tương thích nhiều kiểu tên field backend. */
 data class WeightPoint(
     @SerializedName(
         value = "bucketDate",
@@ -54,6 +63,7 @@ data class WeightPoint(
     val logCount: Int = 0
 )
 
+/** Chuỗi cân nặng theo khoảng ngày, gồm các điểm và mức thay đổi tổng. */
 data class WeightSeriesResponse(
     val userId: Long,
     val from: String,
@@ -64,6 +74,7 @@ data class WeightSeriesResponse(
 )
 
 //namthem
+/** Request gửi lên backend khi người dùng lưu cân nặng mới. */
 data class CreateWeightLogRequest(
     val date: String,
     val newWeight: Double,
@@ -71,6 +82,7 @@ data class CreateWeightLogRequest(
 )
 
 //namthem
+/** Response sau khi backend tạo log cân nặng thành công. */
 data class WeightLogUpdateResponse(
     val logId: Long,
     val userId: Long,
@@ -85,6 +97,7 @@ data class WeightLogUpdateResponse(
 )
 
 //namthem
+/** Response cân nặng gần nhất, cho biết dữ liệu lấy từ weight log hay health profile. */
 data class LatestWeightInfoResponse(
     val userId: Long,
     val latestKnownWeight: Double?,
