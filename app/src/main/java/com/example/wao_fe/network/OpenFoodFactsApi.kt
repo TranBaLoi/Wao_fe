@@ -33,6 +33,10 @@ data class Nutriments(
     val fat_100g: Double?
 )
 
+/**
+ * API ngoài OpenFoodFacts dùng cho chức năng quét barcode món ăn.
+ * Retrofit gọi endpoint theo mã vạch để lấy thông tin sản phẩm và dữ liệu dinh dưỡng.
+ */
 interface OpenFoodFactsApi {
     @GET("api/v2/product/{barcode}.json")
     suspend fun getProductInfo(@Path("barcode") barcode: String): ProductResponse

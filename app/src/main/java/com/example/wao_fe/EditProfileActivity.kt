@@ -25,6 +25,10 @@ import com.example.wao_fe.network.models.UpdateUserRequest
 import java.util.Locale
 import kotlinx.coroutines.launch
 
+/**
+ * Màn hình chỉnh sửa hồ sơ cá nhân.
+ * Cho phép cập nhật tên, ảnh đại diện và đồng bộ thay đổi với backend.
+ */
 class EditProfileActivity : AppCompatActivity() {
 
     private lateinit var btnBackHeader: ImageView
@@ -79,6 +83,14 @@ class EditProfileActivity : AppCompatActivity() {
             ivAvatarEdit.setPadding(0, 0, 0, 0)
         }
     }
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,6 +171,15 @@ class EditProfileActivity : AppCompatActivity() {
         )
     }
 
+    /**
+
+
+     * Tải dữ liệu hồ sơ hiện tại của người dùng từ backend để điền vào form chỉnh sửa.
+
+
+     */
+
+
     private fun loadCurrentProfile() {
         if (userId == -1L) return
 
@@ -209,6 +230,15 @@ class EditProfileActivity : AppCompatActivity() {
             saveChanges()
         }
     }
+
+    /**
+
+
+     * Thu thập dữ liệu chỉnh sửa và gọi API cập nhật hồ sơ người dùng.
+
+
+     */
+
 
     private fun saveChanges() {
         val newName = etFullName.text.toString().trim()

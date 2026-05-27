@@ -6,7 +6,17 @@ import android.content.Intent
 import com.example.wao_fe.utils.NotificationHelper
 import com.example.wao_fe.utils.ReminderManager
 
+/**
+ * BroadcastReceiver nhận sự kiện báo thức từ AlarmManager.
+ * Khi đến thời điểm nhắc nhở, receiver hiển thị notification cho người dùng.
+ */
 class AlarmReceiver : BroadcastReceiver() {
+    /**
+
+     * Nhận Intent báo thức và dựng thông báo nhắc nhở tương ứng từ NotificationHelper.
+
+     */
+
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getIntExtra("EXTRA_ID", 0)
         val title = intent.getStringExtra("EXTRA_TITLE") ?: "Nhắc nhở Wao"

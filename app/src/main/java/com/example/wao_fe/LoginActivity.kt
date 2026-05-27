@@ -20,6 +20,10 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
+/**
+ * Màn hình đăng nhập người dùng.
+ * Xử lý đăng nhập Google, lưu thông tin người dùng vào SharedPreferences và điều hướng vào ứng dụng.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var tilEmail: TextInputLayout
@@ -46,6 +50,14 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "Google login failed: ${e.statusCode}", Toast.LENGTH_SHORT).show()
         }
     }
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

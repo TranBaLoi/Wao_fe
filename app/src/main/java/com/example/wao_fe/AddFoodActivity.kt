@@ -33,6 +33,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 
+/**
+ * Màn hình thêm món ăn mới.
+ * Hỗ trợ nhập dinh dưỡng, chọn ảnh, quét barcode và gửi dữ liệu món ăn lên backend.
+ */
 class AddFoodActivity : AppCompatActivity() {
 
     private val apiService = NetworkClient.apiService
@@ -70,6 +74,14 @@ class AddFoodActivity : AppCompatActivity() {
             toast("Mã vạch: ${result.contents}")
         }
     }
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +188,15 @@ class AddFoodActivity : AppCompatActivity() {
         floatingMenuDialog?.show()
     }
 
+    /**
+
+
+     * Khởi chạy trình quét barcode để điền nhanh thông tin món ăn từ mã vạch.
+
+
+     */
+
+
     private fun startBarcodeScanner() {
         val options = ScanOptions().apply {
             setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
@@ -185,6 +206,15 @@ class AddFoodActivity : AppCompatActivity() {
         }
         barcodeLauncher.launch(options)
     }
+
+    /**
+
+
+     * Thu thập dữ liệu món ăn từ form, đóng gói multipart (nếu có ảnh) và gọi API tạo món ăn.
+
+
+     */
+
 
     private fun submitCreateFood() {
         val name = etFoodName.text.toString().trim()
@@ -253,6 +283,15 @@ class AddFoodActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         return sharedPref.getLong("USER_ID", -1)
     }
+
+    /**
+
+
+     * Chuyển ảnh đã chọn thành danh sách MultipartBody.Part để upload qua Retrofit.
+
+
+     */
+
 
     private fun buildImageParts(imageUri: Uri?): List<MultipartBody.Part>? {
         if (imageUri == null) return null

@@ -21,6 +21,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
+/**
+ * Màn hình chi tiết kế hoạch bữa ăn.
+ * Hiển thị danh sách món trong meal plan và hỗ trợ áp dụng thực đơn vào nhật ký ăn uống.
+ */
 class MealPlanDetailActivity : AppCompatActivity() {
 
     private val userRepository = UserRepository()
@@ -42,6 +46,14 @@ class MealPlanDetailActivity : AppCompatActivity() {
     private lateinit var listLunch: LinearLayout
     private lateinit var listDinner: LinearLayout
     private lateinit var listSnack: LinearLayout
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +91,15 @@ class MealPlanDetailActivity : AppCompatActivity() {
         listSnack = findViewById(R.id.listSnack)
     }
 
+    /**
+
+
+     * Gọi API lấy chi tiết một meal plan theo id và tải thêm thông tin món ăn liên quan.
+
+
+     */
+
+
     private fun loadMealPlanDetail(mealPlanId: Long) {
         progressBar.visibility = View.VISIBLE
         contentContainer.visibility = View.GONE
@@ -109,6 +130,15 @@ class MealPlanDetailActivity : AppCompatActivity() {
             }.awaitAll().filterNotNull().associateBy { it.id }
         }.getOrDefault(emptyMap())
     }
+
+    /**
+
+
+     * Kết xuất toàn bộ thực đơn theo từng bữa để người dùng theo dõi rõ thành phần dinh dưỡng.
+
+
+     */
+
 
     private fun renderMealPlan(mealPlan: MealPlanResponse, foodDetails: Map<Long, FoodResponse>) {
         progressBar.visibility = View.GONE

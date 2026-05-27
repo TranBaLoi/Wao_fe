@@ -12,6 +12,10 @@ import androidx.core.content.ContextCompat
 import java.util.Locale
 import kotlin.math.abs
 
+/**
+ * Màn hình chọn mục tiêu sức khỏe của người dùng.
+ * Lưu lựa chọn như giảm cân, tăng cân hoặc duy trì cân nặng để cá nhân hóa calo và meal plan.
+ */
 class GoalSelectionActivity : AppCompatActivity() {
 
     private lateinit var cardLoseWeight: LinearLayout
@@ -37,6 +41,14 @@ class GoalSelectionActivity : AppCompatActivity() {
 
     // 0: Lose Weight, 1: Maintain, 2: Gain Muscle
     private var selectedGoalIndex = 1
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

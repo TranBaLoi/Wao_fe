@@ -12,6 +12,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
+/**
+ * Màn hình nhập thông tin cá nhân cơ bản trong luồng tạo hồ sơ sức khỏe.
+ * Thu thập các dữ liệu đầu vào ban đầu để chuyển sang các bước thiết lập tiếp theo.
+ */
 class UserInfoActivity : AppCompatActivity() {
 
     private lateinit var cardMale: LinearLayout
@@ -38,6 +42,14 @@ class UserInfoActivity : AppCompatActivity() {
 
     private var ageDragAnchorX = 0f
     private var ageDragAccumulatedX = 0f
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

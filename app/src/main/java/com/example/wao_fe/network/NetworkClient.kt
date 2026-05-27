@@ -8,9 +8,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * Đối tượng cấu hình Retrofit dùng chung cho toàn bộ ứng dụng.
+ * Chứa BASE_URL backend, OkHttpClient, Gson converter và instance ApiService.
+ */
 object NetworkClient {
 
-    // Emulator should use 10.0.2.2 to reach localhost on host machine.
+    // Khi chạy trên Android Emulator, 10.0.2.2 được dùng để truy cập localhost của máy tính chạy backend.
     private const val BASE_URL = "http://10.0.2.2:8080/"
 //    172.20.10.2
 

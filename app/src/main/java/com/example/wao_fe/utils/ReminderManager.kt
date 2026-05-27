@@ -9,11 +9,19 @@ import android.util.Log
 import com.example.wao_fe.receivers.AlarmReceiver
 import java.util.Calendar
 
+/**
+ * Helper quản lý lịch nhắc nhở bằng AlarmManager.
+ * Tạo các exact alarm để gửi thông báo đúng thời điểm người dùng cần được nhắc.
+ */
 object ReminderManager {
 
     /**
      * Lên lịch báo thức chính xác (Exact Alarm)
      * Thậm chí khi app bị clear memory (vuốt chớ) thì AlarmManager của hệ điều hành vẫn kích hoạt.
+     */
+    /**
+     * Đặt một lịch nhắc chính xác tại giờ/phút được chỉ định.
+     * Dữ liệu tiêu đề và nội dung được gửi sang AlarmReceiver qua Intent.
      */
     fun scheduleExactAlarm(context: Context, id: Int, hour: Int, minute: Int, title: String, message: String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -69,6 +77,10 @@ object ReminderManager {
 
     /**
      * Khởi tạo toàn bộ các nhắc nhở cơ bản cho 1 ngày
+     */
+    /**
+     * Thiết lập toàn bộ lịch nhắc mặc định của ứng dụng.
+     * Hàm này có thể được gọi sau khi mở app hoặc sau khi thiết bị khởi động lại.
      */
     fun setupAllReminders(context: Context) {
         // Nhắc bữa ăn

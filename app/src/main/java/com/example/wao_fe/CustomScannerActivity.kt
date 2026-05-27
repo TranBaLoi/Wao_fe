@@ -7,9 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 
+/**
+ * Màn hình camera tùy chỉnh cho chức năng quét barcode.
+ * Được ZXing sử dụng để đọc mã vạch sản phẩm thực phẩm.
+ */
 class CustomScannerActivity : AppCompatActivity() {
     private lateinit var capture: CaptureManager
     private lateinit var barcodeScannerView: DecoratedBarcodeView
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -50,6 +50,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 
+/**
+ * Khai báo các REST API mà ứng dụng Android gọi đến Spring Boot backend.
+ * Các hàm trong interface này được Retrofit tự động chuyển thành HTTP request.
+ */
 interface ApiService {
 
     // Chatbot
@@ -74,6 +78,7 @@ interface ApiService {
         @Body request: ChatbotSendMessageRequest
     ): ChatbotSendMessageResponse
 
+    // Nhóm API người dùng: đăng ký, đăng nhập Google, xác thực email, lấy/cập nhật/xóa tài khoản.
     // Users
     @POST("api/users/register")
     suspend fun registerUser(@Body request: RegisterUserRequest): UserResponse
@@ -99,6 +104,7 @@ interface ApiService {
     @DELETE("api/users/{id}")
     suspend fun deleteUser(@Path("id") id: Long)
 
+    // Nhóm API hồ sơ sức khỏe: tạo hồ sơ, lấy hồ sơ mới nhất và xem lịch sử hồ sơ.
     // Health profiles
     @POST("api/users/{userId}/health-profiles")
     suspend fun createHealthProfile(
@@ -112,6 +118,7 @@ interface ApiService {
     @GET("api/users/{userId}/health-profiles/history")
     suspend fun getHealthProfileHistory(@Path("userId") userId: Long): List<HealthProfileResponse>
 
+    // Nhóm API món ăn: thêm món, tìm kiếm món, xem chi tiết, cập nhật, xóa và upload ảnh món ăn.
     // Foods
     @Multipart
     @POST("api/foods")
@@ -192,6 +199,7 @@ interface ApiService {
     @DELETE("api/workout-programs/{id}")
     suspend fun deleteWorkoutProgram(@Path("id") id: Long)
 
+    // Nhóm API meal plan: tạo, xem, xóa, sinh thực đơn bằng AI và áp dụng thực đơn vào ngày cụ thể.
     // Meal plans
     @POST("api/meal-plans")
     suspend fun createMealPlan(@Body request: MealPlanRequest): MealPlanResponse
@@ -268,6 +276,7 @@ interface ApiService {
         @Query("to") to: String
     ): List<StepLogResponse>
 
+    // Nhóm API uống nước: ghi log, lấy danh sách theo ngày, lấy tổng lượng nước và xóa log.
     // Water logs
     @POST("api/users/{userId}/water-logs")
     suspend fun createWaterLog(
@@ -293,6 +302,7 @@ interface ApiService {
         @Path("logId") logId: Long
     )
 
+    // Nhóm API tổng hợp ngày: lấy dữ liệu Dashboard và làm mới tổng hợp theo ngày.
     // Daily summaries
     @GET("api/users/{userId}/daily-summaries/today")
     suspend fun getTodaySummary(@Path("userId") userId: Long): DailySummaryResponse

@@ -16,6 +16,10 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
+/**
+ * Màn hình đăng ký tài khoản mới.
+ * Thu thập thông tin đăng ký, kiểm tra dữ liệu nhập và gọi API backend để tạo tài khoản.
+ */
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var tilFullname: TextInputLayout
@@ -30,6 +34,14 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var tvLogin: TextView
 
     private val userRepository = UserRepository()
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

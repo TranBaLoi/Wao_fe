@@ -18,6 +18,10 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+/**
+ * Màn hình chọn thực phẩm dị ứng hoặc cần tránh.
+ * Dữ liệu này được dùng khi tạo hồ sơ sức khỏe và sinh thực đơn bằng AI.
+ */
 class AllergiesActivity : AppCompatActivity() {
 
     private lateinit var chipGroupAllergies: ChipGroup
@@ -44,6 +48,14 @@ class AllergiesActivity : AppCompatActivity() {
         Pair("TREE_NUT", "🌰 Hạt cây (Tree Nut)"),
         Pair("FISH", "🐠 Cá (Fish)")
     )
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

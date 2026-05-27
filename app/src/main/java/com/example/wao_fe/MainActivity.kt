@@ -52,6 +52,10 @@ import java.util.Locale
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
+/**
+ * Màn hình Dashboard chính của ứng dụng.
+ * Hiển thị tổng quan calo, nước uống, meal plan, cảnh báo và điều hướng đến các chức năng chính.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tvUserName: TextView
@@ -122,6 +126,14 @@ class MainActivity : AppCompatActivity() {
         }
         checkHealthConnectAccess(promptIfMissing = false, initiatedByUser = false)
     }
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -364,6 +376,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+
+
+     * Mở trình quét barcode từ Dashboard để người dùng thêm thức ăn nhanh vào nhật ký.
+
+
+     */
+
+
     private fun startBarcodeScanner() {
         Log.d("BarcodeScan", "Bắt đầu gọi Activity quét mã vạch")
         val options = ScanOptions()
@@ -373,6 +394,15 @@ class MainActivity : AppCompatActivity() {
         options.setCaptureActivity(CustomScannerActivity::class.java)
         barcodeLauncher.launch(options)
     }
+
+    /**
+
+
+     * Gọi OpenFoodFacts API theo mã barcode để lấy thông tin thực phẩm và gợi ý thêm món.
+
+
+     */
+
 
     private fun fetchProductInfo(barcode: String) {
         Log.d("BarcodeScan", "Bắt đầu gọi API OpenFoodFacts cho barcode: $barcode")
@@ -616,6 +646,15 @@ class MainActivity : AppCompatActivity() {
         tvDate.text = sdf.format(Date())
     }
 
+    /**
+
+
+     * Tải dữ liệu tổng hợp Dashboard gồm calo, nước uống và các chỉ số chính trong ngày.
+
+
+     */
+
+
     private fun fetchDashboardData() {
         lifecycleScope.launch {
             var targetCalories = 2000.0
@@ -790,6 +829,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    /**
+
+
+     * Ghi nhật ký uống nước lên backend và đồng bộ lại dữ liệu tổng hợp trong ngày.
+
+
+     */
+
 
     private fun addWaterLog(amount: Int) {
         if (userId == -1L) return

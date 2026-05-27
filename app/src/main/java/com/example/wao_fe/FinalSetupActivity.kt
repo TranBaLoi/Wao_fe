@@ -24,6 +24,10 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
 
+/**
+ * Màn hình hoàn tất thiết lập hồ sơ sức khỏe.
+ * Tổng hợp dữ liệu từ các bước trước và hoàn thiện luồng onboarding sức khỏe cho người dùng.
+ */
 class FinalSetupActivity : AppCompatActivity() {
 
     private lateinit var cardSedentary: LinearLayout
@@ -61,6 +65,14 @@ class FinalSetupActivity : AppCompatActivity() {
     private var canNavigateMain = false
 
     private val userRepository = UserRepository()
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

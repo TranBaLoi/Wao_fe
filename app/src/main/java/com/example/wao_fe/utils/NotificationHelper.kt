@@ -11,11 +11,18 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.wao_fe.MainActivity
 import com.example.wao_fe.R
 
+/**
+ * Helper quản lý notification channel và hiển thị thông báo cục bộ.
+ * Được dùng cho nhắc nhở uống nước, nhập bữa ăn và cảnh báo vượt calo.
+ */
 object NotificationHelper {
 
     private const val CHANNEL_ID_REMINDERS = "channel_reminders_v2"
     private const val CHANNEL_ID_ALERTS = "channel_alerts_v2"
 
+    /**
+     * Tạo các notification channel cần thiết cho Android 8 trở lên.
+     */
     fun createNotificationChannels(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val reminderChannel = NotificationChannel(
@@ -43,6 +50,9 @@ object NotificationHelper {
         }
     }
 
+    /**
+     * Hiển thị thông báo nhắc nhở định kỳ như uống nước hoặc nhập bữa ăn.
+     */
     fun showReminderNotification(context: Context, title: String, message: String, notificationId: Int) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -70,6 +80,9 @@ object NotificationHelper {
         }
     }
 
+    /**
+     * Hiển thị thông báo cảnh báo quan trọng, ví dụ khi người dùng vượt mục tiêu calo.
+     */
     fun showAlertNotification(context: Context, title: String, message: String, notificationId: Int) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

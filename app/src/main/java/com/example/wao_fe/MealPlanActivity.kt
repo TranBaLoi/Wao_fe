@@ -40,6 +40,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Màn hình tạo kế hoạch bữa ăn.
+ * Gọi API sinh thực đơn bằng AI, hiển thị kết quả và hỗ trợ lưu hoặc áp dụng meal plan.
+ */
 class MealPlanActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MealPlanViewModel
@@ -87,6 +91,14 @@ class MealPlanActivity : AppCompatActivity() {
         }
     }
 
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meal_plan)
@@ -111,6 +123,18 @@ class MealPlanActivity : AppCompatActivity() {
             loadSavedMealPlans()
         }
     }
+
+    /**
+
+
+     * Khởi tạo và ánh xạ toàn bộ view cần dùng trong màn hình meal plan.
+
+
+     * Bao gồm các vùng hiển thị thực đơn, danh sách đã lưu và các nút thao tác chính.
+
+
+     */
+
 
     private fun initViews() {
         tvDate = findViewById(R.id.tvDate)
@@ -144,6 +168,18 @@ class MealPlanActivity : AppCompatActivity() {
         val sdf = SimpleDateFormat("EEEE, dd MMM", Locale("vi", "VN"))
         tvDate.text = sdf.format(Date())
     }
+
+    /**
+
+
+     * Gắn sự kiện cho các nút tạo meal plan, lưu, áp dụng, xóa và điều hướng.
+
+
+     * Đây là điểm điều phối thao tác chính từ người dùng.
+
+
+     */
+
 
     private fun setupListeners() {
         btnBackHeader.setOnClickListener { finish() }
@@ -198,6 +234,18 @@ class MealPlanActivity : AppCompatActivity() {
             }
         }
     }
+
+    /**
+
+
+     * Quan sát trạng thái dữ liệu từ ViewModel để cập nhật UI theo kết quả gọi API.
+
+
+     * Xử lý các trạng thái loading, success, error khi sinh thực đơn AI.
+
+
+     */
+
 
     private fun observeViewModel() {
         viewModel.state.observe(this) { state ->
@@ -366,6 +414,15 @@ class MealPlanActivity : AppCompatActivity() {
         floatingMenuDialog?.show()
     }
 
+    /**
+
+
+     * Mở luồng quét barcode để thêm nhanh món ăn phục vụ chỉnh sửa thực đơn.
+
+
+     */
+
+
     private fun startBarcodeScanner() {
         val options = ScanOptions().apply {
             setPrompt("Đặt mã vạch sản phẩm vào giữa khung hình")
@@ -447,6 +504,18 @@ class MealPlanActivity : AppCompatActivity() {
             }
             .show()
     }
+
+    /**
+
+
+     * Gọi API áp dụng meal plan vào nhật ký ăn uống của ngày hiện tại hoặc ngày được chọn.
+
+
+     * Sau khi thành công, dữ liệu sẽ xuất hiện ở màn nhật ký/daily summary.
+
+
+     */
+
 
     private fun applyMealPlanToDiary(mealPlan: MealPlanResponse) {
         val logDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

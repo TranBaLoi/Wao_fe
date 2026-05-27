@@ -12,6 +12,10 @@ import com.example.wao_fe.network.UserRepository
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
+/**
+ * Màn hình xác thực email/tài khoản.
+ * Gửi thông tin xác thực lên backend để kiểm tra trạng thái xác minh của người dùng.
+ */
 class VerifyEmailActivity : AppCompatActivity() {
 
     private lateinit var etCode: TextInputEditText
@@ -20,6 +24,14 @@ class VerifyEmailActivity : AppCompatActivity() {
     private var email: String = ""
 
     private val userRepository = UserRepository()
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -28,6 +28,10 @@ import java.time.format.DateTimeParseException
 import java.util.Locale
 import kotlin.math.abs
 
+/**
+ * Màn hình cài đặt tài khoản và ứng dụng.
+ * Cho phép xem thông tin người dùng, điều hướng chỉnh sửa hồ sơ, thiết lập nhắc nhở và đăng xuất.
+ */
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SettingsViewModel
@@ -52,6 +56,14 @@ class SettingsActivity : AppCompatActivity() {
 
     private val userRepository = UserRepository()
     private val apiService = NetworkClient.apiService
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,6 +189,15 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+
+
+     * Theo dõi trạng thái dữ liệu setting để cập nhật UI và phản hồi thao tác người dùng.
+
+
+     */
+
+
     private fun observeViewModel() {
         viewModel.user.observe(this) { user ->
             tvUserName.text = user?.fullName ?: "Người dùng"
@@ -271,6 +292,15 @@ class SettingsActivity : AppCompatActivity() {
             tvCompletionDate.text = "Không xác định"
         }
     }
+
+    /**
+
+
+     * Xóa thông tin đăng nhập cục bộ và điều hướng về màn hình đăng nhập.
+
+
+     */
+
 
     private fun performLogout() {
         // Clear prefs

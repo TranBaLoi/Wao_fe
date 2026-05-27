@@ -12,7 +12,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 
+/**
+ * Màn hình khởi động của ứng dụng.
+ * Kiểm tra trạng thái đăng nhập đã lưu và điều hướng người dùng đến LoginActivity hoặc MainActivity.
+ */
 class SplashActivity : AppCompatActivity() {
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

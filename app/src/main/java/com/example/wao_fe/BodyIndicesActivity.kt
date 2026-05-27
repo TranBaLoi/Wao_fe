@@ -18,6 +18,10 @@ import com.google.android.material.slider.Slider
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+/**
+ * Màn hình nhập và hiển thị các chỉ số cơ thể.
+ * Xử lý chiều cao, cân nặng, BMI và gửi dữ liệu hồ sơ sức khỏe lên backend.
+ */
 class BodyIndicesActivity : AppCompatActivity() {
 
     private lateinit var tvHeightVal: TextView
@@ -36,6 +40,14 @@ class BodyIndicesActivity : AppCompatActivity() {
     private var currentWeight: Double = 68.5
 
     private val userRepository = UserRepository()
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +89,15 @@ class BodyIndicesActivity : AppCompatActivity() {
         tvWeightVal.text = String.format("%.1f", currentWeight)
         calculateAndDisplayBMI()
     }
+
+    /**
+
+
+     * Tính BMI từ chiều cao và cân nặng, sau đó hiển thị kết quả trực tiếp lên giao diện.
+
+
+     */
+
 
     private fun calculateAndDisplayBMI() {
         if (currentHeight <= 0) return
@@ -125,6 +146,15 @@ class BodyIndicesActivity : AppCompatActivity() {
             createHealthProfile()
         }
     }
+
+    /**
+
+
+     * Tạo request hồ sơ sức khỏe và gọi API backend để lưu thông tin cá nhân hóa dinh dưỡng.
+
+
+     */
+
 
     private fun createHealthProfile() {
         // Now Step 3 will handle creation

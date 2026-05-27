@@ -16,6 +16,10 @@ import com.example.wao_fe.network.UserRepository
 import com.example.wao_fe.network.models.MealPlanResponse
 import kotlinx.coroutines.launch
 
+/**
+ * Màn hình danh sách meal plan đã lưu của người dùng.
+ * Lấy dữ liệu từ backend theo userId và cho phép mở chi tiết từng thực đơn.
+ */
 class SavedMealPlansActivity : AppCompatActivity() {
 
     private val userRepository = UserRepository()
@@ -26,6 +30,14 @@ class SavedMealPlansActivity : AppCompatActivity() {
     private lateinit var listContainer: LinearLayout
 
     private var userId: Long = -1
+
+    /**
+
+
+     * Khởi tạo giao diện, ánh xạ view và đăng ký các xử lý sự kiện chính của màn hình.
+
+
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +61,15 @@ class SavedMealPlansActivity : AppCompatActivity() {
         loadSavedMealPlans()
     }
 
+    /**
+
+
+     * Tải danh sách meal plan đã lưu của người dùng từ backend theo userId.
+
+
+     */
+
+
     private fun loadSavedMealPlans() {
         progressBar.visibility = View.VISIBLE
         emptyState.visibility = View.GONE
@@ -65,6 +86,15 @@ class SavedMealPlansActivity : AppCompatActivity() {
             }
         }
     }
+
+    /**
+
+
+     * Hiển thị danh sách meal plan ra RecyclerView để người dùng chọn xem chi tiết.
+
+
+     */
+
 
     private fun renderMealPlans(mealPlans: List<MealPlanResponse>) {
         progressBar.visibility = View.GONE
